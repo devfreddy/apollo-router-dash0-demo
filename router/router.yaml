@@ -1,0 +1,141 @@
+# Apollo Router v2 Configuration
+# Dash0 Observability Demo
+# Environment variables are loaded from .env file via docker-compose
+
+supergraph:
+  # Enable introspection for development
+  introspection: true
+  # Listen on all interfaces
+  listen: 0.0.0.0:4000
+  # Query planning cache for performance
+  query_planning:
+    cache:
+      in_memory:
+        limit: 512
+
+# Enable Apollo Sandbox for testing
+sandbox:
+  enabled: true
+
+# Disable the default homepage (Sandbox will be the default)
+homepage:
+  enabled: false
+
+# Include subgraph errors in responses for debugging
+include_subgraph_errors:
+  all: true
+
+# Health check endpoint
+health_check:
+  enabled: true
+  listen: 0.0.0.0:8088
+  path: /health
+
+# Telemetry configuration for Dash0
+telemetry:
+  exporters:
+    # Configure metrics export to Dash0
+    metrics:
+      common:
+        # Resource attributes for identifying this service
+        resource:
+          service.name: "${env.SERVICE_NAME:-apollo-router-demo}"
+          service.version: "${env.SERVICE_VERSION:-2.0}"
+          deployment.environment: "${env.ENVIRONMENT:-demo}"
+
+      # OpenTelemetry Protocol (OTLP) exporter for Dash0
+      otlp:
+        enabled: true
+        # Dash0 metrics endpoint (loaded from .env)
+        endpoint: "${env.DASH0_METRICS_ENDPOINT}"
+        protocol: http
+
+        # Dash0 authentication (loaded from .env)
+        http:
+          headers:
+            "Authorization": "${env.DASH0_AUTH_TOKEN}"
+
+        # Batch processor settings for optimal performance
+        batch_processor:
+          scheduled_delay: 1s
+          max_concurrent_exports: 100
+          max_export_batch_size: 512
+          max_export_timeout: 30s
+          max_queue_size: 2048
+
+    # Configure trace export to Dash0
+    tracing:
+      common:
+        # Sample 10% of traces (adjust based on traffic volume)
+        sampler: 0.1
+        # Parent-based sampling respects upstream sampling decisions
+        parent_based_sampler: true
+
+        # Resource attributes
+        resource:
+          service.name: "${env.SERVICE_NAME:-apollo-router-demo}"
+          service.version: "${env.SERVICE_VERSION:-2.0}"
+          deployment.environment: "${env.ENVIRONMENT:-demo}"
+
+      # OpenTelemetry Protocol (OTLP) exporter for Dash0
+      otlp:
+        enabled: true
+        # Dash0 traces endpoint (loaded from .env)
+        endpoint: "${env.DASH0_TRACES_ENDPOINT}"
+        protocol: http
+
+        # Dash0 authentication (loaded from .env)
+        http:
+          headers:
+            "Authorization": "${env.DASH0_AUTH_TOKEN}"
+
+        # Batch processor settings
+        batch_processor:
+          scheduled_delay: 1s
+          max_concurrent_exports: 100
+          max_export_batch_size: 512
+          max_export_timeout: 30s
+          max_queue_size: 2048
+
+# CORS configuration for browser access (v2.7+ format)
+# Port 4000: Required for Apollo Sandbox UI (served from the router itself)
+# Port 3000: Pre-configured for potential frontend applications (React, Next.js, etc.)
+cors:
+  policies:
+    - origins:
+        - http://localhost:3000
+        - http://localhost:4000
+      allow_credentials: true
+
+# Limits to prevent abuse (requires Apollo GraphOS Enterprise license)
+# NOTE: These features require an Enterprise plan and proper GraphOS connection
+# The router must successfully connect to GraphOS with APOLLO_KEY and APOLLO_GRAPH_REF
+# limits:
+#   max_depth: 100
+#   max_height: 200
+#   max_aliases: 30
+#   max_root_fields: 20
+
+# Traffic shaping for performance
+traffic_shaping:
+  # Router-level traffic shaping
+  router:
+    timeout: 50s
+    global_rate_limit:
+      capacity: 1000
+      interval: 1s
+
+  # Subgraph-level traffic shaping
+  subgraphs:
+    products:
+      timeout: 10s
+    reviews:
+      timeout: 10s
+    accounts:
+      timeout: 5s
+    inventory:
+      timeout: 5s
+
+# Experimental features
+plugins:
+  experimental.expose_query_plan: true

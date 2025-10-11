@@ -1,0 +1,19 @@
+{
+  "name": "products-subgraph",
+  "version": "1.0.0",
+  "description": "Products subgraph for Apollo Federation demo",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.11.3",
+    "@apollo/subgraph": "^2.9.3",
+    "graphql": "^16.9.0",
+    "graphql-tag": "^2.12.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

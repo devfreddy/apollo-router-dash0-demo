@@ -1,0 +1,26 @@
+# Supergraph configuration for Apollo Rover
+# This file defines how to compose the federated subgraphs
+# Note: routing_url uses Docker network names, subgraph_url uses localhost for Rover introspection
+
+federation_version: 2
+
+subgraphs:
+  accounts:
+    routing_url: http://accounts:4001
+    schema:
+      subgraph_url: http://localhost:4001
+
+  products:
+    routing_url: http://products:4003
+    schema:
+      subgraph_url: http://localhost:4003
+
+  reviews:
+    routing_url: http://reviews:4002
+    schema:
+      subgraph_url: http://localhost:4002
+
+  inventory:
+    routing_url: http://inventory:4004
+    schema:
+      subgraph_url: http://localhost:4004
