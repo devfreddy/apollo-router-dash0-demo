@@ -1,15 +1,13 @@
-# Setup Guide
+# Detailed Setup Guide
 
-This guide will walk you through setting up the Apollo Router + Dash0 observability integration from scratch.
+This guide provides detailed step-by-step instructions for setting up the Apollo Router + Dash0 observability demo.
+
+> **Quick Start:** For automated setup, see the [README](README.md#quick-start) and use `./quickstart.sh`
 
 ## Prerequisites
 
-Before starting, ensure you have the following installed:
-
 1. **Docker Desktop** (or Docker Engine + Docker Compose)
-   - macOS: https://docs.docker.com/desktop/install/mac-install/
-   - Windows: https://docs.docker.com/desktop/install/windows-install/
-   - Linux: https://docs.docker.com/engine/install/
+   - [Install Docker](https://docs.docker.com/get-docker/)
 
 2. **Apollo Rover CLI** (for supergraph composition)
    ```bash
@@ -18,41 +16,22 @@ Before starting, ensure you have the following installed:
 
 3. **Dash0 Account**
    - Sign up at https://dash0.com
-   - Create an API token with write permissions for metrics and traces
-   - Note your Dash0 ingestion endpoint (e.g., `ingress.us-west-2.aws.dash0.com`)
+   - Create an API token (Settings → API Tokens)
+   - Note your region (us-west-2, us-east-1, eu-central-1, etc.)
 
 ## Step-by-Step Setup
 
 ### 1. Configure Environment Variables
 
-Copy the sample environment file and edit it with your credentials:
-
 ```bash
 cp .env.sample .env
 ```
 
-Edit `.env` and configure:
+Edit `.env` and update these required variables:
+- `DASH0_AUTH_TOKEN` - Your Dash0 API token with "Bearer " prefix
+- `DASH0_REGION` - Your Dash0 region
 
-```bash
-# Required: Dash0 API Token
-DASH0_AUTH_TOKEN=Bearer your-dash0-token-here
-
-# Required: Dash0 Region
-DASH0_REGION=us-west-2  # or your region: us-east-1, eu-central-1, etc.
-
-# These are auto-generated from DASH0_REGION, but you can override:
-DASH0_METRICS_ENDPOINT=https://ingress.us-west-2.aws.dash0.com/v1/metrics
-DASH0_TRACES_ENDPOINT=https://ingress.us-west-2.aws.dash0.com/v1/traces
-
-# Optional: Apollo GraphOS (if you want to publish your schema)
-APOLLO_KEY=service:your-graph-name:your-api-key
-APOLLO_GRAPH_REF=your-graph-name@current
-
-# Optional: Custom service metadata
-SERVICE_NAME=apollo-router-demo
-SERVICE_VERSION=2.0
-ENVIRONMENT=demo
-```
+See [README - Environment Variables](README.md#environment-variables) for complete configuration details.
 
 ### 2. Build and Start Subgraphs
 
@@ -134,144 +113,94 @@ docker compose logs -f router
 
 ### 6. Generate Load (Optional)
 
-To generate realistic traffic for observability testing:
+Start Vegeta load generator:
 
 ```bash
 docker compose --profile load-testing up -d vegeta
 ```
 
-This will send continuous requests at 5 req/sec to the router. Adjust the rate in `docker-compose.yaml` if needed:
+This sends continuous requests at 2 req/sec. To adjust the rate, edit the `command` in `docker-compose.yaml`:
 
 ```yaml
-command: attack -targets=targets.http -rate=10 -duration=0 -timeout=10s
+command: attack -targets=/etc/vegeta/targets.http -rate=10 -duration=0 -timeout=10s
 ```
 
 Stop load generation:
 
 ```bash
-docker compose --profile load-testing down
+docker compose stop vegeta
 ```
 
 ## Troubleshooting
 
-### Subgraphs Not Starting
-
-Check individual subgraph logs:
-```bash
-docker compose logs accounts
-docker compose logs products
-docker compose logs reviews
-docker compose logs inventory
-```
-
-Common issues:
-- Port conflicts (check if ports 4001-4004 are available)
-- npm install failures (rebuild images: `docker compose build --no-cache`)
-
 ### Router Failing to Start
 
-1. **Missing supergraph schema**
-   ```
-   Error: Failed to read supergraph schema
-   ```
-   Solution: Run `./compose-supergraph.sh` first
+**Missing supergraph schema:**
+```bash
+./compose-supergraph.sh
+docker compose restart router
+```
 
-2. **Invalid Dash0 credentials**
-   ```
-   Error: HTTP 401 Unauthorized
-   ```
-   Solution: Check your API token in `router/router.yaml`
+**Invalid Dash0 credentials:**
+Check `DASH0_AUTH_TOKEN` in `.env` (must include "Bearer " prefix)
 
-3. **Subgraphs not reachable**
-   ```
-   Error: Failed to warm up query planner
-   ```
-   Solution: Ensure all subgraphs are running and healthy
+**Subgraphs not reachable:**
+```bash
+docker compose ps  # Ensure all subgraphs are running
+```
 
 ### No Data in Dash0
 
-1. Check router logs for export errors:
-   ```bash
-   docker compose logs router | grep -i error
-   ```
-
-2. Verify your Dash0 endpoint and region are correct
-
-3. Ensure your API token has write permissions for both metrics and traces
-
-4. Check the router's health endpoint:
-   ```bash
-   curl http://localhost:8088/health
-   ```
-
-### Supergraph Composition Fails
-
-1. Ensure Rover is installed:
-   ```bash
-   rover --version
-   ```
-
-2. Check that all subgraphs are running:
-   ```bash
-   curl http://localhost:4001/.well-known/apollo/server-health
-   curl http://localhost:4002/.well-known/apollo/server-health
-   curl http://localhost:4003/.well-known/apollo/server-health
-   curl http://localhost:4004/.well-known/apollo/server-health
-   ```
-
-## Architecture Overview
-
+Check router logs for export errors:
+```bash
+docker compose logs router | grep -i error
 ```
-Client/Vegeta
-    ↓
-Apollo Router (Port 4000)
-    ├─→ Accounts Subgraph (Port 4001)
-    ├─→ Products Subgraph (Port 4003)
-    ├─→ Reviews Subgraph (Port 4002)
-    └─→ Inventory Subgraph (Port 4004)
-    ↓
-Dash0 (OTLP Metrics & Traces)
+
+Verify router health:
+```bash
+curl http://localhost:8088/health
 ```
+
+### Apollo Studio Rate Limiting
+
+If you see 503 errors with rate limiting messages:
+```bash
+# Restart to clear rate limit state
+docker compose restart router
+```
+
+The router auto-connects to Apollo Studio when `APOLLO_KEY` and `APOLLO_GRAPH_REF` are present in `.env`. At 2 req/sec this should not trigger limits.
 
 ## Useful Commands
 
+See [COMMANDS.md](COMMANDS.md) for a comprehensive command reference.
+
+**Quick commands:**
 ```bash
-# View all logs
-docker compose logs -f
-
-# Restart everything
-docker compose restart
-
-# Stop everything
-docker compose down
-
-# Rebuild subgraphs after code changes
-docker compose build
-docker compose up -d
+# View logs
+docker compose logs -f router
 
 # Check service health
 docker compose ps
 
-# Access individual subgraph GraphQL playgrounds
-open http://localhost:4001  # Accounts
-open http://localhost:4002  # Reviews
-open http://localhost:4003  # Products
-open http://localhost:4004  # Inventory
+# Restart services
+docker compose restart
+
+# Stop everything
+docker compose down
 ```
 
 ## Next Steps
 
-- Customize the subgraph schemas and data
-- Add error injection for observability testing
+- Customize subgraph schemas and resolvers
 - Create custom Dash0 dashboards
 - Experiment with different load patterns
 - Configure alerts in Dash0
-- Add distributed tracing headers
-- Implement authentication/authorization
+- Add distributed tracing context propagation
 
 ## Resources
 
 - [Apollo Router Documentation](https://www.apollographql.com/docs/router/)
 - [Apollo Federation](https://www.apollographql.com/docs/federation/)
 - [Dash0 Documentation](https://docs.dash0.com/)
-- [OpenTelemetry Protocol](https://opentelemetry.io/docs/specs/otlp/)
+- [OpenTelemetry](https://opentelemetry.io/)
