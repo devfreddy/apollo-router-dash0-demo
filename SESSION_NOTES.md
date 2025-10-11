@@ -95,6 +95,21 @@ The Dash0 MCP (Model Context Protocol) server enables AI assistants to:
 ⏳ Pending VSCode reload to activate MCP tools
 📋 TODO: Test MCP functionality in next session (query metrics, investigate traces, etc.)
 
+### Next Steps
+
+1. **Restart VSCode** to activate the Dash0 MCP server
+2. **Verify MCP tools are available** by checking for new Dash0-related tools in Claude Code
+3. **Test basic queries**:
+   - Query list of services in Dash0
+   - Retrieve metrics for Apollo Router (apollo-router-demo)
+   - Investigate recent traces and spans
+4. **Explore capabilities**:
+   - Test PromQL query building for custom metrics
+   - Navigate OpenTelemetry resources (services, operations)
+   - Investigate any active incidents or error logs
+5. **Document findings** in next session notes
+6. **Continue with remaining TODOs**: Pull in Datadog template and recreate dashboards in Dash0
+
 ---
 
 ## Quick Reference
