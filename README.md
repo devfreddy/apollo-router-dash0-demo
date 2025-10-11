@@ -227,11 +227,40 @@ telemetry:
 
 Docker Compose loads variables from `.env` and passes them to containers.
 
+## Session Notes
+
+Development session notes are organized in [docs/sessions/](docs/sessions/). Each session has its own directory with:
+- `notes.md` - Detailed session notes, findings, and configurations
+- `wrap-up.md` - Session summary and next steps
+
+Latest session: [2025-10-11](docs/sessions/2025-10-11/)
+
+## Dashboards
+
+This project includes a comprehensive Apollo Router performance dashboard converted from the official Apollo GraphOS Datadog template.
+
+**Location:** [dashboards/](dashboards/)
+
+**Features:**
+- Automated conversion from Datadog to Dash0 Perses format
+- 41 monitoring panels across all Apollo Router metrics
+- One-command deployment via Dash0 API
+- Full PromQL query conversion
+
+**Quick Start:**
+```bash
+cd dashboards
+node convert.js    # Convert Datadog template to Dash0 format
+./deploy.sh        # Deploy to your Dash0 account
+```
+
+See [dashboards/README.md](dashboards/README.md) for detailed documentation.
+
 ## TODO
 
-1. ✅ ~~Test/try out connecting to https://api.us-west-2.aws.dash0.com/mcp with Claude Code~~ - **Completed** (See [SESSION_NOTES.md](SESSION_NOTES.md) for details)
-2. Test Dash0 MCP server functionality (query metrics, investigate traces, analyze services)
-3. Pull in this datadog template - https://github.com/apollographql/apm-templates/blob/main/datadog/graphos-template.json and recreate it in Dash0
+1. ✅ ~~Test/try out connecting to https://api.us-west-2.aws.dash0.com/mcp with Claude Code~~ - **Completed** (See [2025-10-11 notes](docs/sessions/2025-10-11/notes.md))
+2. ✅ ~~Test Dash0 MCP server functionality~~ - **Completed** (All MCP tools verified working)
+3. ✅ ~~Pull in Datadog template and recreate in Dash0~~ - **Completed** (See [dashboards/README.md](dashboards/README.md))
 
 ## Reference
 

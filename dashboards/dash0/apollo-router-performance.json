@@ -1,0 +1,1422 @@
+{
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "apollo-router-performance",
+    "dash0Extensions": {
+      "dataset": "default"
+    }
+  },
+  "spec": {
+    "display": {
+      "name": "Apollo Router Performance",
+      "description": "GraphOS Runtime Dashboard - Converted from Datadog template"
+    },
+    "duration": "1h",
+    "refreshInterval": "30s",
+    "layouts": [
+      {
+        "kind": "Grid",
+        "spec": {
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_0"
+              }
+            },
+            {
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_1"
+              }
+            },
+            {
+              "x": 0,
+              "y": 8,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_2"
+              }
+            },
+            {
+              "x": 12,
+              "y": 8,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_3"
+              }
+            },
+            {
+              "x": 0,
+              "y": 16,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_4"
+              }
+            },
+            {
+              "x": 12,
+              "y": 16,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_5"
+              }
+            },
+            {
+              "x": 0,
+              "y": 24,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_6"
+              }
+            },
+            {
+              "x": 12,
+              "y": 24,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_7"
+              }
+            },
+            {
+              "x": 0,
+              "y": 32,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_8"
+              }
+            },
+            {
+              "x": 12,
+              "y": 32,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_9"
+              }
+            },
+            {
+              "x": 0,
+              "y": 40,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_10"
+              }
+            },
+            {
+              "x": 12,
+              "y": 40,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_11"
+              }
+            },
+            {
+              "x": 0,
+              "y": 48,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_12"
+              }
+            },
+            {
+              "x": 12,
+              "y": 48,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_13"
+              }
+            },
+            {
+              "x": 0,
+              "y": 56,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_14"
+              }
+            },
+            {
+              "x": 12,
+              "y": 56,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_15"
+              }
+            },
+            {
+              "x": 0,
+              "y": 64,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_16"
+              }
+            },
+            {
+              "x": 12,
+              "y": 64,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_17"
+              }
+            },
+            {
+              "x": 0,
+              "y": 72,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_18"
+              }
+            },
+            {
+              "x": 12,
+              "y": 72,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_19"
+              }
+            },
+            {
+              "x": 0,
+              "y": 80,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_20"
+              }
+            },
+            {
+              "x": 12,
+              "y": 80,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_21"
+              }
+            },
+            {
+              "x": 0,
+              "y": 88,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_22"
+              }
+            },
+            {
+              "x": 12,
+              "y": 88,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_23"
+              }
+            },
+            {
+              "x": 0,
+              "y": 96,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_24"
+              }
+            },
+            {
+              "x": 12,
+              "y": 96,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_25"
+              }
+            },
+            {
+              "x": 0,
+              "y": 104,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_26"
+              }
+            },
+            {
+              "x": 12,
+              "y": 104,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_27"
+              }
+            },
+            {
+              "x": 0,
+              "y": 112,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_28"
+              }
+            },
+            {
+              "x": 12,
+              "y": 112,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_29"
+              }
+            },
+            {
+              "x": 0,
+              "y": 120,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_30"
+              }
+            },
+            {
+              "x": 12,
+              "y": 120,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_31"
+              }
+            },
+            {
+              "x": 0,
+              "y": 128,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_32"
+              }
+            },
+            {
+              "x": 12,
+              "y": 128,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_33"
+              }
+            },
+            {
+              "x": 0,
+              "y": 136,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_34"
+              }
+            },
+            {
+              "x": 12,
+              "y": 136,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_35"
+              }
+            },
+            {
+              "x": 0,
+              "y": 144,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_36"
+              }
+            },
+            {
+              "x": 12,
+              "y": 144,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_37"
+              }
+            },
+            {
+              "x": 0,
+              "y": 152,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_38"
+              }
+            },
+            {
+              "x": 12,
+              "y": 152,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_39"
+              }
+            },
+            {
+              "x": 0,
+              "y": 160,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_40"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "panels": {
+      "panel_0": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Volume of Requests Per Status Code"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum by (http.response.status_code) ({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_1": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Throughput: Requests Per Second"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_2": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Error Rate Percent"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\", graphql.errors=\"true\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_3": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Request Body Size (p99 / Max)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "max({otel_metric_name=\"http_server_request_body_size\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_4": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Request Duration Percentiles"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "histogram_quantile(0.99, rate({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\"}[1m]))"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_5": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Http Requests by Status Code"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum by (http.response.status_code,subgraph.name) ({otel_metric_name=\"http_client_request_duration\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_6": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Throughput (Requests per Second)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum by (subgraph.name) (rate({otel_metric_name=\"http_client_request_duration\", otel_metric_type=\"histogram\"}[1m]))"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_7": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Non-2xx Responses"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum by (subgraph.name,http.response.status_code) ({otel_metric_name=\"http_client_request_duration\", otel_metric_type=\"histogram\", subgraph.name=~\".*\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_8": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Response Body Size"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg by (subgraph.name) ({otel_metric_name=\"http_client_response_body_size\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_9": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "P95 Latency by Subgraph"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "histogram_quantile(0.95, sum by (subgraph.name, le) (rate({otel_metric_name=\"http_client_request_duration\", otel_metric_type=\"histogram\"}[1m])))"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_10": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "GraphQL Errors by Subgraph"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum by (subgraph.name) ({otel_metric_name=\"http_client_request_duration\", otel_metric_type=\"histogram\", graphql.errors=\"true\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_11": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Duration and Wait Time"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"apollo_router_compute_jobs_execution_duration\", otel_metric_type=\"histogram\", job.type=\"query_planning\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_12": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Evaluated Plans"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"apollo_router_query_planning_plan_evaluated_plans\", otel_metric_type=\"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_13": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Misses vs. Record Count"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum({otel_metric_name=\"apollo_router_cache_miss_time\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_14": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Record Counts by Instance"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg by (host,pod_name,container_id) ({otel_metric_name=\"apollo_router_cache_size\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_15": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Record Counts by Type"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum by (kind,version) ({otel_metric_name=\"apollo_router_cache_size\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_16": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Misses by Type"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum by (kind,version) ({otel_metric_name=\"apollo_router_cache_miss_time\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_17": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Hit % by Instance"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum by (host,pod_name,container_id) ({otel_metric_name=\"apollo_router_cache_hit_time\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_18": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Query Planning Duration Percentiles and Wait Time"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "histogram_quantile(0.5, rate({otel_metric_name=\"apollo_router_compute_jobs_execution_duration\", otel_metric_type=\"histogram\", job.type=\"query_planning\"}[1m]))"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_19": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Query Parsing Duration Percentiles and Wait Time"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "histogram_quantile(0.5, rate({otel_metric_name=\"apollo_router_compute_jobs_execution_duration\", otel_metric_type=\"histogram\", job.type=\"query_parsing\"}[1m]))"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_20": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Queued Jobs"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum({otel_metric_name=\"apollo_router_compute_jobs_queued\", otel_metric_type=\"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_21": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Job Counts by Outcome"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum by (job.outcome) ({otel_metric_name=\"apollo_router_compute_jobs_duration\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_22": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Kubernetes CPU Usage"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"kubernetes_cpu_usage_total\", otel_metric_type=\"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_23": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Host CPU Usage (OTEL Collector - Hostmetrics)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"system_cpu_stolen\", otel_metric_type=\"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_24": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Docker CPU Usage (Datadog Docker Agent)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"docker_cpu_usage\", otel_metric_type=\"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_25": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Docker CPU Usage (OTEL Collector  - Docker/stats)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"container_cpu_usage_total\", otel_metric_type=\"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_26": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Kubernetes Memory Usage"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"kubernetes_memory_usage\", otel_metric_type=\"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_27": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Host Memory Usage (OTEL Collector - Hostmetrics)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"system_mem_used\", otel_metric_type=\"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_28": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Docker Memory Usage (Datadog Docker Agent)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"docker_mem_in_use\", otel_metric_type=\"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_29": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Docker Memory Usage (OTEL Collector  - Docker/stats)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"container_memory_usage_total\", otel_metric_type=\"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_30": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Request Duration"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg by (coprocessor.stage) ({otel_metric_name=\"apollo_router_operations_coprocessor_duration\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_31": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Request Count"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum by (coprocessor.stage) ({otel_metric_name=\"apollo_router_operations_coprocessor\", otel_metric_type=\"sum\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_32": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Success Rate"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum by (coprocessor.stage) ({otel_metric_name=\"apollo_router_operations_coprocessor\", otel_metric_type=\"sum\", coprocessor.succeeded=\"true\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_33": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Uplink and Licensing"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"apollo_router_uplink_fetch_duration_seconds\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_34": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Open Connections by Schema and Launch ID"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg by (schema.id,launch.id) ({otel_metric_name=\"apollo_router_open_connections\", otel_metric_type=\"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_35": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Router Relative Overhead"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_36": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Average Request Rate"
+          },
+          "plugin": {
+            "kind": "StatChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "rate({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\"}[1m])"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_37": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Peak Request Rate"
+          },
+          "plugin": {
+            "kind": "StatChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "rate({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\"}[1m])"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_38": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Baseline Subgraph Latency"
+          },
+          "plugin": {
+            "kind": "StatChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"http_client_request_duration\", otel_metric_type=\"histogram\", subgraph.name=~\".*\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_39": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Average Client Request Size"
+          },
+          "plugin": {
+            "kind": "StatChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"http_client_request_body_size\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_40": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Average Client Response Size"
+          },
+          "plugin": {
+            "kind": "StatChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name=\"http_client_response_body_size\", otel_metric_type=\"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

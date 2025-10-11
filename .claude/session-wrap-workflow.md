@@ -11,8 +11,9 @@ When the user requests to wrap up the session, follow these steps:
 - Identify key findings, configurations, or code changes
 - Note any blockers or pending tasks
 
-### 2. Update SESSION_NOTES.md
-- Add a new dated section documenting this session's work
+### 2. Create Session Directory and Files
+- Create a new session directory: `docs/sessions/YYYY-MM-DD/`
+- Create `docs/sessions/YYYY-MM-DD/notes.md` documenting this session's work
 - Include:
   - What was accomplished
   - Configuration changes made
@@ -32,7 +33,8 @@ When the user requests to wrap up the session, follow these steps:
 - Update TODO list:
   - Mark completed items as ✅ done
   - Add new TODO items discovered during the session
-  - Reference SESSION_NOTES.md for details on completed items
+  - Reference session notes for details on completed items
+- Update "Session Notes" section with link to latest session
 - Update project documentation if architecture or setup changed
 - Add new features or capabilities to the overview
 
@@ -44,13 +46,14 @@ When the user requests to wrap up the session, follow these steps:
   - Includes the Claude Code footer
 - Push changes to remote repository
 
-### 6. Add "Next Steps" Section to SESSION_NOTES.md
-- At the end of the current session's section in SESSION_NOTES.md, add a "Next Steps" subsection
-- This should include:
-  - Specific, actionable items for the next session
-  - Prerequisites or preparation needed
-  - Suggested order of tasks to tackle
-  - Any blockers or dependencies to be aware of
+### 6. Create Session Wrap-Up Document
+- Create `docs/sessions/YYYY-MM-DD/wrap-up.md` with:
+  - Session summary
+  - What was accomplished (high-level bullet points)
+  - Key insights or learnings
+  - Next steps for the next session (specific, actionable items)
+  - Files modified during the session
+  - Reference links to documentation or external resources
 - This makes it easy to pick up where we left off in the next session
 
 ### 7. Create Session Summary
@@ -62,12 +65,12 @@ When the user requests to wrap up the session, follow these steps:
 
 ## Example Session Wrap-Up
 
-### Example SESSION_NOTES.md Entry
+### Example docs/sessions/2025-10-11/notes.md
 
 ```markdown
-## Dash0 MCP Server Integration
+# Session Notes - 2025-10-11
 
-**Session Date:** 2025-10-11
+## Dash0 MCP Server Integration
 
 ### What Was Accomplished
 - ✅ Researched Dash0 MCP server capabilities
@@ -114,9 +117,10 @@ When the user requests to wrap up the session, follow these steps:
 - ✅ Committed and pushed changes
 
 ## Documentation Updated
-- SESSION_NOTES.md: Added MCP server integration section with Next Steps
+- docs/sessions/2025-10-11/notes.md: Created with MCP server integration details
+- docs/sessions/2025-10-11/wrap-up.md: Created with session summary
 - COMMANDS.md: Added MCP configuration commands
-- README.md: Updated TODO list
+- README.md: Updated TODO list and session notes section
 
 ## Next Steps (for next session)
 1. Restart VSCode to activate MCP server
