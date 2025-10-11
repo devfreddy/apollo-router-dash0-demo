@@ -46,6 +46,57 @@
 
 ---
 
+## Dash0 MCP Server Integration
+
+**Session Date:** 2025-10-11
+
+### What is the Dash0 MCP Server?
+
+The Dash0 MCP (Model Context Protocol) server enables AI assistants to:
+- Navigate OpenTelemetry resources in Dash0
+- Investigate incidents and query metrics, logs, and traces
+- Triage error logs and spans
+- Access catalog of services, operations, and metrics
+- Use PromQL queries for data analysis
+
+### Configuration Steps
+
+1. **Get Dash0 Credentials:**
+   - Log into https://app.dash0.com
+   - Go to Organization Settings
+   - Copy MCP endpoint URL (e.g., `https://api.us-west-2.aws.dash0.com/mcp`)
+   - Create auth token with "All permissions" for desired Datasets
+
+2. **Add MCP Server to Claude Code:**
+   ```bash
+   claude mcp add --transport http dash0 https://api.us-west-2.aws.dash0.com/mcp \
+     --header "Authorization: Bearer YOUR_DASH0_AUTH_TOKEN"
+   ```
+
+3. **Verify Installation:**
+   ```bash
+   claude mcp list
+   claude mcp get dash0
+   ```
+
+4. **Restart Claude Code:**
+   - Reload VSCode window for MCP server to become available
+   - Tools will be available in next session
+
+### Resources
+
+- **Dash0 MCP Documentation:** https://www.dash0.com/documentation/dash0/mcp
+- **GitHub Repository:** https://github.com/dash0hq/mcp-dash0
+- **MCP Endpoint (us-west-2):** https://api.us-west-2.aws.dash0.com/mcp
+
+### Status
+
+✅ MCP server configured and ready for use
+⏳ Pending VSCode reload to activate MCP tools
+📋 TODO: Test MCP functionality in next session (query metrics, investigate traces, etc.)
+
+---
+
 ## Quick Reference
 
 ### Port Assignments

@@ -253,6 +253,35 @@ Added TODO section with tasks:
 1. Test/try out connecting to https://api.us-west-2.aws.dash0.com/mcp with Claude Code
 2. Pull in datadog template and recreate it in Dash0
 
+## Claude Code MCP Server Configuration
+
+### Add Dash0 MCP Server
+```bash
+# Add Dash0 MCP server to Claude Code
+claude mcp add --transport http dash0 https://api.us-west-2.aws.dash0.com/mcp \
+  --header "Authorization: Bearer YOUR_DASH0_AUTH_TOKEN"
+```
+
+### Verify MCP Configuration
+```bash
+# List all configured MCP servers
+claude mcp list
+
+# Get details for specific MCP server
+claude mcp get dash0
+```
+
+### MCP Server Management
+```bash
+# Remove an MCP server
+claude mcp remove dash0
+
+# Update MCP server configuration
+claude mcp update dash0 --header "Authorization: Bearer NEW_TOKEN"
+```
+
+**Note:** After adding or modifying MCP servers, reload VSCode window for changes to take effect.
+
 ## Session Summary
 
 ### Key Findings
@@ -261,8 +290,10 @@ Added TODO section with tasks:
 3. ✅ **Router Status** - Running successfully on port 4000
 4. ✅ **Vegeta Load Testing** - Generating 2 requests/second
 5. ✅ **Telemetry Export** - Successfully sending to Dash0
+6. ✅ **Dash0 MCP Server** - Configured and ready for testing
 
 ### Configuration Format Changes
 - Updated CORS from deprecated `origins` array to v2.7+ `policies` structure
 - Added explanatory comments for port usage (3000 vs 4000)
 - Documented Enterprise feature requirements
+- Added Dash0 MCP server for AI-powered observability queries

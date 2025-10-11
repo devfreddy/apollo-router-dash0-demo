@@ -229,8 +229,9 @@ Docker Compose loads variables from `.env` and passes them to containers.
 
 ## TODO
 
-1. Test/try out connecting to https://api.us-west-2.aws.dash0.com/mcp with Claude Code
-2. Pull in this datadog template - https://github.com/apollographql/apm-templates/blob/main/datadog/graphos-template.json and recreate it in Dash0
+1. ✅ ~~Test/try out connecting to https://api.us-west-2.aws.dash0.com/mcp with Claude Code~~ - **Completed** (See [SESSION_NOTES.md](SESSION_NOTES.md) for details)
+2. Test Dash0 MCP server functionality (query metrics, investigate traces, analyze services)
+3. Pull in this datadog template - https://github.com/apollographql/apm-templates/blob/main/datadog/graphos-template.json and recreate it in Dash0
 
 ## Reference
 
