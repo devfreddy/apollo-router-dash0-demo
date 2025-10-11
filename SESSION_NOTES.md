@@ -91,24 +91,83 @@ The Dash0 MCP (Model Context Protocol) server enables AI assistants to:
 
 ### Status
 
-✅ MCP server configured and ready for use
-⏳ Pending VSCode reload to activate MCP tools
-📋 TODO: Test MCP functionality in next session (query metrics, investigate traces, etc.)
+✅ MCP server configured and activated
+✅ All MCP tools tested and working
+✅ Successfully querying metrics, traces, and building PromQL queries
+
+### MCP Testing Results (2025-10-11)
+
+**Datasets Available:**
+- Default (slug: `default`) - Active dataset being used
+- OTel Demo (slug: `dash0-demo`)
+
+**Services Discovered:**
+- `apollo-router-demo` - 702 requests, 29.91% error rate, 22ms P95 latency
+- `products`, `reviews`, `accounts` - Subgraph services (minimal/no direct traffic)
+
+**Key Metrics Identified:**
+1. **Apollo Router Specific:**
+   - `apollo.router.operations` (sum) - GraphQL operations count
+   - `apollo.router.graphql_error` (sum) - GraphQL error count
+   - `apollo.router.query_planning.plan.duration` (histogram)
+   - `apollo.router.cache.hit.time` / `cache.miss.time` (histograms)
+   - `apollo.router.jemalloc.*` (gauge) - Memory metrics
+
+2. **HTTP Metrics:**
+   - `http.server.request.duration` (histogram) - Request duration
+   - `http.server.request.body.size` (histogram)
+   - `http.server.active_requests` (sum)
+   - `http.client.request.duration` (histogram) - Subgraph requests
+
+3. **Dash0 Platform Metrics:**
+   - `dash0.spans`, `dash0.logs`, `dash0.metrics.datapoints`
+   - `dash0.spans.duration` (histogram)
+
+**Operations Analysis:**
+- Primary operation: `POST /` (HTTP endpoint)
+- 698 requests in last hour
+- 30.1% error rate
+- 22ms P95 duration
+
+**Error Triage Findings:**
+- **Error Type:** Bad Request (HTTP 400) - 99% correlation with errors
+- **Root Cause:** Appears to be intentional load testing with invalid GraphQL queries
+- **Correlation Insights:**
+  - Errors occur at `POST /` endpoint (95% correlation)
+  - Error traces have `error.type: Bad Request` attribute
+  - Errors originate in `apollo-router/src/plugins/telemetry/span_factory.rs:101`
+  - No correlation with specific subgraphs (errors before subgraph routing)
+
+**PromQL Query Examples:**
+
+```promql
+# P95 latency by status code
+histogram_quantile(0.95, rate({
+  otel_metric_name = "http.server.request.duration",
+  otel_metric_type = "histogram",
+  service_name = "apollo-router-demo"
+}[1m]))
+
+# Request rate by status code
+rate({
+  otel_metric_name = "apollo.router.operations",
+  otel_metric_type = "sum",
+  service_name = "apollo-router-demo"
+}[1m])
+```
+
+**Current Performance (last 30min):**
+- Successful requests (200): 1.42 req/sec, ~14-15ms P95 latency
+- Bad requests (400): 0.58 req/sec, ~0.95ms P95 latency
+- Total rate: ~2 req/sec (matches Vegeta configuration)
 
 ### Next Steps
 
-1. **Restart VSCode** to activate the Dash0 MCP server
-2. **Verify MCP tools are available** by checking for new Dash0-related tools in Claude Code
-3. **Test basic queries**:
-   - Query list of services in Dash0
-   - Retrieve metrics for Apollo Router (apollo-router-demo)
-   - Investigate recent traces and spans
-4. **Explore capabilities**:
-   - Test PromQL query building for custom metrics
-   - Navigate OpenTelemetry resources (services, operations)
-   - Investigate any active incidents or error logs
-5. **Document findings** in next session notes
-6. **Continue with remaining TODOs**: Pull in Datadog template and recreate dashboards in Dash0
+1. **Create Dash0 Dashboard** - Build observability dashboard using discovered metrics
+2. **Investigate Bad Request errors** - Review Vegeta load test queries to reduce error rate
+3. **Add more query variations** - Expand load testing with valid GraphQL queries
+4. **Monitor subgraph performance** - Add metrics for individual subgraph performance
+5. **Set up alerts** - Configure Dash0 alerts for error rate and latency thresholds
 
 ---
 
