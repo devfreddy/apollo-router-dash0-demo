@@ -1,3 +1,7 @@
+// Initialize OpenTelemetry BEFORE any other imports
+const { initializeOpenTelemetry } = require('./otel');
+initializeOpenTelemetry('accounts-subgraph');
+
 const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { buildSubgraphSchema } = require('@apollo/subgraph');
