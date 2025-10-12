@@ -97,6 +97,28 @@ access-control-allow-methods: GET, POST, OPTIONS
 vary: origin, access-control-request-headers
 ```
 
+### Test GraphQL Queries
+```bash
+# Test basic federated query
+curl -X POST http://localhost:4000 \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ topProducts { id name price reviews { rating body } } }"}'
+
+# Test simple products query
+curl -X POST http://localhost:4000 \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ topProducts { id name price } }"}'
+
+# Generate multiple queries for trace testing
+for i in {1..10}; do
+  curl -X POST http://localhost:4000 \
+    -H "Content-Type: application/json" \
+    -d '{"query":"{ topProducts { id name price } }"}' \
+    -s > /dev/null
+  sleep 0.5
+done && echo "Generated 10 queries"
+```
+
 ## Git Operations
 
 ### Check Repository Status
@@ -252,6 +274,25 @@ cors:
 Added TODO section with tasks:
 1. Test/try out connecting to https://api.us-west-2.aws.dash0.com/mcp with Claude Code
 2. Pull in datadog template and recreate it in Dash0
+
+3. **Added Trace Context Propagation** (lines 70-80):
+```yaml
+# Propagate trace context to subgraphs using W3C Trace Context format
+# This ensures subgraph traces are linked to router traces in the service map
+propagation:
+  # W3C Trace Context (traceparent, tracestate headers)
+  trace_context: true
+  # Jaeger format (uber-trace-id header) - optional, for compatibility
+  jaeger: false
+  # Baggage (baggage header) - optional
+  baggage: false
+  # Datadog format - optional
+  datadog: false
+  # Zipkin B3 format - optional
+  zipkin: false
+```
+
+**Why this matters:** Without propagation, the Router and subgraphs create separate traces that appear disconnected in Dash0's service map. With W3C Trace Context propagation enabled, the Router passes `traceparent` and `tracestate` headers to subgraphs, creating a unified distributed trace.
 
 ## Claude Code MCP Server Configuration
 

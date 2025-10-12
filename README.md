@@ -233,7 +233,7 @@ Development session notes are organized in [docs/sessions/](docs/sessions/). Eac
 - `notes.md` - Detailed session notes, findings, and configurations
 - `wrap-up.md` - Session summary and next steps
 
-Latest session: [2025-10-11](docs/sessions/2025-10-11/)
+Latest session: [2025-10-12](docs/sessions/2025-10-12/) - Fixed trace context propagation for service map
 
 ## Dashboards
 

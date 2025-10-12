@@ -65,6 +65,20 @@ telemetry:
 
     # Configure trace export to Dash0
     tracing:
+      # Propagate trace context to subgraphs using W3C Trace Context format
+      # This ensures subgraph traces are linked to router traces in the service map
+      propagation:
+        # W3C Trace Context (traceparent, tracestate headers)
+        trace_context: true
+        # Jaeger format (uber-trace-id header) - optional, for compatibility
+        jaeger: false
+        # Baggage (baggage header) - optional
+        baggage: false
+        # Datadog format - optional
+        datadog: false
+        # Zipkin B3 format - optional
+        zipkin: false
+
       common:
         # Sample 10% of traces (adjust based on traffic volume)
         sampler: 0.1
