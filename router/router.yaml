@@ -80,8 +80,8 @@ telemetry:
         zipkin: false
 
       common:
-        # Sample 10% of traces (adjust based on traffic volume)
-        sampler: 0.1
+        # Sample 100% of traces for demo purposes (adjust to 0.1 or lower for production)
+        sampler: 1.0
         # Parent-based sampling respects upstream sampling decisions
         parent_based_sampler: true
 

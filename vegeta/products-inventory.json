@@ -1,0 +1,3 @@
+{
+    "query": "query ProductsInventory { topProducts { name price inStock shippingEstimate } }"
+}

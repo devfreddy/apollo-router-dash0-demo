@@ -1,132 +1,126 @@
 # Session Notes - 2025-10-12
 
-## Fixed Trace Context Propagation in Apollo Router
+## Docker Health Checks and Dash0 Service Map Configuration
 
 ### What Was Accomplished
-- ✅ Identified service map issue in Dash0 (subgraphs disconnected from Router)
-- ✅ Diagnosed missing W3C Trace Context propagation configuration
-- ✅ Added propagation settings to Router configuration
-- ✅ Restarted Router and verified fix with test queries
-- ✅ Generated trace data to populate service map
 
-### The Problem
-The Dash0 service map showed:
-- Named subgraph services (products, reviews, accounts, inventory) appearing disconnected
-- Another set of unnamed services appearing separately
-- No clear linkage between Apollo Router and its subgraphs
-
-**Root Cause:** Apollo Router was not propagating trace context headers (`traceparent`, `tracestate`) to subgraph requests, causing subgraph traces to be disconnected from router traces.
+- ✅ Fixed Docker health checks for all services
+- ✅ Identified and resolved Apollo Router trace sampling issue
+- ✅ Configured router for 100% trace sampling to improve Dash0 service map visibility
+- ✅ Created comprehensive Vegeta load test queries hitting all subgraphs
+- ✅ Verified service map shows complete federated architecture
 
 ### Configuration Changes
 
-**File:** `router/router.yaml`
+#### Docker Compose Health Checks
+- **Subgraphs**: Updated health checks to use `wget` with proper GraphQL query and Apollo CSRF headers
+  - Changed from: `/.well-known/apollo/server-health` (returns 400 due to CSRF protection)
+  - Changed to: `/graphql?query={__typename}` with `--header=apollo-require-preflight: true`
+  - File: `docker-compose.yaml` lines 59, 85, 111, 137
 
-Added trace context propagation configuration at lines 70-80:
+- **Router**: Added bash-based health check using `/dev/tcp` for HTTP request
+  - Apollo Router image doesn't include curl/wget
+  - Used bash built-in `/dev/tcp/localhost/8088` to check health endpoint
+  - File: `docker-compose.yaml` lines 32-37
 
-```yaml
-telemetry:
-  exporters:
-    tracing:
-      # Propagate trace context to subgraphs using W3C Trace Context format
-      propagation:
-        # W3C Trace Context (traceparent, tracestate headers)
-        trace_context: true
-        # Other formats disabled for clarity
-        jaeger: false
-        baggage: false
-        datadog: false
-        zipkin: false
-```
+#### Apollo Router Trace Sampling
+- **Increased sampling from 10% to 100%** for demo purposes
+  - File: `router/router.yaml` line 84
+  - Changed: `sampler: 0.1` → `sampler: 1.0`
+  - Reason: Service maps are built from traces, not metrics. Low sampling meant few router traces appeared in Dash0
+
+#### Vegeta Load Test Queries
+- Created new query files to ensure all subgraphs receive traffic:
+  - `vegeta/accounts-me.json` - Queries accounts via `me` query
+  - `vegeta/accounts-users.json` - Queries accounts via `users` query
+  - `vegeta/products-inventory.json` - Queries products + inventory subgraphs
+  - `vegeta/federated-all.json` - Complex federated query hitting all 4 subgraphs
+- Updated `vegeta/targets.http` to include new queries
 
 ### Key Findings
 
-1. **W3C Trace Context is the Standard:**
-   - OpenTelemetry JS SDK in subgraphs uses W3C Trace Context by default
-   - Apollo Router v2 supports multiple propagation formats
-   - Must explicitly enable propagation in Router config
+#### Docker Compose vs Kubernetes Health Checks
+- **Docker Compose limitation**: Only supports `exec`-style health checks (commands run inside container)
+- **Kubernetes advantage**: Supports multiple probe types including `httpGet` (external HTTP requests)
+- This forces Docker users to either include HTTP tools in images or use workarounds
+- Apollo Router's minimal image (based on Debian) doesn't include curl/wget by design (security/size)
 
-2. **Propagation Chain:**
-   ```
-   Client Request
-     → Router (creates trace)
-     → traceparent header propagated to subgraphs
-     → Subgraphs (join existing trace as child spans)
-     → All linked in Dash0 service map
-   ```
+#### Trace Sampling and Service Maps
+- **Service maps require traces**: Metrics alone don't show service relationships
+- **Sampling matters**: 10% sampling = only ~3 traces out of 35 requests shown in Dash0
+- **Subgraphs vs Router**: Subgraphs use 100% sampling by default (Node.js SDK), router was at 10%
+- **Trace propagation**: Router properly configured with W3C Trace Context (`trace_context: true`)
+- **No explicit propagator needed**: Node.js OpenTelemetry SDK handles W3C by default
 
-3. **Configuration Location Matters:**
-   - Propagation config goes under `telemetry.exporters.tracing`
-   - Must be before `common` and `otlp` sections
-   - Router requires restart to apply changes
-
-### Technical Details
-
-**Before Fix:**
-- Router creates trace with span ID: `abc123`
-- Router calls Products subgraph WITHOUT `traceparent` header
-- Products subgraph creates new trace with span ID: `xyz789`
-- Dash0 sees two separate traces, no relationship
-
-**After Fix:**
-- Router creates trace with span ID: `abc123`
-- Router calls Products subgraph WITH `traceparent: 00-abc123-...` header
-- Products subgraph reads header and creates child span of `abc123`
-- Dash0 sees single distributed trace linking Router → Products
-
-### Testing Performed
-
-1. **Configuration Update:**
-   - Added propagation settings to `router.yaml`
-   - Validated YAML syntax
-
-2. **Service Restart:**
-   ```bash
-   docker compose restart router
-   ```
-
-3. **Test Queries:**
-   - Executed federated query: `topProducts { id name price reviews { rating body } }`
-   - Generated 10 additional queries to populate trace data
-   - Waited 1-2 minutes for traces to flush to Dash0
+#### Service Naming in Dash0
+- Some duplicate services appear in catalog (e.g., "accounts" vs "accounts-subgraph")
+- These duplicates show 0 requests and may be from old data or router internal spans
+- Primary services correctly named with `-subgraph` suffix
 
 ### Status
-✅ **Fixed** - Trace context propagation enabled and tested
-⏳ **Pending** - Dash0 service map updates (1-2 minutes for data ingestion)
+
+✅ All services healthy and running
+✅ Router sending 100% of traces to Dash0
+✅ Service map showing complete architecture:
+  - apollo-router-demo → accounts-subgraph
+  - apollo-router-demo → products-subgraph
+  - apollo-router-demo → reviews-subgraph
+  - apollo-router-demo → inventory-subgraph
+✅ Vegeta queries configured to hit all subgraphs
+
+### Architecture Insights
+
+The federated GraphQL setup demonstrates trace context propagation:
+1. Client → Apollo Router (100% sampled)
+2. Router → Subgraphs (W3C Trace Context headers: `traceparent`, `tracestate`)
+3. Subgraphs → Dash0 (linked traces showing parent-child relationships)
+
+This creates the service dependency graph visible in Dash0's service map.
 
 ### Next Steps
 
-1. **Verify Service Map in Dash0:**
-   - Check that `apollo-router-demo` now shows connections to all subgraphs
-   - Verify named subgraphs (products-subgraph, reviews-subgraph, etc.) are properly linked
-   - Confirm no duplicate or unnamed services appear
+1. **Start Vegeta for continuous load testing**:
+   ```bash
+   docker compose --profile load-testing up -d vegeta
+   ```
 
-2. **Validate Trace Continuity:**
-   - Execute a complex federated query
-   - View trace in Dash0
-   - Confirm trace shows: Client → Router → Subgraph(s) in single timeline
-   - Check span attributes include service names
+2. **Monitor service map in Dash0**:
+   - Verify all 4 subgraph connections are visible
+   - Check for any errors or latency issues
+   - Monitor RED metrics (Rate, Errors, Duration)
 
-3. **Monitor for Issues:**
-   - Watch for any trace sampling discrepancies
-   - Verify all four subgraphs appear in service map
-   - Check error traces still propagate correctly
+3. **Investigate duplicate services** (optional):
+   - Query Dash0 to understand where "accounts", "reviews", "products" services (0 requests) are coming from
+   - May be old data or internal router spans
 
-4. **Documentation Updates:**
-   - Update SETUP.md with propagation requirements
-   - Add troubleshooting section for service map issues
-   - Document W3C Trace Context as the standard
+4. **Add custom instrumentation** (future enhancement):
+   - Add custom spans for specific resolvers
+   - Add business metrics (e.g., product views, review submissions)
+   - Create custom dashboards in Dash0
 
-5. **Performance Testing:**
-   - Run load test with Vegeta
-   - Verify propagation doesn't impact latency
-   - Check trace sampling ratio (10%) is maintained
+5. **Performance testing**:
+   - Increase Vegeta rate to simulate higher load
+   - Monitor query planning cache performance
+   - Test traffic shaping and rate limiting configurations
+
+6. **Documentation**:
+   - Add architecture diagram showing trace flow
+   - Document health check patterns for future reference
+   - Create troubleshooting guide for common issues
 
 ### Files Modified
 
-- `router/router.yaml` - Added trace context propagation configuration
+- `docker-compose.yaml` - Updated health checks for all services
+- `router/router.yaml` - Increased trace sampling to 100%
+- `vegeta/accounts-me.json` - New query file
+- `vegeta/accounts-users.json` - New query file
+- `vegeta/products-inventory.json` - New query file
+- `vegeta/federated-all.json` - New query file
+- `vegeta/targets.http` - Added new queries to load test rotation
 
-### References
+### Reference Links
 
-- [Apollo Router Telemetry Documentation](https://www.apollographql.com/docs/router/configuration/telemetry/exporters/tracing/overview)
-- [W3C Trace Context Specification](https://www.w3.org/TR/trace-context/)
-- [OpenTelemetry Context Propagation](https://opentelemetry.io/docs/concepts/context-propagation/)
+- [Apollo Router Health Checks](https://www.apollographql.com/docs/graphos/routing/self-hosted/health-checks)
+- [Apollo Router Telemetry Configuration](https://www.apollographql.com/docs/router/configuration/telemetry/exporters/metrics/overview)
+- [OpenTelemetry W3C Trace Context](https://www.w3.org/TR/trace-context/)
+- [Docker Compose Health Check Reference](https://docs.docker.com/compose/compose-file/05-services/#healthcheck)

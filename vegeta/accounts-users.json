@@ -1,0 +1,3 @@
+{
+    "query": "query AccountsUsers { users { id name username email } }"
+}

@@ -21,6 +21,26 @@ Content-type: application/json
 POST http://router:4000/
 Accept: application/json
 Content-type: application/json
+@/etc/vegeta/accounts-me.json
+
+POST http://router:4000/
+Accept: application/json
+Content-type: application/json
+@/etc/vegeta/accounts-users.json
+
+POST http://router:4000/
+Accept: application/json
+Content-type: application/json
+@/etc/vegeta/products-inventory.json
+
+POST http://router:4000/
+Accept: application/json
+Content-type: application/json
+@/etc/vegeta/federated-all.json
+
+POST http://router:4000/
+Accept: application/json
+Content-type: application/json
 @/etc/vegeta/reviews1.json
 
 POST http://router:4000/
