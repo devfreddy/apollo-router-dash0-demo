@@ -1,0 +1,86 @@
+# Project metadata and preferences
+project:
+  name: "Apollo Router Dash0 Demo"
+  type: "observability-demo"
+  version: "2.0.0"
+  description: "Apollo GraphQL Router v2 integration with Dash0 observability platform. Federated GraphQL architecture with load testing to generate realistic telemetry data."
+
+preferences:
+  # Working style
+  autonomy_level: "high"
+  verbosity:
+    status_updates: "normal"
+    code_comments: "normal"
+    documentation: "thorough"
+
+  # Development preferences
+  testing_strategy: "manual"
+  commit_style: "descriptive"
+  documentation_style: "comprehensive"
+
+tech_stack:
+  primary_language: "yaml"  # Router configuration
+  subgraph_language: "javascript"
+  framework: "apollo-router-v2"
+  subgraph_framework: "apollo-server"
+  testing: "vegeta"  # Load testing
+  build: "docker-compose"
+
+  # Additional technologies
+  router: "apollo-router-v2"
+  observability: "dash0"
+  telemetry: "opentelemetry"
+  load_testing: "vegeta"
+  containerization: "docker"
+  orchestration: "docker-compose"
+
+features:
+  # Feature flags
+  use_startup_context: true
+  auto_wrap_up: false
+  track_metrics: true
+
+conventions:
+  # Project-specific conventions
+  file_naming: "kebab"
+  config_format: "yaml"
+  import_style: "relative"
+
+  # Code style
+  subgraph_extension: "js"
+  config_extension: "yaml"
+
+  # Documentation
+  feature_docs_required: false  # Demo project
+  session_tracking: true
+
+session_defaults:
+  # What to load at session start
+  load_recent_sessions: 3
+  load_active_features: true
+  load_architecture: false
+  auto_run_tests: false
+
+project_specifics:
+  # Project structure
+  router_config: "router/router.yaml"
+  supergraph_config: "router/supergraph-config.yaml"
+  subgraphs_directory: "subgraphs/"
+  load_testing: "vegeta/"
+  dashboards: "dashboards/"
+
+  # Key services
+  router_port: 4000
+  products_port: 4003
+  reviews_port: 4002
+  accounts_port: 4001
+  inventory_port: 4004
+
+  # Observability
+  platform: "dash0"
+  telemetry_protocol: "otlp-http"
+  mcp_server: "dash0"
+
+  # Deployment
+  deployment_method: "docker-compose"
+  environment: "demo"
