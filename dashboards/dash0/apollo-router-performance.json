@@ -409,7 +409,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (http.response.status_code) ({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_sum(sum by (http_status_code) (increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
                   }
                 }
               }
@@ -434,7 +434,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -459,7 +459,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\", graphql.errors=\"true\"})"
+                    "query": "histogram_sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -471,7 +471,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Request Body Size (p99 / Max)"
+            "name": "Request Body Size (p95)"
           },
           "plugin": {
             "kind": "TimeSeriesChart",
@@ -484,7 +484,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "max({otel_metric_name=\"http_server_request_body_size\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_quantile(0.95, sum by (dash0_resource_id, dash0_resource_type, dash0_resource_name) (rate({otel_metric_name = \"http.server.request.body.size\", otel_metric_type = \"histogram\"}[2m])))"
                   }
                 }
               }
@@ -509,7 +509,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "histogram_quantile(0.99, rate({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\"}[1m]))"
+                    "query": "histogram_quantile(0.99, rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -534,7 +534,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (http.response.status_code,subgraph.name) ({otel_metric_name=\"http_client_request_duration\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_sum(sum by (http_status_code, subgraph_name) (increase({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
                   }
                 }
               }
@@ -559,7 +559,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (subgraph.name) (rate({otel_metric_name=\"http_client_request_duration\", otel_metric_type=\"histogram\"}[1m]))"
+                    "query": "sum by (subgraph_name) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -584,7 +584,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (subgraph.name,http.response.status_code) ({otel_metric_name=\"http_client_request_duration\", otel_metric_type=\"histogram\", subgraph.name=~\".*\"})"
+                    "query": "histogram_sum(sum by (subgraph_name, http_status_code) (increase({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
                   }
                 }
               }
@@ -596,7 +596,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Response Body Size"
+            "name": "Response Body Size (p95)"
           },
           "plugin": {
             "kind": "TimeSeriesChart",
@@ -609,7 +609,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg by (subgraph.name) ({otel_metric_name=\"http_client_response_body_size\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_quantile(0.95, sum by (subgraph_name, le) (rate({otel_metric_name = \"http.client.response.body.size\", otel_metric_type = \"histogram\"}[5m])))"
                   }
                 }
               }
@@ -634,7 +634,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "histogram_quantile(0.95, sum by (subgraph.name, le) (rate({otel_metric_name=\"http_client_request_duration\", otel_metric_type=\"histogram\"}[1m])))"
+                    "query": "histogram_quantile(0.95, sum by (subgraph_name, le) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
                   }
                 }
               }
@@ -659,7 +659,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (subgraph.name) ({otel_metric_name=\"http_client_request_duration\", otel_metric_type=\"histogram\", graphql.errors=\"true\"})"
+                    "query": "histogram_sum(sum by (subgraph_name) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
                   }
                 }
               }
@@ -671,7 +671,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Duration and Wait Time"
+            "name": "Compute Jobs Execution Duration (p50)"
           },
           "plugin": {
             "kind": "TimeSeriesChart",
@@ -684,7 +684,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"apollo_router_compute_jobs_execution_duration\", otel_metric_type=\"histogram\", job.type=\"query_planning\"})"
+                    "query": "histogram_quantile(0.5, sum by (le) (rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\"}[5m])))"
                   }
                 }
               }
@@ -696,7 +696,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Evaluated Plans"
+            "name": "Query Plans Evaluated (p50)"
           },
           "plugin": {
             "kind": "TimeSeriesChart",
@@ -709,7 +709,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"apollo_router_query_planning_plan_evaluated_plans\", otel_metric_type=\"gauge\"})"
+                    "query": "histogram_quantile(0.5, sum by (le) (rate({otel_metric_name = \"apollo.router.query_planning.plan.evaluated_plans\", otel_metric_type = \"histogram\"}[5m])))"
                   }
                 }
               }
@@ -721,7 +721,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Misses vs. Record Count"
+            "name": "Cache Miss Time (p95)"
           },
           "plugin": {
             "kind": "TimeSeriesChart",
@@ -734,7 +734,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum({otel_metric_name=\"apollo_router_cache_miss_time\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_quantile(0.95, sum by (kind, storage, le) (rate({otel_metric_name = \"apollo.router.cache.miss.time\", otel_metric_type = \"histogram\"}[5m])))"
                   }
                 }
               }
@@ -746,7 +746,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Record Counts by Instance"
+            "name": "Cache Size by Instance"
           },
           "plugin": {
             "kind": "TimeSeriesChart",
@@ -759,7 +759,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg by (host,pod_name,container_id) ({otel_metric_name=\"apollo_router_cache_size\", otel_metric_type=\"histogram\"})"
+                    "query": "avg by (dash0_resource_id, dash0_resource_name) ({otel_metric_name = \"apollo.router.cache.size\", otel_metric_type = \"gauge\"})"
                   }
                 }
               }
@@ -771,7 +771,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Record Counts by Type"
+            "name": "Cache Size by Type"
           },
           "plugin": {
             "kind": "TimeSeriesChart",
@@ -784,7 +784,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (kind,version) ({otel_metric_name=\"apollo_router_cache_size\", otel_metric_type=\"histogram\"})"
+                    "query": "avg by (kind, storage) ({otel_metric_name = \"apollo.router.cache.size\", otel_metric_type = \"gauge\"})"
                   }
                 }
               }
@@ -796,7 +796,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Misses by Type"
+            "name": "Cache Miss Time by Type (p95)"
           },
           "plugin": {
             "kind": "TimeSeriesChart",
@@ -809,7 +809,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (kind,version) ({otel_metric_name=\"apollo_router_cache_miss_time\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_quantile(0.95, sum by (kind, storage, le) (rate({otel_metric_name = \"apollo.router.cache.miss.time\", otel_metric_type = \"histogram\"}[5m])))"
                   }
                 }
               }
@@ -821,7 +821,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Hit % by Instance"
+            "name": "Cache Hit Time (p95)"
           },
           "plugin": {
             "kind": "TimeSeriesChart",
@@ -834,7 +834,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (host,pod_name,container_id) ({otel_metric_name=\"apollo_router_cache_hit_time\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_quantile(0.95, sum by (kind, storage, le) (rate({otel_metric_name = \"apollo.router.cache.hit.time\", otel_metric_type = \"histogram\"}[5m])))"
                   }
                 }
               }
@@ -846,7 +846,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Query Planning Duration Percentiles and Wait Time"
+            "name": "Query Planning Duration (p50)"
           },
           "plugin": {
             "kind": "TimeSeriesChart",
@@ -859,7 +859,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "histogram_quantile(0.5, rate({otel_metric_name=\"apollo_router_compute_jobs_execution_duration\", otel_metric_type=\"histogram\", job.type=\"query_planning\"}[1m]))"
+                    "query": "histogram_quantile(0.5, sum by (le) (rate({otel_metric_name = \"apollo.router.query_planning.total.duration\", otel_metric_type = \"histogram\"}[5m])))"
                   }
                 }
               }
@@ -871,7 +871,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Query Parsing Duration Percentiles and Wait Time"
+            "name": "Compute Jobs Queue Wait (p50)"
           },
           "plugin": {
             "kind": "TimeSeriesChart",
@@ -884,7 +884,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "histogram_quantile(0.5, rate({otel_metric_name=\"apollo_router_compute_jobs_execution_duration\", otel_metric_type=\"histogram\", job.type=\"query_parsing\"}[1m]))"
+                    "query": "histogram_quantile(0.5, sum by (le) (rate({otel_metric_name = \"apollo.router.compute_jobs.queue.wait.duration\", otel_metric_type = \"histogram\"}[5m])))"
                   }
                 }
               }
@@ -909,7 +909,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum({otel_metric_name=\"apollo_router_compute_jobs_queued\", otel_metric_type=\"gauge\"})"
+                    "query": "sum({otel_metric_name = \"apollo.router.compute_jobs.queued\", otel_metric_type = \"gauge\"})"
                   }
                 }
               }
@@ -921,7 +921,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Job Counts by Outcome"
+            "name": "Compute Jobs by Outcome (Rate)"
           },
           "plugin": {
             "kind": "TimeSeriesChart",
@@ -934,7 +934,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (job.outcome) ({otel_metric_name=\"apollo_router_compute_jobs_duration\", otel_metric_type=\"histogram\"})"
+                    "query": "sum by (job_outcome) (rate({otel_metric_name = \"apollo.router.compute_jobs.duration\", otel_metric_type = \"histogram\"}[5m]))"
                   }
                 }
               }
@@ -959,7 +959,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"kubernetes_cpu_usage_total\", otel_metric_type=\"gauge\"})"
+                    "query": "avg({otel_metric_name = \"kubernetes.cpu.usage.total\", otel_metric_type = \"sum\"})"
                   }
                 }
               }
@@ -984,7 +984,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"system_cpu_stolen\", otel_metric_type=\"gauge\"})"
+                    "query": "avg({otel_metric_name = \"system.cpu.stolen\", otel_metric_type = \"gauge\"})"
                   }
                 }
               }
@@ -1009,7 +1009,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"docker_cpu_usage\", otel_metric_type=\"gauge\"})"
+                    "query": "avg({otel_metric_name = \"docker.cpu.usage\", otel_metric_type = \"gauge\"})"
                   }
                 }
               }
@@ -1034,7 +1034,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"container_cpu_usage_total\", otel_metric_type=\"gauge\"})"
+                    "query": "avg({otel_metric_name = \"container.cpu.usage.total\", otel_metric_type = \"sum\"})"
                   }
                 }
               }
@@ -1059,7 +1059,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"kubernetes_memory_usage\", otel_metric_type=\"gauge\"})"
+                    "query": "avg({otel_metric_name = \"kubernetes.memory.usage\", otel_metric_type = \"gauge\"})"
                   }
                 }
               }
@@ -1084,7 +1084,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"system_mem_used\", otel_metric_type=\"gauge\"})"
+                    "query": "avg({otel_metric_name = \"system.mem.used\", otel_metric_type = \"gauge\"})"
                   }
                 }
               }
@@ -1109,7 +1109,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"docker_mem_in_use\", otel_metric_type=\"gauge\"})"
+                    "query": "avg({otel_metric_name = \"docker.mem.in_use\", otel_metric_type = \"gauge\"})"
                   }
                 }
               }
@@ -1134,7 +1134,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"container_memory_usage_total\", otel_metric_type=\"gauge\"})"
+                    "query": "avg({otel_metric_name = \"container.memory.usage.total\", otel_metric_type = \"sum\"})"
                   }
                 }
               }
@@ -1159,7 +1159,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg by (coprocessor.stage) ({otel_metric_name=\"apollo_router_operations_coprocessor_duration\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_avg(sum by (coprocessor_stage) (rate({otel_metric_name = \"apollo.router.operations.coprocessor.duration\", otel_metric_type = \"histogram\"}[2m])))"
                   }
                 }
               }
@@ -1184,7 +1184,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (coprocessor.stage) ({otel_metric_name=\"apollo_router_operations_coprocessor\", otel_metric_type=\"sum\"})"
+                    "query": "sum by (coprocessor_stage) (rate({otel_metric_name = \"apollo.router.operations.coprocessor\", otel_metric_type = \"sum\"}[2m]))"
                   }
                 }
               }
@@ -1209,7 +1209,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (coprocessor.stage) ({otel_metric_name=\"apollo_router_operations_coprocessor\", otel_metric_type=\"sum\", coprocessor.succeeded=\"true\"})"
+                    "query": "sum by (coprocessor_stage) (rate({otel_metric_name = \"apollo.router.operations.coprocessor\", otel_metric_type = \"sum\"}[2m]))"
                   }
                 }
               }
@@ -1234,7 +1234,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"apollo_router_uplink_fetch_duration_seconds\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.uplink.fetch.duration.seconds\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -1259,7 +1259,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg by (schema.id,launch.id) ({otel_metric_name=\"apollo_router_open_connections\", otel_metric_type=\"gauge\"})"
+                    "query": "avg by (schema_id, launch_id) ({otel_metric_name = \"apollo.router.open_connections\", otel_metric_type = \"gauge\"})"
                   }
                 }
               }
@@ -1284,7 +1284,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_avg(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -1309,7 +1309,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "rate({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\"}[1m])"
+                    "query": "sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -1334,7 +1334,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "rate({otel_metric_name=\"http_server_request_duration\", otel_metric_type=\"histogram\"}[1m])"
+                    "query": "sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -1359,7 +1359,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"http_client_request_duration\", otel_metric_type=\"histogram\", subgraph.name=~\".*\"})"
+                    "query": "histogram_avg(rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -1384,7 +1384,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"http_client_request_body_size\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_avg(rate({otel_metric_name = \"http.client.request.body.size\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -1409,7 +1409,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"http_client_response_body_size\", otel_metric_type=\"histogram\"})"
+                    "query": "histogram_avg(rate({otel_metric_name = \"http.client.response.body.size\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }

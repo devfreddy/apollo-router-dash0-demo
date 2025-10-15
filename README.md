@@ -261,6 +261,12 @@ See [dashboards/README.md](dashboards/README.md) for detailed documentation.
 1. ✅ ~~Test/try out connecting to https://api.us-west-2.aws.dash0.com/mcp with Claude Code~~ - **Completed** (See [2025-10-11 notes](docs/sessions/2025-10-11/notes.md))
 2. ✅ ~~Test Dash0 MCP server functionality~~ - **Completed** (All MCP tools verified working)
 3. ✅ ~~Pull in Datadog template and recreate in Dash0~~ - **Completed** (See [dashboards/README.md](dashboards/README.md))
+4. ✅ ~~Fix broken dashboard panels and temporality configuration~~ - **Completed** (See [2025-10-15 wrap-up](docs/sessions/2025-10-15/wrap-up.md))
+
+### Next Steps
+- Test dashboard with diverse GraphQL queries to verify all panels
+- Add Dash0 alert rules for key metrics (error rate, latency spikes)
+- Document metric thresholds and troubleshooting runbook
 
 ## Reference
 

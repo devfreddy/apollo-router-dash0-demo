@@ -4,6 +4,14 @@
  * Converts Apollo Router Datadog dashboard to Dash0 Perses format
  *
  * Usage: node convert.js
+ *
+ * Key learnings for accurate dashboard conversion:
+ * 1. Metric types must be correct (histogram vs gauge vs sum) - check actual OTel metrics
+ * 2. Delta temporality must be configured in router.yaml for proper rate() calculations
+ * 3. Attribute names in Dash0 differ from Datadog (e.g., 'kind' not 'apollo_router_cache_kind')
+ * 4. Use histogram_quantile() for percentiles, not max() on raw histogram data
+ * 5. Gauges don't need rate() - query them directly
+ * 6. Histograms need rate() for time-series queries
  */
 
 const fs = require('fs');
@@ -15,97 +23,137 @@ const datadogDashboard = JSON.parse(
 );
 
 /**
- * Convert Datadog metric query to PromQL
- * This is a simplified conversion - may need adjustments for complex queries
+ * Map Datadog label names to Dash0 attribute names
+ * Dash0 uses dots in attribute keys, but underscores in PromQL label selectors
+ */
+function mapAttributeName(ddAttributeName) {
+  const mapping = {
+    'http.response.status_code': 'http_status_code',
+    'http.request.method': 'http_method',
+    'http.route': 'http_route',
+    'http.method': 'http_method',
+    'subgraph.name': 'subgraph_name',
+    'graphql.operation.type': 'graphql_operation_type',
+    'graphql.operation.name': 'graphql_operation_name',
+    // Cache attributes - use actual Dash0 attribute names
+    'cache.type': 'storage',
+    'kind': 'kind',
+    // Resource attributes for better grouping in Dash0
+    'host': 'dash0_resource_name',
+    'pod_name': 'dash0_resource_name',
+    'container_id': 'dash0_resource_id',
+    // Version attributes
+    'apollo_router_cache_kind': 'kind',
+    'version': 'service_version',
+  };
+
+  return mapping[ddAttributeName] || ddAttributeName.replace(/\./g, '_');
+}
+
+/**
+ * Convert Datadog metric query to PromQL for Dash0
+ * This handles the specific patterns used in the Apollo Router Datadog template
  */
 function convertToPromQL(datadogQuery, widgetType) {
   if (!datadogQuery) return null;
 
-  // Extract metric name and tags
+  // Extract metric name and aggregation
   const metricMatch = datadogQuery.match(/^(count|avg|sum|max|min|p\d+):([^{]+)/);
   if (!metricMatch) return null;
 
   const [, aggregation, metricName] = metricMatch;
-
-  // Convert dots to underscores for PromQL
-  const promMetricName = metricName.trim().replace(/\./g, '_');
-
-  // Extract tags/filters
-  const tagsMatch = datadogQuery.match(/\{([^}]+)\}/);
-  let filters = '';
-  let groupBy = '';
-
-  if (tagsMatch) {
-    const tags = tagsMatch[1];
-
-    // Extract group by clause
-    const byMatch = datadogQuery.match(/by \{([^}]+)\}/);
-    if (byMatch) {
-      groupBy = byMatch[1];
-    }
-
-    // Convert filters - remove template variables and negative filters for now
-    const filterParts = tags.split(',')
-      .filter(tag => !tag.includes('$') && !tag.includes('!'))
-      .filter(tag => tag.includes(':'))
-      .map(tag => {
-        const [key, value] = tag.split(':');
-        if (value === 'true') {
-          return `${key.trim()}="true"`;
-        }
-        if (value.endsWith('*')) {
-          return `${key.trim()}=~"${value.replace('*', '.*')}"`;
-        }
-        return `${key.trim()}="${value.trim()}"`;
-      });
-
-    if (filterParts.length > 0) {
-      filters = filterParts.join(', ');
-    }
-  }
+  const cleanMetricName = metricName.trim();
 
   // Determine metric type based on metric name
-  const metricType = getMetricType(promMetricName);
+  const metricType = getMetricType(cleanMetricName);
 
-  // Build PromQL query based on aggregation
+  // Extract group by clause
+  const byMatch = datadogQuery.match(/by \{([^}]+)\}/);
+  const groupBy = byMatch ? byMatch[1].split(',').map(attr => mapAttributeName(attr.trim())).join(', ') : '';
+
+  // Build the base selector for Dash0
+  const baseSelector = `{otel_metric_name = "${cleanMetricName}", otel_metric_type = "${metricType}"}`;
+
+  // Build PromQL query based on aggregation and query type
   let promql = '';
 
   if (aggregation.startsWith('p')) {
     // Percentile query for histograms
     const percentile = parseInt(aggregation.substring(1)) / 100;
-    const baseSelector = filters
-      ? `{otel_metric_name="${promMetricName}", otel_metric_type="${metricType}", ${filters}}`
-      : `{otel_metric_name="${promMetricName}", otel_metric_type="${metricType}"}`;
 
     if (groupBy) {
-      promql = `histogram_quantile(${percentile}, sum by (${groupBy}, le) (rate(${baseSelector}[1m])))`;
+      promql = `histogram_quantile(${percentile}, sum by (${groupBy}, le) (rate(${baseSelector}[2m])))`;
     } else {
-      promql = `histogram_quantile(${percentile}, rate(${baseSelector}[1m]))`;
+      promql = `histogram_quantile(${percentile}, rate(${baseSelector}[2m]))`;
     }
   } else if (aggregation === 'count') {
-    // Count aggregation
-    const baseSelector = filters
-      ? `{otel_metric_name="${promMetricName}", otel_metric_type="${metricType}", ${filters}}`
-      : `{otel_metric_name="${promMetricName}", otel_metric_type="${metricType}"}`;
-
+    // Count aggregation for histograms
     if (datadogQuery.includes('.as_rate()')) {
-      promql = groupBy
-        ? `sum by (${groupBy}) (rate(${baseSelector}[1m]))`
-        : `rate(${baseSelector}[1m])`;
+      // Rate of requests
+      if (groupBy) {
+        promql = `sum by (${groupBy}) (rate(${baseSelector}[2m]))`;
+      } else {
+        promql = `sum(rate(${baseSelector}[2m]))`;
+      }
+    } else if (datadogQuery.includes('.as_count()')) {
+      // Total count
+      if (groupBy) {
+        promql = `histogram_sum(sum by (${groupBy}) (increase(${baseSelector}[2m])))`;
+      } else {
+        promql = `histogram_sum(increase(${baseSelector}[2m]))`;
+      }
     } else {
-      promql = groupBy
-        ? `sum by (${groupBy}) (${baseSelector})`
-        : `sum(${baseSelector})`;
+      // Default count
+      if (groupBy) {
+        promql = `sum by (${groupBy}) (rate(${baseSelector}[2m]))`;
+      } else {
+        promql = `sum(rate(${baseSelector}[2m]))`;
+      }
+    }
+  } else if (aggregation === 'sum') {
+    // Sum aggregation
+    if (metricType === 'histogram') {
+      if (groupBy) {
+        promql = `histogram_sum(sum by (${groupBy}) (rate(${baseSelector}[2m])))`;
+      } else {
+        promql = `histogram_sum(rate(${baseSelector}[2m]))`;
+      }
+    } else if (metricType === 'sum') {
+      if (groupBy) {
+        promql = `sum by (${groupBy}) (rate(${baseSelector}[2m]))`;
+      } else {
+        promql = `sum(rate(${baseSelector}[2m]))`;
+      }
+    } else {
+      // Gauge
+      if (groupBy) {
+        promql = `sum by (${groupBy}) (${baseSelector})`;
+      } else {
+        promql = `sum(${baseSelector})`;
+      }
+    }
+  } else if (aggregation === 'avg') {
+    // Average aggregation
+    if (metricType === 'histogram') {
+      if (groupBy) {
+        promql = `histogram_avg(sum by (${groupBy}) (rate(${baseSelector}[2m])))`;
+      } else {
+        promql = `histogram_avg(rate(${baseSelector}[2m]))`;
+      }
+    } else {
+      if (groupBy) {
+        promql = `avg by (${groupBy}) (${baseSelector})`;
+      } else {
+        promql = `avg(${baseSelector})`;
+      }
     }
   } else {
-    // Other aggregations (avg, sum, max, min)
-    const baseSelector = filters
-      ? `{otel_metric_name="${promMetricName}", otel_metric_type="${metricType}", ${filters}}`
-      : `{otel_metric_name="${promMetricName}", otel_metric_type="${metricType}"}`;
-
-    promql = groupBy
-      ? `${aggregation} by (${groupBy}) (${baseSelector})`
-      : `${aggregation}(${baseSelector})`;
+    // Other aggregations (max, min)
+    if (groupBy) {
+      promql = `${aggregation} by (${groupBy}) (${baseSelector})`;
+    } else {
+      promql = `${aggregation}(${baseSelector})`;
+    }
   }
 
   return promql;
@@ -113,14 +161,57 @@ function convertToPromQL(datadogQuery, widgetType) {
 
 /**
  * Determine OTEL metric type based on metric name
+ *
+ * IMPORTANT: This function determines the actual OTel metric type for the router.
+ * Getting this wrong will cause dashboard queries to fail.
+ *
+ * Apollo Router metric type reference:
+ * - Histograms: duration, time, body.size, request.body.size, response.body.size, evaluated_plans, evaluated_paths
+ * - Gauges: cache.size, queued, active, jemalloc.*, pipelines, session.count, open_connections, license, federation
+ * - Sums (Counters): operations, count.total, state.change.total, active_requests, active_jobs, graphql_error, telemetry.*
  */
 function getMetricType(metricName) {
-  if (metricName.includes('duration') || metricName.includes('time') || metricName.includes('size')) {
+  // Duration and time metrics are ALWAYS histograms
+  if (metricName.includes('duration') || metricName.includes('.time')) {
     return 'histogram';
   }
-  if (metricName.includes('count') || metricName.includes('operations')) {
+
+  // Size and body metrics are ALWAYS histograms
+  if (metricName.includes('body.size') || metricName.includes('request.body') || metricName.includes('response.body')) {
+    return 'histogram';
+  }
+
+  // Query planning metrics (evaluated_plans, evaluated_paths) are histograms
+  if (metricName.includes('evaluated_plans') || metricName.includes('evaluated_paths')) {
+    return 'histogram';
+  }
+
+  // EXCEPTION: cache.size is a GAUGE, not histogram (common mistake!)
+  if (metricName === 'apollo.router.cache.size') {
+    return 'gauge';
+  }
+
+  // Operation and count metrics are typically sums (counters)
+  if (metricName.includes('operations') || metricName.includes('.count.total') || metricName.includes('.total') ||
+      metricName.includes('active_requests') || metricName.includes('active_jobs') ||
+      metricName.includes('graphql_error') || metricName.includes('telemetry') ||
+      metricName.includes('state.change')) {
     return 'sum';
   }
+
+  // Queue, session, connection, and resource metrics are gauges
+  if (metricName.includes('queued') || metricName.includes('session') ||
+      metricName.includes('open_connections') || metricName.includes('pipelines') ||
+      metricName.includes('license') || metricName.includes('federation')) {
+    return 'gauge';
+  }
+
+  // Jemalloc memory allocator metrics are gauges
+  if (metricName.includes('jemalloc')) {
+    return 'gauge';
+  }
+
+  // Default to gauge
   return 'gauge';
 }
 
@@ -173,7 +264,8 @@ function convertWidget(widget, panelId) {
             plugin: {
               kind: 'PrometheusTimeSeriesQuery',
               spec: {
-                query: promql
+                query: promql,
+                seriesNameFormat: firstRequest?.style?.palette === 'semantic' ? '{{__name__}}' : undefined
               }
             }
           }
