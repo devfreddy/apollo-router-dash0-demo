@@ -14,7 +14,7 @@ services:
       - DASH0_METRICS_ENDPOINT=${DASH0_METRICS_ENDPOINT}
       - DASH0_TRACES_ENDPOINT=${DASH0_TRACES_ENDPOINT}
       - SERVICE_NAME=${SERVICE_NAME:-apollo-router-demo}
-      - SERVICE_VERSION=${SERVICE_VERSION:-2.0}
+      - SERVICE_VERSION=${SERVICE_VERSION:-2.7}
       - ENVIRONMENT=${ENVIRONMENT:-demo}
     volumes:
       - ./router/router.yaml:/dist/config/router.yaml
