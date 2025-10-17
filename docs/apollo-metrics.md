@@ -1,0 +1,486 @@
+# Instruments
+
+An *instrument* in the router collects data and reports measurements to a metric backend. Supported instruments include standard instruments from OpenTelemetry, standard instruments for the router's request lifecycle, and custom instruments. Supported instrument kinds are counters and histograms.
+
+You can configure instruments in `router.yaml` with `telemetry.instrumentation.instruments`.
+
+### OpenTelemetry standard instruments
+
+OpenTelemetry specifies multiple [standard metric instruments](https://opentelemetry.io/docs/specs/semconv/http/http-metrics/) that are available in the router:
+
+* In the [router service](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/instruments.md#router-request-lifecycle-services):
+
+  * `http.server.active_requests` - The number of active requests in flight.
+  * `http.server.request.body.size` - A histogram of request body sizes for requests handled by the router.
+  * `http.server.request.duration` - A histogram of request durations for requests handled by the router.
+
+* In the [subgraph service](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/instruments.md#router-request-lifecycle-services):
+
+  * `http.client.request.body.size` - A histogram of request body sizes for requests handled by subgraphs.
+  * `http.client.request.duration` - A histogram of request durations for requests handled by subgraphs.
+  * `http.client.response.body.size` - A histogram of response body sizes for requests handled by subgraphs.
+
+- For connector HTTP requests:
+
+  * `http.client.request.body.size` - A histogram of request body sizes for connectors HTTP requests.
+  * `http.client.request.duration` - A histogram of request durations for connectors HTTP requests.
+  * `http.client.response.body.size` - A histogram of response body sizes for connectors HTTP responses.
+
+The [`default_requirement_level` setting](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/instruments.md#default_requirement_level) configures whether or not these instruments are enabled by default. Out of the box, its default value of `required` enables them. You must explicitly configure an instrument for different behavior.
+
+These instruments are configurable in `router.yaml`:
+
+```yaml title=router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      router:
+        http.server.active_requests: true # (default false)
+        http.server.request.body.size: true # (default false)
+        http.server.request.duration: true # (default false)
+      subgraph:
+        http.client.request.body.size: true # (default false)
+        http.client.request.duration: true # (default false)
+        http.client.response.body.size: true # (default false)
+      connector:
+        http.client.request.body.size: true # (default false)
+        http.client.request.duration: true # (default false)
+        http.client.response.body.size: true # (default false)
+```
+
+They can be customized by attaching or removing attributes. See [attributes](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/instruments.md#attributes) to learn more about configuring attributes.
+
+```yaml title=router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      default_requirement_level: required
+      router:
+        http.server.active_requests: 
+          attributes:
+            http.request.method: true
+      subgraph:
+        http.client.request.duration:
+          attributes:
+            subgraph.name: true
+      connector:
+        http.client.request.duration:
+          attributes:
+            connector.source.name: true
+```
+
+### Apollo standard instruments
+
+To learn about Apollo-provided standard metric instruments for the router's request lifecycle, see [router instruments](https://www.apollographql.com/docs/router/configuration/telemetry/instrumentation/standard-instruments).
+
+### Custom instruments
+
+You can define custom instruments on the router, supergraph, and subgraph services in the router pipeline.
+You can also define custom instruments for each JSON element in the response data the router returns to clients.
+
+The example configuration below defines four custom instruments:
+
+* `acme.request.duration` on the `router` service
+* `acme.graphql.requests` on the `supergraph` service
+* `acme.graphql.subgraph.errors` on the `subgraph` service
+* `acme.user.not.found` on a connector HTTP response
+* `acme.graphql.list.lengths` on each JSON element returned to the client (defined on `graphql`)
+
+```yaml title=router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      router:
+        http.server.active_requests: true
+        acme.request.duration:
+          value: duration
+          type: counter
+          unit: kb
+          description: "my description"
+          condition:
+            eq:
+              - 200
+              - response_status: code
+          attributes:
+            http.response.status_code: true
+            "my_attribute":
+              response_header: "x-my-header"
+  
+      supergraph:
+        acme.graphql.requests:
+          value: unit
+          type: counter
+          unit: count
+          description: "supergraph requests"
+          
+      subgraph:
+        acme.graphql.subgraph.errors:
+          value: unit
+          type: counter
+          unit: count
+          description: "my description"
+
+      connector:
+        acme.user.not.found:
+          value: unit
+          type: counter
+          unit: count
+          description: "Count of 404 responses from the user API"
+          condition:
+            all:
+              - eq:
+                  - 404
+                  - connector_http_response_status: code
+              - eq:
+                  - "user_api"
+                  - connector_source: name
+
+      graphql:
+        acme.graphql.list.lengths:
+          value:
+            list_length: value
+          type: histogram
+          unit: count
+          description: "my description"
+```
+
+Keep in mind that the amount of telemetry you add can impact your router's performance.
+
+* Custom metrics, events, and attributes consume more processing resources than standard metrics. Adding too many (standard or custom) can slow your router down.
+* Configurations such as `events.*.request|error|response` that produce output for all router lifecycle services should only be used for development or debugging, not for production.
+
+For properly logged telemetry, you should use a log verbosity of `info`. Set the values of `RUST_LOG` or `APOLLO_ROUTER_LOG` environment variables and the `--log` CLI option to `info`. Using less verbose logging, such as `error`, can cause some attributes to be dropped.
+
+#### Instrument naming conventions
+
+When defining a custom instrument, make sure to reference [OpenTelemetry (OTel) semantic conventions](https://opentelemetry.io/docs/specs/semconv/general/metrics/). The OTel semantic conventions help guide you to:
+
+* Choose a good name for your instrument.
+* See which standard attributes can be attached to your instrument.
+
+Some particular guidelines to note:
+
+* **Don't include the unit name in the metric name**. For example, `size_kb` should be `size` and the unit should be `kb`.
+* **Don't include `_total` as a suffix**. For example, use `http.server.active_requests`, not `http.server.active_requests_total`.
+* **Use dot notation to separate namespaces in the metric name**. For example, use `http.server.active_requests`, not `http_server_active_requests`.
+
+### Instrument configuration
+
+#### `default_requirement_level`
+
+The `default_requirement_level` option sets the default attributes to attach to default standard instruments, as defined by [OpenTelemetry semantic conventions](https://opentelemetry.io/docs/specs/otel/common/attribute-requirement-level/).
+
+Valid values:
+
+* `required` (default) - required attributes will be attached to standard instruments by default.
+* `recommended` - recommended attributes will be attached to standard instruments by default.
+
+```yaml title=router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      # Set the default requirement level
+      default_requirement_level: required #highlight-line
+```
+
+Attributes can be configured individually, so that `required` attributes can be overridden or disabled. For example, `http.response.status_code` is set individually to override the standard value:
+
+```yaml title=router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      # Set the default requirement level
+      default_requirement_level: required
+      router:
+        # Standard metrics
+        http.server.request.body.size:
+          attributes:
+            # Standard attributes
+            http.response.status_code: false
+            # Custom attribute
+            "acme.my_attribute":
+              response_header: "x-my-header"
+        # Standard metrics
+        http.server.active_requests:
+          attributes:
+            # Standard attributes, different than other ones provides in standard metrics, custom attributes are not available on this standard metric
+            http.request.method: false
+            server.address: true
+            server.port: true
+            url.scheme: true
+```
+
+The attributes that the OpenTelemetry spec defines as `opt-in` must be configured individually.
+
+#### Router request lifecycle services
+
+A router's request lifecycle has three major services that support instrumentation:
+
+* **Router service** - Operates within the context of an HTTP server, handling the opaque bytes of an incoming HTTP request. Does query analysis to parse the GraphQL operation and validate it against schema.
+* **Supergraph service** - Handles a GraphQL request after it's been parsed and validated, and before it's sent to subgraphs. Runs the query planner to produce a query plan to execute.
+* **Subgraph service** - Handles GraphQL subgraph requests that have been executed as part of a query plan. Creates HTTP client requests to subgraphs.
+
+The router's **Execution service** that executes query plans doesn't support instrumentation.
+
+Additionally, you can define instruments on `graphql` for each JSON element returned to the client.
+
+To define a custom instrument, add a new key to `router.yaml` as `telemetry.instruments.<service>.<custom-instrument>`. For example, add a custom instrument `acme.request.duration`:
+
+```yaml title=router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      router: # highlight-line
+        acme.request.duration: # The name of your custom instrument/metric
+          value: duration
+          type: counter
+          unit: s
+          description: "my description"
+```
+
+#### `value`
+
+The [service](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/instruments.md#router-request-lifecycle-services) you define an instrument on determines its possible values.
+
+Value
+Definition
+Available services
+
+##### `duration`
+
+The duration of the pipeline service.
+
+`router`, `supergraph`, `subgraph`
+
+##### `unit`
+
+The number of times the pipeline service has been executed.
+
+`router`, `supergraph`, `subgraph`, `graphql`
+
+##### `custom`
+
+A custom value extracted from the pipeline service. See selectors for more information.
+
+`router`, `supergraph`, `subgraph`, `graphql`
+
+##### `event_duration`
+
+The duration of an event in the pipeline service.
+
+`supergraph`
+
+##### `event_unit`
+
+The number of times an event in the pipeline service has been executed.
+
+`supergraph`
+
+##### `event_custom`
+
+A custom value extracted from the event in the pipeline service. See selectors for more information.
+
+`supergraph`
+
+`event_*` are mandantory when you want to use a [selector](https://www.apollographql.com/docs/router/configuration/telemetry/instrumentation/selectors) on the supergraph response body (`response_data` and `response_errors`).
+
+Values of custom metrics can be extracted from the pipeline using custom attributes. For example, to sum the contents of a request header, create a counter with value set as the request header:
+
+```yaml title=future.router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      router:
+        acme.metric:
+          # ...
+          type: counter
+          value:
+           request_header: "x-my-header"
+```
+
+The value must be of the expected [type](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/instruments.md#type) for the instrument. For example, a counter must have a numeric value.
+
+#### `type`
+
+Instruments come in two different types:
+
+* `counter` - A monotonic counter. For example, requests served, tasks completed, or errors occurred.
+* `histogram` - A histogram of values. For example, request durations or response body sizes.
+
+```yaml title=future.router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      router:
+        acme.metric: 
+          # ...
+          type: counter # counter, histogram
+```
+
+#### `unit`
+
+A free format unit that is displayed in your APM.
+
+A `unit` is recommended to use SI units and definitions from [The Unified Code for Units of Measure](https://ucum.org/ucum).
+
+```yaml title=future.router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      router:
+        acme.metric: 
+          # ...
+          unit: s # seconds
+```
+
+#### `description`
+
+A free format description of the instrument that will be displayed in your APM.
+
+```yaml title=future.router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      router:
+        acme.metric: 
+          # ...
+          description: "my description"
+```
+
+#### `condition`
+
+You may only want to mutate an instrument under certain conditions. For example, you may only want to increment a counter if the response status code is 200.
+
+To do this use a condition:
+
+```yaml title=future.router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      router:
+        acme.metric:
+          # ...
+          condition:
+            eq:
+              - 200
+              - response_status: code
+```
+
+#### `attributes`
+
+Instruments may have attributes attached to them from the router pipeline. These attributes are used to filter and group metrics in your APM.
+
+Attributes may be drawn from [standard attributes](https://www.apollographql.com/docs/router/configuration/telemetry/instrumentation/standard-attributes) or [selectors](https://www.apollographql.com/docs/router/configuration/telemetry/instrumentation/selectors) except for the standard metric `http.server.active_requests`.
+
+The attributes available depend on the service of the pipeline.
+
+```yaml title=router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      router:
+        # Standard metrics
+        http.server.request.body.size:
+          attributes:
+            # Standard attributes
+            http.response.status_code: false
+            # Custom attribute
+            "acme.my_attribute":
+              response_header: "x-my-header"
+        # Standard metrics
+        http.server.active_requests:
+          attributes:
+            # Standard attributes, different than other ones provides in standard metrics, custom attributes are not available on this standard metric
+            http.request.method: false
+            server.address: true
+            server.port: true
+            url.scheme: true
+        # Custom metric 
+        acme.metric: 
+          value: duration
+          type: counter
+          unit: s
+          description: "my description"
+          attributes:
+            http.response.status_code: true
+            "my_attribute":
+              # ...
+              response_header: "x-my-header"
+      subgraph:
+        requests.timeout:
+          value: unit
+          type: counter
+          unit: request
+          description: "subgraph requests containing subgraph timeout"
+          attributes:
+            subgraph.name: true
+          condition:
+            eq:
+              - "request timed out"
+              - error: reason
+
+      graphql:
+        acme.graphql.list.lengths:
+          value:
+            list_length: value
+          type: histogram
+          unit: count
+          description: "my description"
+          attributes:
+            graphql.type.name: true
+```
+
+### Instrument configuration reference
+
+| Option                      | Values                                                                                                                                                                                                                                   | Default    | Description                                   |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | --------------------------------------------- |
+| `<attribute-name>`          |                                                                                                                                                                                                                                          |            | The name of the custom attribute.             |
+| `<instrument-name>`         |                                                                                                                                                                                                                                          |            | The name of the custom instrument.            |
+| `attributes`                | [standard attributes](https://www.apollographql.com/docs/router/configuration/telemetry/instrumentation/standard-attributes) or [selectors](https://www.apollographql.com/docs/router/configuration/telemetry/instrumentation/selectors) |            | The attributes of the custom instrument.      |
+| `condition`                 | [conditions](https://www.apollographql.com/docs/router/configuration/telemetry/instrumentation/conditions)                                                                                                                               |            | The condition for mutating the instrument.    |
+| `default_requirement_level` | `required` \| `recommended`                                                                                                                                                                                                              | `required` | The default attribute requirement level.      |
+| `type`                      | `counter` \| `histogram`                                                                                                                                                                                                                 |            | The name of the custom instrument.            |
+| `unit`                      |                                                                                                                                                                                                                                          |            | A unit name, for example `By` or `{request}`. |
+| `description`               |                                                                                                                                                                                                                                          |            | The description of the custom instrument.     |
+| `value`                     | `unit` \| `duration` \| `<custom>` \| `event_unit` \| `event_duration` \| `event_custom`                                                                                                                                                 |            | The value of the instrument.                  |
+
+### Production instrumentation example
+
+At minimum, observability of a router running in production requires knowing about errors that arise from operations and subgraphs.
+
+The example configuration below adds instruments with both standard OpenTelemetry attributes and custom attributes to extract information about erring operations:
+
+```yaml title=router.yaml
+telemetry:
+  instrumentation:
+    instruments:
+      router:
+        http.server.request.duration:
+          # Adding subgraph name, response status code from the router and the operation name
+          attributes:
+            http.response.status_code: true
+            graphql.operation.name:
+              operation_name: string
+            # This attribute will be set to true if the response contains graphql errors
+            graphql.errors:
+              on_graphql_error: true
+        http.server.response.body.size:
+          attributes:
+            graphql.operation.name:
+              operation_name: string
+      subgraph:
+        # Adding subgraph name, response status code from the subgraph and original operation name from the supergraph
+        http.client.request.duration:
+          attributes:
+            subgraph.name: true
+            http.response.status_code:
+              subgraph_response_status: code
+            graphql.operation.name:
+              supergraph_operation_name: string
+            # This attribute will be set to true if the response contains graphql errors
+            graphql.errors:
+              subgraph_on_graphql_error: true
+        http.client.request.body.size:
+          attributes:
+            subgraph.name: true
+```
