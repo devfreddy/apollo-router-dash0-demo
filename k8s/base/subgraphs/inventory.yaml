@@ -1,0 +1,101 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory
+  labels:
+    app: inventory
+    component: subgraph
+    demo: apollo-dash0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory
+  template:
+    metadata:
+      labels:
+        app: inventory
+        component: subgraph
+        demo: apollo-dash0
+    spec:
+      containers:
+      - name: inventory
+        image: apollo-dash0-demo-inventory:latest
+        imagePullPolicy: Never  # Use local image imported to k3d
+        ports:
+        - containerPort: 4004
+          name: graphql
+        env:
+        - name: PORT
+          value: "4004"
+        - name: DASH0_AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: dash0-auth
+              key: token
+        - name: DASH0_METRICS_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: DASH0_METRICS_ENDPOINT
+        - name: DASH0_TRACES_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: DASH0_TRACES_ENDPOINT
+        - name: SERVICE_VERSION
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: SERVICE_VERSION
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: ENVIRONMENT
+        livenessProbe:
+          httpGet:
+            path: /graphql?query={__typename}
+            port: 4004
+            httpHeaders:
+            - name: apollo-require-preflight
+              value: "true"
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /graphql?query={__typename}
+            port: 4004
+            httpHeaders:
+            - name: apollo-require-preflight
+              value: "true"
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-service
+  labels:
+    app: inventory
+    component: subgraph
+spec:
+  selector:
+    app: inventory
+  ports:
+  - port: 4004
+    targetPort: 4004
+    name: graphql
+  type: ClusterIP

@@ -87,9 +87,21 @@ This project creates a production-like environment to evaluate how Apollo Router
 ├── vegeta/
 │   ├── targets.http          # Load test target definitions
 │   └── *.json                # GraphQL query payloads for different scenarios
-├── docker-compose.yaml       # Full stack orchestration
+├── k8s/                      # Kubernetes deployment
+│   ├── README.md             # Detailed Kubernetes documentation
+│   ├── base/
+│   │   └── subgraphs/        # Subgraph Kubernetes manifests
+│   ├── helm-values/
+│   │   └── router-values.yaml # Apollo Router Helm chart values
+│   └── scripts/
+│       ├── k3d-up.sh         # Deploy to k3d
+│       └── k3d-down.sh       # Tear down k3d cluster
+├── scripts/
+│   └── switch-env.sh         # Switch between Docker Compose and k3d
+├── dashboards/               # Dash0 dashboard templates
+├── docker-compose.yaml       # Docker Compose orchestration
 ├── compose-supergraph.sh     # Helper script for schema composition
-├── quickstart.sh             # Automated setup script
+├── quickstart.sh             # Automated Docker Compose setup
 ├── README.md                 # This file
 └── SETUP.md                  # Detailed setup instructions
 ```
@@ -119,11 +131,19 @@ This project creates a production-like environment to evaluate how Apollo Router
 ## Getting Started
 
 ### Prerequisites
-- Docker and Docker Compose
+- Docker (or Colima on macOS)
 - Dash0 account with API token
+- **For Docker Compose**: Docker Compose
+- **For Kubernetes**: kubectl and Helm 3 (k3d will be auto-installed)
 - (Optional) Node.js 18+ for local subgraph development
 
 ### Quick Start
+
+This demo supports two deployment methods:
+1. **Docker Compose** - Simple, fast, great for local development
+2. **k3d (Kubernetes)** - Production-like environment with Helm charts
+
+#### Option 1: Docker Compose (Recommended for Quick Start)
 
 1. **Copy the environment file and configure your credentials:**
    ```bash
@@ -151,6 +171,55 @@ This project creates a production-like environment to evaluate how Apollo Router
    ```
 
 4. View metrics and traces in your Dash0 dashboard
+
+#### Option 2: k3d (Kubernetes)
+
+1. **Ensure .env is configured** (same as above)
+
+2. **Deploy to k3d:**
+   ```bash
+   ./k8s/scripts/k3d-up.sh
+   ```
+
+   This script will:
+   - Install k3d and kubectl if needed
+   - Create a local Kubernetes cluster
+   - Build and import subgraph images
+   - Deploy all services using Kubernetes manifests
+   - Deploy Apollo Router using the official Helm chart
+   - Expose the router on `localhost:4000`
+
+3. **Access the API:**
+   ```
+   http://localhost:4000
+   ```
+
+4. **View logs:**
+   ```bash
+   kubectl logs -f deployment/apollo-router -n apollo-dash0-demo
+   ```
+
+5. **Tear down:**
+   ```bash
+   ./k8s/scripts/k3d-down.sh
+   ```
+
+See [k8s/README.md](k8s/README.md) for detailed Kubernetes deployment documentation.
+
+#### Switching Between Environments
+
+Use the convenient switcher script:
+
+```bash
+# Switch to Docker Compose
+./scripts/switch-env.sh compose
+
+# Switch to k3d
+./scripts/switch-env.sh k3d
+
+# Check status
+./scripts/switch-env.sh status
+```
 
 ### Load Testing
 
@@ -262,10 +331,14 @@ See [dashboards/README.md](dashboards/README.md) for detailed documentation.
 2. ✅ ~~Test Dash0 MCP server functionality~~ - **Completed** (All MCP tools verified working)
 3. ✅ ~~Pull in Datadog template and recreate in Dash0~~ - **Completed** (See [dashboards/README.md](dashboards/README.md))
 4. ✅ ~~Fix broken dashboard panels and temporality configuration~~ - **Completed** (See [2025-10-15 wrap-up](docs/sessions/2025-10-15/wrap-up.md))
+5. ✅ ~~Add Kubernetes (k3d) deployment option~~ - **Completed** (See [k8s/README.md](k8s/README.md))
+6. ✅ ~~Integrate Dash0 Kubernetes operator~~ - **Completed** (See [2025-10-17 wrap-up](docs/sessions/2025-10-17/wrap-up.md))
 
 ### Next Steps
 - Test dashboard with diverse GraphQL queries to verify all panels
+- Verify Node.js subgraph auto-instrumentation in k8s
 - Add Dash0 alert rules for key metrics (error rate, latency spikes)
+- Add load testing deployment to k8s
 - Document metric thresholds and troubleshooting runbook
 
 ## Reference

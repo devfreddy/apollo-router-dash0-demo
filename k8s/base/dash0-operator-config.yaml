@@ -1,0 +1,32 @@
+apiVersion: operator.dash0.com/v1alpha1
+kind: Dash0OperatorConfiguration
+metadata:
+  name: dash0-operator-configuration
+spec:
+  # Use HTTP export instead of gRPC to avoid authentication token blocking issues
+  # The operator's gRPC endpoint (port 4317) may block certain auth tokens,
+  # while the HTTP endpoint (port 443/4318) works reliably
+  export:
+    http:
+      # Base OTLP HTTP endpoint - the exporter will append /v1/traces, /v1/metrics, /v1/logs
+      endpoint: https://ingress.us-west-2.aws.dash0.com
+      headers:
+        - name: Authorization
+          value: ${DASH0_AUTH_TOKEN}  # Replace with your actual token when applying
+      encoding: proto  # Use protobuf encoding (can be "proto" or "json")
+
+  # Enable collection of Kubernetes infrastructure metrics
+  kubernetesInfrastructureMetricsCollection:
+    enabled: true
+
+  # Enable telemetry collection from instrumented workloads
+  telemetryCollection:
+    enabled: true
+
+  # Enable operator self-monitoring
+  selfMonitoring:
+    enabled: true
+
+  # Collect pod labels and annotations for enrichment
+  collectPodLabelsAndAnnotations:
+    enabled: true

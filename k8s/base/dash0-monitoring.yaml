@@ -1,0 +1,74 @@
+---
+# Dash0 Monitoring Resource
+# Enables automatic instrumentation for workloads in the apollo-dash0-demo namespace
+apiVersion: operator.dash0.com/v1beta1
+kind: Dash0Monitoring
+metadata:
+  name: dash0-monitoring-resource
+  namespace: apollo-dash0-demo
+spec:
+  # Instrumentation configuration for workloads
+  instrumentWorkloads:
+    # Mode: all = instrument existing + new + updated workloads
+    mode: all
+
+    # Label selector: instrument workloads that don't have dash0.com/enable=false
+    labelSelector: "dash0.com/enable!=false"
+
+  # Log collection settings
+  logCollection:
+    enabled: true
+
+  # Prometheus scraping settings
+  prometheusScraping:
+    enabled: true
+
+  # Synchronize Perses dashboards with Dash0
+  synchronizePersesDashboards: true
+
+  # Synchronize Prometheus rules with Dash0
+  synchronizePrometheusRules: true
+
+  # Export configuration (inherits from operator config by default)
+  # No need to specify - will use the cluster-wide Dash0OperatorConfiguration
+
+---
+# Optional: Service Monitor for Prometheus-style scraping
+# This allows the operator to scrape Prometheus metrics from annotated services
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dash0-scrape-config
+  namespace: apollo-dash0-demo
+  labels:
+    dash0.com/scrape: "true"
+data:
+  scrape-config.yaml: |
+    # Scrape Apollo Router metrics
+    - job_name: 'apollo-router'
+      kubernetes_sd_configs:
+        - role: pod
+          namespaces:
+            names:
+              - apollo-dash0-demo
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+          action: keep
+          regex: true
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+          action: replace
+          target_label: __metrics_path__
+          regex: (.+)
+        - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+          action: replace
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+          target_label: __address__
+        - action: labelmap
+          regex: __meta_kubernetes_pod_label_(.+)
+        - source_labels: [__meta_kubernetes_namespace]
+          action: replace
+          target_label: kubernetes_namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          action: replace
+          target_label: kubernetes_pod_name

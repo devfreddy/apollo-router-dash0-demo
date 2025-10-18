@@ -1,0 +1,101 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reviews
+  labels:
+    app: reviews
+    component: subgraph
+    demo: apollo-dash0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reviews
+  template:
+    metadata:
+      labels:
+        app: reviews
+        component: subgraph
+        demo: apollo-dash0
+    spec:
+      containers:
+      - name: reviews
+        image: apollo-dash0-demo-reviews:latest
+        imagePullPolicy: Never  # Use local image imported to k3d
+        ports:
+        - containerPort: 4002
+          name: graphql
+        env:
+        - name: PORT
+          value: "4002"
+        - name: DASH0_AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: dash0-auth
+              key: token
+        - name: DASH0_METRICS_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: DASH0_METRICS_ENDPOINT
+        - name: DASH0_TRACES_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: DASH0_TRACES_ENDPOINT
+        - name: SERVICE_VERSION
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: SERVICE_VERSION
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: ENVIRONMENT
+        livenessProbe:
+          httpGet:
+            path: /graphql?query={__typename}
+            port: 4002
+            httpHeaders:
+            - name: apollo-require-preflight
+              value: "true"
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /graphql?query={__typename}
+            port: 4002
+            httpHeaders:
+            - name: apollo-require-preflight
+              value: "true"
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviews-service
+  labels:
+    app: reviews
+    component: subgraph
+spec:
+  selector:
+    app: reviews
+  ports:
+  - port: 4002
+    targetPort: 4002
+    name: graphql
+  type: ClusterIP

@@ -1,0 +1,60 @@
+# Dash0 Kubernetes Operator Helm Values
+# Provides automatic instrumentation and enhanced observability
+
+operator:
+  # Dash0 Export Configuration
+  dash0Export:
+    # Enable export to Dash0 backend
+    enabled: true
+
+    # Dash0 ingress endpoint for OTLP/gRPC
+    # Format: ingress.<region>.aws.dash0.com:4317
+    # This will be set from environment variable during installation
+    endpoint: "${DASH0_OPERATOR_ENDPOINT}"
+
+    # Dataset name (optional)
+    dataset: "default"
+
+    # API endpoint for Dash0 management API
+    apiEndpoint: "${DASH0_API_ENDPOINT}"
+
+    # Authentication via Kubernetes secret (more secure than direct token)
+    secretRef:
+      name: "dash0-auth"
+      key: "token"
+
+  # Instrumentation settings
+  instrumentation:
+    # Delay between instrumenting workloads (milliseconds)
+    delayAfterEachWorkloadMillis: 100
+
+    # Delay between instrumenting namespaces (milliseconds)
+    delayAfterEachNamespaceMillis: 100
+
+    # Enable debug logging for instrumentation
+    debug: false
+
+  # Self-monitoring (operator's own metrics)
+  selfMonitoring:
+    enabled: true
+
+  # Collect Kubernetes infrastructure metrics
+  collectKubernetesInfrastructureMetrics: true
+
+  # Collect pod labels and annotations as resource attributes
+  collectPodLabelsAndAnnotations: true
+
+# Replica count for operator deployment
+replicaCount: 1
+
+# Development mode (set to false for production-like behavior)
+developmentMode: false
+
+# Resource limits for operator
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
