@@ -45,7 +45,7 @@ fi
 RESPONSE=$(curl -sS -w "\n%{http_code}" \
   -X PUT \
   "${API_URL}" \
-  -H "Authorization: ${DASH0_AUTH_TOKEN}" \
+  -H "Authorization: Bearer ${DASH0_AUTH_TOKEN}" \
   -H "Content-Type: application/json" \
   -d @"${DASHBOARD_FILE}")
 
