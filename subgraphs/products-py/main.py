@@ -13,12 +13,32 @@ from otel import initialize_opentelemetry
 initialize_opentelemetry('products-subgraph-py')
 
 import strawberry
-from strawberry.asgi import make_schema_asgi
-from strawberry.federation import FederatedObjectType
-from opentelemetry import trace
+from strawberry.asgi import GraphQL
+from opentelemetry import trace, context
+from opentelemetry.propagate import extract
+from starlette.applications import Starlette
+from starlette.middleware.base import BaseHTTPMiddleware
 
 # Get tracer
 tracer = trace.get_tracer(__name__)
+
+
+# Middleware to extract trace context from incoming requests
+class TraceContextMiddleware(BaseHTTPMiddleware):
+    """
+    Extracts trace context from incoming requests (e.g., traceparent header from router)
+    and sets it as the active context for the request.
+    This ensures child spans are properly linked to parent spans.
+    """
+    async def dispatch(self, request, call_next):
+        # Extract trace context from request headers
+        ctx = extract(request.headers)
+        token = context.attach(ctx)
+        try:
+            response = await call_next(request)
+        finally:
+            context.detach(token)
+        return response
 
 
 # ==================== Data Models ====================
@@ -351,11 +371,15 @@ class Query:
 # Create the schema
 schema = strawberry.federation.Schema(
     query=Query,
-    enable_federation=True,
 )
 
-# Create the ASGI app
-app = make_schema_asgi(schema)
+# Create the ASGI app using Starlette with GraphQL
+graphql_app = GraphQL(schema)
+app = Starlette()
+# Add middleware to extract trace context from incoming requests
+app.add_middleware(TraceContextMiddleware)
+app.add_route("/graphql", graphql_app)
+app.add_websocket_route("/graphql", graphql_app)
 
 if __name__ == "__main__":
     import uvicorn

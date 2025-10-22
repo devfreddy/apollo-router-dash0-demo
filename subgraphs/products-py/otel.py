@@ -1,6 +1,7 @@
 """
 OpenTelemetry initialization for Python subgraph.
 Provides manual span creation for GraphQL operations.
+Includes trace context propagation for distributed tracing.
 """
 import os
 from opentelemetry import trace
@@ -8,6 +9,10 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import Resource
+from opentelemetry.propagators.jaeger_baggage import JaegerBaggagePropagator
+from opentelemetry.sdk.trace.propagation.tracecontext import TraceContextPropagator
+from opentelemetry.propagate import get_global_textmap, set_global_textmap
+from opentelemetry.propagators.composite import CompositePropagator
 
 
 def initialize_opentelemetry(service_name: str):
@@ -45,6 +50,16 @@ def initialize_opentelemetry(service_name: str):
     tracer_provider = TracerProvider(resource=resource)
     tracer_provider.add_span_processor(BatchSpanProcessor(trace_exporter))
     trace.set_tracer_provider(tracer_provider)
+
+    # Configure trace context propagation to extract parent spans from incoming requests
+    # This enables the router's trace context (traceparent header) to be properly linked
+    propagator = CompositePropagator(
+        [
+            TraceContextPropagator(),  # W3C Trace Context (traceparent header)
+            JaegerBaggagePropagator(),  # Baggage support
+        ]
+    )
+    set_global_textmap(propagator)
 
     print(f'🔭 OpenTelemetry initialized for {service_name}')
 

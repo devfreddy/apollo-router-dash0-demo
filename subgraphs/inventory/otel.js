@@ -5,6 +5,7 @@ const { OTLPMetricExporter } = require('@opentelemetry/exporter-metrics-otlp-htt
 const { PeriodicExportingMetricReader } = require('@opentelemetry/sdk-metrics');
 const { Resource } = require('@opentelemetry/resources');
 const { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } = require('@opentelemetry/semantic-conventions');
+const { W3CTraceContextPropagator } = require('@opentelemetry/core');
 
 /**
  * Initialize OpenTelemetry instrumentation for a subgraph service
@@ -55,6 +56,9 @@ function initializeOpenTelemetry(serviceName) {
       exporter: metricExporter,
       exportIntervalMillis: 60000, // Export metrics every 60 seconds
     }),
+    // Configure trace context propagation to extract parent spans from incoming requests
+    // This enables the router's trace context (traceparent header) to be properly linked
+    textMapPropagator: new W3CTraceContextPropagator(),
     instrumentations: [
       getNodeAutoInstrumentations({
         // Enable only the instrumentations we need
