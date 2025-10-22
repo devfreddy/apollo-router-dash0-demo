@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ${subgraph_name}-error-rate
+spec:
+  groups:
+    - name: SubgraphAlerts
+      interval: 1m0s
+      rules:
+        - alert: ${subgraph_alert_name}_ErrorRateHigh
+          expr: ((sum(rate(http_client_request_duration_bucket{service_name="${router_service_name}",server_address=~".*${subgraph_name}.*",http_response_status_code=~"[45].."}[5m])) or on() vector(0)) / (sum(rate(http_client_request_duration_bucket{service_name="${router_service_name}",server_address=~".*${subgraph_name}.*"}[5m])) or on() vector(1))) * 100 > ${error_rate_threshold}
+          for: 2m
+          annotations:
+            summary: "${subgraph_name} error rate is above ${error_rate_threshold}%"
+            description: "Error rate {{$$value | printf \"%.2f\"}}% exceeded threshold"
+            dash0-threshold-critical: "${error_rate_threshold_critical}"
+            dash0-threshold-degraded: "${error_rate_threshold}"
+            dash0-enabled: "true"
+          labels:
+            severity: warning
+            env: ${environment}
+            subgraph: ${subgraph_name}
+

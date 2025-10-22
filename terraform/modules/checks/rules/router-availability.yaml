@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: apollo-router-availability
+spec:
+  groups:
+    - name: ApolloRouterAlerts
+      interval: 1m0s
+      rules:
+        - alert: ApolloRouterDown
+          expr: up{service_name="${router_service_name}"} == 0
+          for: 2m
+          annotations:
+            summary: "Apollo Router instance is down"
+            description: "Router service {{$$labels.instance}} is not responding"
+            dash0-threshold-critical: "1"
+            dash0-threshold-degraded: "1"
+            dash0-enabled: "true"
+          labels:
+            severity: critical
+            env: ${environment}
+

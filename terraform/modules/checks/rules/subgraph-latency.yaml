@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ${subgraph_name}-latency
+spec:
+  groups:
+    - name: SubgraphAlerts
+      interval: 1m0s
+      rules:
+        - alert: ${subgraph_alert_name}_LatencyHigh
+          expr: histogram_quantile(0.95, sum by (server_address) (rate(http_client_request_duration_bucket{service_name="${router_service_name}",server_address=~".*${subgraph_name}.*"}[5m]))) * 1000 > ${latency_p95_threshold}
+          for: 2m
+          annotations:
+            summary: "${subgraph_name} P95 latency is above ${latency_p95_threshold}ms"
+            description: "Latency {{$$value | printf \"%.0f\"}}ms exceeded threshold"
+            dash0-threshold-critical: "${latency_p95_threshold_critical}"
+            dash0-threshold-degraded: "${latency_p95_threshold}"
+            dash0-enabled: "true"
+          labels:
+            severity: warning
+            env: ${environment}
+            subgraph: ${subgraph_name}
+
