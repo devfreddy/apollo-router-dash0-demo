@@ -26,7 +26,7 @@ services:
       - /dist/schema/supergraph.graphql
     depends_on:
       - accounts
-      - products
+      - products-py
       - reviews
       - inventory
     healthcheck:
@@ -65,10 +65,40 @@ services:
     labels:
       - "com.dash0.demo=accounts-subgraph"
 
-  # Products Subgraph
-  products:
+  # Products Subgraph (Node.js) - DISABLED
+  # Using Python version (products-py) instead
+  # To switch back to Node.js: uncomment this service and change router's depends_on to 'products'
+  # products:
+  #   build:
+  #     context: ./subgraphs/products
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "4003:4003"
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - PORT=4003
+  #     - DASH0_AUTH_TOKEN=${DASH0_AUTH_TOKEN}
+  #     - DASH0_METRICS_ENDPOINT=${DASH0_METRICS_ENDPOINT}
+  #     - DASH0_TRACES_ENDPOINT=${DASH0_TRACES_ENDPOINT}
+  #     - SERVICE_VERSION=${SERVICE_VERSION:-1.0.0}
+  #     - ENVIRONMENT=${ENVIRONMENT:-demo}
+  #   healthcheck:
+  #     test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "--header=apollo-require-preflight: true", "http://localhost:4003/graphql?query={__typename}"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 3
+  #     start_period: 10s
+  #   restart: unless-stopped
+  #   labels:
+  #     - "com.dash0.demo=products-subgraph-nodejs"
+
+  # Products Subgraph (Python) - NOW ACTIVE
+  # This is the primary products subgraph with enhanced schema and OTel instrumentation
+  # To switch back to Node.js: uncomment the 'products' service above and change router's depends_on
+  products-py:
     build:
-      context: ./subgraphs/products
+      context: ./subgraphs/products-py
       dockerfile: Dockerfile
     ports:
       - "4003:4003"
@@ -82,14 +112,14 @@ services:
       - SERVICE_VERSION=${SERVICE_VERSION:-1.0.0}
       - ENVIRONMENT=${ENVIRONMENT:-demo}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "--header=apollo-require-preflight: true", "http://localhost:4003/graphql?query={__typename}"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4003/graphql').read()"]
       interval: 10s
       timeout: 5s
       retries: 3
-      start_period: 10s
+      start_period: 15s
     restart: unless-stopped
     labels:
-      - "com.dash0.demo=products-subgraph"
+      - "com.dash0.demo=products-subgraph-python"
 
   # Reviews Subgraph
   reviews:
@@ -150,7 +180,9 @@ services:
       - router
     volumes:
       - ./vegeta:/etc/vegeta
-    command: attack -targets=/etc/vegeta/targets.http -rate=0.8 -timeout=10s -duration=0 -output=/dev/null
+    # 2 req/s
+    # command: attack -targets=/etc/vegeta/targets.http -rate=0.8 -timeout=10s -duration=0 -output=/dev/null
+    command: attack -targets=/etc/vegeta/targets.http -rate=10 -timeout=10s -duration=0 -output=/dev/null
     restart: unless-stopped
     labels:
       - "com.dash0.demo=load-generator"

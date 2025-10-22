@@ -50,38 +50,11 @@ function check_status() {
 }
 
 function switch_to_compose() {
-    echo -e "${GREEN}=== Switching to Docker Compose ===${NC}"
-
-    # Check if k3d is running
-    if command -v k3d &> /dev/null && k3d cluster list 2>/dev/null | grep -q "apollo-dash0-demo"; then
-        echo -e "${YELLOW}k3d cluster detected. Stopping it...${NC}"
-        read -p "Stop k3d cluster? (y/n) " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            ./k8s/scripts/k3d-down.sh
-        fi
-    fi
-
-    echo -e "${GREEN}Starting Docker Compose...${NC}"
-    docker compose up -d
-
-    echo ""
-    echo -e "${GREEN}Docker Compose deployment started!${NC}"
-    echo -e "GraphQL API: ${YELLOW}http://localhost:4000${NC}"
-    echo ""
+    ./scripts/start-compose.sh
 }
 
 function switch_to_k3d() {
-    echo -e "${GREEN}=== Switching to k3d (Kubernetes) ===${NC}"
-
-    # Check if Docker Compose is running
-    if docker compose ps 2>/dev/null | grep -q "apollo-dash0-demo-router"; then
-        echo -e "${YELLOW}Docker Compose services detected. Stopping them...${NC}"
-        docker compose down
-    fi
-
-    echo -e "${GREEN}Starting k3d deployment...${NC}"
-    ./k8s/scripts/k3d-up.sh
+    ./scripts/start-k3d.sh
 }
 
 # Main script
