@@ -9,7 +9,7 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import Resource
-from opentelemetry.trace.propagation.tracecontext import TraceContextPropagator
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 from opentelemetry.propagate import set_global_textmap
 
 
@@ -51,7 +51,7 @@ def initialize_opentelemetry(service_name: str):
 
     # Configure trace context propagation to extract parent spans from incoming requests
     # This enables the router's trace context (traceparent header) to be properly linked
-    propagator = TraceContextPropagator()
+    propagator = TraceContextTextMapPropagator()
     set_global_textmap(propagator)
 
     print(f'🔭 OpenTelemetry initialized for {service_name}')
