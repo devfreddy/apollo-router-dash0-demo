@@ -12,7 +12,7 @@ spec:
           for: 2m
           annotations:
             summary: "Apollo Router error rate is above ${error_rate_threshold}%"
-            description: "Error rate {{$$value | printf \"%.2f\"}}% exceeded threshold"
+            description: "Error rate {{$${value | printf \"%.2f\"}}% exceeded threshold"
             dash0-threshold-critical: "${error_rate_threshold_critical}"
             dash0-threshold-degraded: "${error_rate_threshold}"
             dash0-enabled: "true"

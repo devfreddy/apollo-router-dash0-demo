@@ -12,7 +12,7 @@ spec:
           for: 2m
           annotations:
             summary: "${subgraph_name} P95 latency is above ${latency_p95_threshold}ms"
-            description: "Latency {{$$value | printf \"%.0f\"}}ms exceeded threshold"
+            description: "Latency {{$${value | printf \"%.0f\"}}ms exceeded threshold"
             dash0-threshold-critical: "${latency_p95_threshold_critical}"
             dash0-threshold-degraded: "${latency_p95_threshold}"
             dash0-enabled: "true"
