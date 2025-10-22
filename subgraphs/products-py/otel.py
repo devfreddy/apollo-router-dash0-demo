@@ -9,10 +9,8 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import Resource
-from opentelemetry.propagators.jaeger_baggage import JaegerBaggagePropagator
 from opentelemetry.sdk.trace.propagation.tracecontext import TraceContextPropagator
-from opentelemetry.propagate import get_global_textmap, set_global_textmap
-from opentelemetry.propagators.composite import CompositePropagator
+from opentelemetry.propagate import set_global_textmap
 
 
 def initialize_opentelemetry(service_name: str):
@@ -53,12 +51,7 @@ def initialize_opentelemetry(service_name: str):
 
     # Configure trace context propagation to extract parent spans from incoming requests
     # This enables the router's trace context (traceparent header) to be properly linked
-    propagator = CompositePropagator(
-        [
-            TraceContextPropagator(),  # W3C Trace Context (traceparent header)
-            JaegerBaggagePropagator(),  # Baggage support
-        ]
-    )
+    propagator = TraceContextPropagator()
     set_global_textmap(propagator)
 
     print(f'🔭 OpenTelemetry initialized for {service_name}')
