@@ -111,12 +111,6 @@ services:
       - DASH0_TRACES_ENDPOINT=${DASH0_TRACES_ENDPOINT}
       - SERVICE_VERSION=${SERVICE_VERSION:-1.0.0}
       - ENVIRONMENT=${ENVIRONMENT:-demo}
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4003/graphql').read()"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 15s
     restart: unless-stopped
     labels:
       - "com.dash0.demo=products-subgraph-python"

@@ -1,5 +1,6 @@
 strawberry-graphql[asgi]==0.283.3
 uvicorn==0.38.0
+starlette>=0.36.3
 opentelemetry-api==1.38.0
 opentelemetry-sdk==1.38.0
 opentelemetry-exporter-otlp==1.38.0
