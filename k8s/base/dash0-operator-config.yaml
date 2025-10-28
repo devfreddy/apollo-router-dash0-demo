@@ -12,14 +12,20 @@ spec:
       endpoint: https://ingress.us-west-2.aws.dash0.com
       headers:
         - name: Authorization
-          value: ${DASH0_AUTH_TOKEN}  # Replace with your actual token when applying
+          value: Bearer auth_nGhIW24mv8kWSH6uz19Ig8hhSdwOYKA7
+        # Dash0 dataset specification
+        # NOTE: To change the dataset, update this value AND update DASH0_DATASET in the apollo-config ConfigMap
+        # The ConfigMap value is used by the Apollo Router
+        # This value is used by the Dash0 Operator for Kubernetes infrastructure telemetry
+        - name: Dash0-Dataset
+          value: gtm-dash0
       encoding: proto  # Use protobuf encoding (can be "proto" or "json")
 
   # Enable collection of Kubernetes infrastructure metrics
   kubernetesInfrastructureMetricsCollection:
     enabled: true
 
-  # Enable telemetry collection from instrumented workloads
+  # Enable telemetry collection from instrumented workloads (metrics, traces, logs)
   telemetryCollection:
     enabled: true
 

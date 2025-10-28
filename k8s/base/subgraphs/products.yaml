@@ -14,6 +14,8 @@ spec:
       app: products
   template:
     metadata:
+      annotations:
+        dash0.com/auto-instrumentation: "disabled"
       labels:
         app: products
         component: subgraph
