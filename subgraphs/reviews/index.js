@@ -6,6 +6,7 @@ const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { buildSubgraphSchema } = require('@apollo/subgraph');
 const gql = require('graphql-tag');
+const { withErrorInjection } = require('../shared/error-injection');
 
 // Sample reviews data
 const reviews = [
@@ -52,22 +53,42 @@ const resolvers = {
     __resolveReference: (reference) => {
       return reviews.find(review => review.id === reference.id);
     },
-    product: (review) => {
-      return { __typename: 'Product', id: review.productId };
-    },
-    author: (review) => {
-      return { __typename: 'User', id: review.authorId };
-    },
+    product: withErrorInjection(
+      (review) => {
+        return { __typename: 'Product', id: review.productId };
+      },
+      'reviews-subgraph',
+      5,
+      'Failed to fetch product for review'
+    ),
+    author: withErrorInjection(
+      (review) => {
+        return { __typename: 'User', id: review.authorId };
+      },
+      'reviews-subgraph',
+      5,
+      'Failed to fetch author for review'
+    ),
   },
   User: {
-    reviews: (user) => {
-      return reviews.filter(review => review.authorId === user.id);
-    },
+    reviews: withErrorInjection(
+      (user) => {
+        return reviews.filter(review => review.authorId === user.id);
+      },
+      'reviews-subgraph',
+      5,
+      'Failed to fetch user reviews'
+    ),
   },
   Product: {
-    reviews: (product) => {
-      return reviews.filter(review => review.productId === product.id);
-    },
+    reviews: withErrorInjection(
+      (product) => {
+        return reviews.filter(review => review.productId === product.id);
+      },
+      'reviews-subgraph',
+      5,
+      'Failed to fetch product reviews'
+    ),
   },
 };
 

@@ -6,6 +6,7 @@ const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { buildSubgraphSchema } = require('@apollo/subgraph');
 const gql = require('graphql-tag');
+const { withErrorInjection } = require('../shared/error-injection');
 
 // Sample product data
 const products = [
@@ -75,16 +76,31 @@ const typeDefs = gql`
 // Resolvers
 const resolvers = {
   Query: {
-    products: () => {
-      return products;
-    },
-    product: (_, { id }) => {
-      return products.find(product => product.id === id);
-    },
-    topProducts: (_, { limit }) => {
-      // Return products sorted by popularity (simulated)
-      return products.slice(0, limit);
-    },
+    products: withErrorInjection(
+      () => {
+        return products;
+      },
+      'products-subgraph',
+      5,
+      'Failed to fetch products'
+    ),
+    product: withErrorInjection(
+      (_, { id }) => {
+        return products.find(product => product.id === id);
+      },
+      'products-subgraph',
+      5,
+      'Failed to fetch product'
+    ),
+    topProducts: withErrorInjection(
+      (_, { limit }) => {
+        // Return products sorted by popularity (simulated)
+        return products.slice(0, limit);
+      },
+      'products-subgraph',
+      5,
+      'Failed to fetch top products'
+    ),
   },
   Product: {
     __resolveReference: (reference) => {

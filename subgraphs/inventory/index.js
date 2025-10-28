@@ -6,6 +6,7 @@ const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { buildSubgraphSchema } = require('@apollo/subgraph');
 const gql = require('graphql-tag');
+const { withErrorInjection } = require('../shared/error-injection');
 
 // Sample inventory data
 const inventory = [
@@ -36,17 +37,22 @@ const typeDefs = gql`
 // Resolvers
 const resolvers = {
   Product: {
-    inventory: (product) => {
-      const inv = inventory.find(item => item.productId === product.id);
-      if (!inv) {
-        return {
-          quantity: 0,
-          warehouse: 'Unknown',
-          estimatedDelivery: 'N/A',
-        };
-      }
-      return inv;
-    },
+    inventory: withErrorInjection(
+      (product) => {
+        const inv = inventory.find(item => item.productId === product.id);
+        if (!inv) {
+          return {
+            quantity: 0,
+            warehouse: 'Unknown',
+            estimatedDelivery: 'N/A',
+          };
+        }
+        return inv;
+      },
+      'inventory-subgraph',
+      5,
+      'Failed to fetch inventory'
+    ),
   },
 };
 

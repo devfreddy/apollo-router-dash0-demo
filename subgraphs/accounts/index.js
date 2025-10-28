@@ -6,6 +6,7 @@ const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { buildSubgraphSchema } = require('@apollo/subgraph');
 const gql = require('graphql-tag');
+const { withErrorInjection } = require('../shared/error-injection');
 
 // Sample user data
 const users = [
@@ -38,16 +39,31 @@ const typeDefs = gql`
 // Resolvers
 const resolvers = {
   Query: {
-    me: () => {
-      // Return a random user as "me"
-      return users[Math.floor(Math.random() * users.length)];
-    },
-    user: (_, { id }) => {
-      return users.find(user => user.id === id);
-    },
-    users: () => {
-      return users;
-    },
+    me: withErrorInjection(
+      () => {
+        // Return a random user as "me"
+        return users[Math.floor(Math.random() * users.length)];
+      },
+      'accounts-subgraph',
+      5,
+      'Failed to fetch current user'
+    ),
+    user: withErrorInjection(
+      (_, { id }) => {
+        return users.find(user => user.id === id);
+      },
+      'accounts-subgraph',
+      5,
+      'Failed to fetch user'
+    ),
+    users: withErrorInjection(
+      () => {
+        return users;
+      },
+      'accounts-subgraph',
+      5,
+      'Failed to fetch users'
+    ),
   },
   User: {
     __resolveReference: (reference) => {
