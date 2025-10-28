@@ -8,11 +8,20 @@ This directory contains tools and dashboards for converting Apollo GraphOS monit
 dashboards/
 ├── README.md              # This file
 ├── convert.js             # Datadog to Dash0 dashboard converter
+├── organize-dashboards.js # Dashboard organization tool
+├── create-grouped-dashboard.js  # Combined grouped dashboard generator
 ├── deploy.sh              # Dashboard deployment script
+├── DASHBOARD_ORGANIZATION.md    # Detailed dashboard guide
 ├── datadog/
 │   └── graphos-template.json  # Original Datadog dashboard template
 └── dash0/
-    └── apollo-router-performance.json  # Converted Dash0 dashboard
+    ├── apollo-router-complete-grouped.json      # ⭐ All 41 panels in 5 groups (RECOMMENDED)
+    ├── apollo-router-performance.json           # Flat dashboard (41 panels, reference)
+    ├── client-traffic-dashboard.json            # Individual: Client → Router (5 panels)
+    ├── router-backend-dashboard.json            # Individual: Router → Backend (6 panels)
+    ├── router-internals-dashboard.json          # Individual: Internals (11 panels)
+    ├── infrastructure-dashboard.json            # Individual: Infrastructure (8 panels)
+    └── coprocessors-dashboard.json              # Individual: Coprocessors (11 panels)
 ```
 
 ## Quick Start
@@ -30,7 +39,10 @@ This will:
 - Read the Datadog dashboard from `datadog/graphos-template.json`
 - Convert all widgets to Perses panel format
 - Transform Datadog metric queries to PromQL
-- Output to `dash0/apollo-router-performance.json`
+- Generate 7 dashboards:
+  - `apollo-router-complete-grouped.json` - **RECOMMENDED**: All 41 panels in 5 collapsible groups
+  - `apollo-router-performance.json` - Flat reference dashboard
+  - 5 individual focused dashboards (one per category)
 
 ### 2. Deploy to Dash0
 

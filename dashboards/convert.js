@@ -373,6 +373,42 @@ fs.writeFileSync(outputPath, JSON.stringify(dashboard, null, 2));
 console.log(`✅ Dashboard converted successfully!`);
 console.log(`📊 Panels created: ${Object.keys(dashboard.spec.panels).length}`);
 console.log(`📁 Output: ${outputPath}`);
+
+// Generate organized dashboards by running organize-dashboards.js
+console.log(`\n📋 Organizing dashboards by section...`);
+const { execSync } = require('child_process');
+try {
+  execSync(`node ${path.join(__dirname, 'organize-dashboards.js')}`, {
+    stdio: 'inherit',
+    cwd: __dirname
+  });
+} catch (error) {
+  console.error('Error organizing dashboards:', error.message);
+}
+
+// Create combined grouped dashboard
+console.log(`\n📊 Creating combined grouped dashboard...`);
+try {
+  execSync(`node ${path.join(__dirname, 'create-grouped-dashboard.js')}`, {
+    stdio: 'inherit',
+    cwd: __dirname
+  });
+} catch (error) {
+  console.error('Error creating grouped dashboard:', error.message);
+}
+
+console.log(`\n✨ All done!`);
+console.log(`\nGenerated dashboards:`);
+console.log(`  📊 COMBINED GROUPED DASHBOARD:`);
+console.log(`     • apollo-router-complete-grouped.json - All 41 panels in 5 collapsible groups`);
+console.log(`\n  📁 INDIVIDUAL ORGANIZED DASHBOARDS:`);
+console.log(`     • client-traffic-dashboard.json - Client → Router metrics (5 panels)`);
+console.log(`     • router-backend-dashboard.json - Router → Backend metrics (6 panels)`);
+console.log(`     • router-internals-dashboard.json - Internals: Query Planning, Cache, Compute Jobs (11 panels)`);
+console.log(`     • infrastructure-dashboard.json - Container/Host/K8s metrics (8 panels)`);
+console.log(`     • coprocessors-dashboard.json - Coprocessors & Sentinel metrics (11 panels)`);
+console.log(`\n  📄 REFERENCE DASHBOARDS:`);
+console.log(`     • apollo-router-performance.json - Main flat dashboard (41 panels)`);
 console.log(`\nNext steps:`);
-console.log(`1. Review the dashboard: cat ${outputPath}`);
-console.log(`2. Deploy to Dash0: ./dashboards/deploy.sh`);
+console.log(`1. Deploy to Dash0: ./dashboards/deploy.sh`);
+console.log(`2. Or import specific dashboard: dashboard/dash0/apollo-router-complete-grouped.json`);

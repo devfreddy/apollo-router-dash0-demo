@@ -1,0 +1,198 @@
+{
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "apollo-router-client-traffic",
+    "dash0Extensions": {
+      "dataset": "default"
+    }
+  },
+  "spec": {
+    "display": {
+      "name": "Apollo Router - Client Traffic",
+      "description": "Client → Router request metrics including traffic, throughput, errors, and request characteristics"
+    },
+    "duration": "1h",
+    "refreshInterval": "30s",
+    "layouts": [
+      {
+        "kind": "Grid",
+        "spec": {
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_0"
+              }
+            },
+            {
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_1"
+              }
+            },
+            {
+              "x": 0,
+              "y": 8,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_2"
+              }
+            },
+            {
+              "x": 12,
+              "y": 8,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_3"
+              }
+            },
+            {
+              "x": 0,
+              "y": 16,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_4"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "panels": {
+      "panel_0": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Volume of Requests Per Status Code"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "histogram_sum(sum by (http_status_code) (increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_1": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Throughput: Requests Per Second"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "histogram_sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_2": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Error Rate Percent"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "histogram_sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_3": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Request Body Size (p99 / Max)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "max({otel_metric_name = \"http.server.request.body.size\", otel_metric_type = \"histogram\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_4": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Request Duration Percentiles"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "histogram_quantile(0.99, rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,300 @@
+{
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "apollo-router-infrastructure",
+    "dash0Extensions": {
+      "dataset": "default"
+    }
+  },
+  "spec": {
+    "display": {
+      "name": "Apollo Router - Infrastructure",
+      "description": "Container, host, and Kubernetes metrics for Apollo Router instances"
+    },
+    "duration": "1h",
+    "refreshInterval": "30s",
+    "layouts": [
+      {
+        "kind": "Grid",
+        "spec": {
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_22"
+              }
+            },
+            {
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_23"
+              }
+            },
+            {
+              "x": 0,
+              "y": 8,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_24"
+              }
+            },
+            {
+              "x": 12,
+              "y": 8,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_25"
+              }
+            },
+            {
+              "x": 0,
+              "y": 16,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_26"
+              }
+            },
+            {
+              "x": 12,
+              "y": 16,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_27"
+              }
+            },
+            {
+              "x": 0,
+              "y": 24,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_28"
+              }
+            },
+            {
+              "x": 12,
+              "y": 24,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_29"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "panels": {
+      "panel_22": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Kubernetes CPU Usage"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name = \"kubernetes.cpu.usage.total\", otel_metric_type = \"sum\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_23": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Host CPU Usage (OTEL Collector - Hostmetrics)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name = \"system.cpu.stolen\", otel_metric_type = \"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_24": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Docker CPU Usage (Datadog Docker Agent)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name = \"docker.cpu.usage\", otel_metric_type = \"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_25": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Docker CPU Usage (OTEL Collector  - Docker/stats)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name = \"container.cpu.usage.total\", otel_metric_type = \"sum\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_26": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Kubernetes Memory Usage"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name = \"kubernetes.memory.usage\", otel_metric_type = \"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_27": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Host Memory Usage (OTEL Collector - Hostmetrics)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name = \"system.mem.used\", otel_metric_type = \"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_28": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Docker Memory Usage (Datadog Docker Agent)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name = \"docker.mem.in_use\", otel_metric_type = \"gauge\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "panel_29": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Docker Memory Usage (OTEL Collector  - Docker/stats)"
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {}
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg({otel_metric_name = \"container.memory.usage.total\", otel_metric_type = \"sum\"})"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
