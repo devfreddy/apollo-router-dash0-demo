@@ -18,6 +18,7 @@ from opentelemetry import trace, context
 from opentelemetry.propagate import extract
 from starlette.applications import Starlette
 from starlette.middleware.base import BaseHTTPMiddleware
+from error_injection import with_error_injection, ErrorInjectionException, should_inject_error, get_error_rate
 
 # Get tracer
 tracer = trace.get_tracer(__name__)
@@ -301,6 +302,9 @@ class Query:
     @strawberry.field
     def products(self) -> List[Product]:
         """Get all products."""
+        if should_inject_error(5):
+            raise ErrorInjectionException("Failed to fetch products")
+
         with tracer.start_as_current_span("query.products"):
             enriched = [get_enriched_product(p) for p in PRODUCTS_DATA]
             return [product_dict_to_object(p) for p in enriched]
@@ -308,6 +312,9 @@ class Query:
     @strawberry.field
     def product(self, id: strawberry.ID) -> Optional[Product]:
         """Get a single product by ID."""
+        if should_inject_error(5):
+            raise ErrorInjectionException("Failed to fetch product")
+
         with tracer.start_as_current_span("query.product") as span:
             span.set_attribute("product.id", id)
 
@@ -322,6 +329,9 @@ class Query:
     @strawberry.field
     def top_products(self, limit: int = 5) -> List[Product]:
         """Get top products (limited list)."""
+        if should_inject_error(5):
+            raise ErrorInjectionException("Failed to fetch top products")
+
         with tracer.start_as_current_span("query.topProducts") as span:
             span.set_attribute("limit", limit)
 
@@ -331,6 +341,9 @@ class Query:
     @strawberry.field
     def products_by_category(self, category: str) -> List[Product]:
         """Get products filtered by category."""
+        if should_inject_error(5):
+            raise ErrorInjectionException("Failed to fetch products by category")
+
         with tracer.start_as_current_span("query.productsByCategory") as span:
             span.set_attribute("category", category)
 
@@ -345,6 +358,9 @@ class Query:
     @strawberry.field
     def products_in_stock(self) -> List[Product]:
         """Get all products currently in stock."""
+        if should_inject_error(5):
+            raise ErrorInjectionException("Failed to fetch products in stock")
+
         with tracer.start_as_current_span("query.productsInStock"):
             in_stock = [p for p in PRODUCTS_DATA if p["in_stock"]]
             enriched = [get_enriched_product(p) for p in in_stock]
@@ -353,6 +369,9 @@ class Query:
     @strawberry.field
     def search_products(self, query: str) -> List[Product]:
         """Search products by name or description."""
+        if should_inject_error(5):
+            raise ErrorInjectionException("Failed to search products")
+
         with tracer.start_as_current_span("query.searchProducts") as span:
             span.set_attribute("search.query", query)
             query_lower = query.lower()
