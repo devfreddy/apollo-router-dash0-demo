@@ -125,7 +125,7 @@ telemetry:
       common:
         # Resource attributes for identifying this service
         resource:
-          service.name: "${env.SERVICE_NAME:-apollo-router-demo}"
+          service.name: "${env.SERVICE_NAME:-apollo-router}"
           service.version: "${env.SERVICE_VERSION:-2.0}"
           deployment.environment: "${env.ENVIRONMENT:-demo}"
 
@@ -143,7 +143,8 @@ telemetry:
         # Dash0 authentication (loaded from .env)
         http:
           headers:
-            "Authorization": "${env.DASH0_AUTH_TOKEN}"
+            "Authorization": "Bearer ${env.DASH0_AUTH_TOKEN}"
+            "Dash0-Dataset": "gtm-dash0"
 
         # Batch processor settings for optimal performance
         batch_processor:
@@ -177,7 +178,7 @@ telemetry:
 
         # Resource attributes
         resource:
-          service.name: "${env.SERVICE_NAME:-apollo-router-demo}"
+          service.name: "${env.SERVICE_NAME:-apollo-router}"
           service.version: "${env.SERVICE_VERSION:-2.0}"
           deployment.environment: "${env.ENVIRONMENT:-demo}"
 
@@ -191,7 +192,8 @@ telemetry:
         # Dash0 authentication (loaded from .env)
         http:
           headers:
-            "Authorization": "${env.DASH0_AUTH_TOKEN}"
+            "Authorization": "Bearer ${env.DASH0_AUTH_TOKEN}"
+            "Dash0-Dataset": "gtm-dash0"
 
         # Batch processor settings
         batch_processor:
@@ -200,6 +202,24 @@ telemetry:
           max_export_batch_size: 512
           max_export_timeout: 30s
           max_queue_size: 2048
+
+    # NOTE: Apollo Router v2.7.0 does not yet support OTLP Logs API
+    # Use Fluent Bit sidecar container (see docker-compose.yaml) to collect router logs
+    # and forward them to Dash0. See LOG_COLLECTION.md for details.
+
+# Header propagation configuration
+# Propagate specific headers from incoming requests to subgraph requests
+headers:
+  all:
+    request:
+      # Propagate W3C Trace Context headers to subgraphs
+      - propagate:
+          named: "traceparent"
+      - propagate:
+          named: "tracestate"
+      # Propagate baggage headers
+      - propagate:
+          named: "baggage"
 
 # CORS configuration for browser access (v2.7+ format)
 # Port 4000: Required for Apollo Sandbox UI (served from the router itself)

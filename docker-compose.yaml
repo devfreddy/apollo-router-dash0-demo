@@ -16,6 +16,7 @@ services:
       - SERVICE_NAME=${SERVICE_NAME:-apollo-router-demo}
       - SERVICE_VERSION=${SERVICE_VERSION:-2.7}
       - ENVIRONMENT=${ENVIRONMENT:-demo}
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
     volumes:
       - ./router/router.yaml:/dist/config/router.yaml
       - ./router/supergraph.graphql:/dist/schema/supergraph.graphql
@@ -182,6 +183,9 @@ services:
       - "com.dash0.demo=load-generator"
     profiles:
       - load-testing
+
+# Volumes for persistent state
+volumes: {}
 
 # Optional: Networks configuration for better isolation
 networks:

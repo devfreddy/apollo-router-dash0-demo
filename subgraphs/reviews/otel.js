@@ -37,6 +37,7 @@ function initializeOpenTelemetry(serviceName) {
     url: tracesEndpoint,
     headers: {
       'Authorization': authToken,
+      'Dash0-Dataset': 'gtm-dash0',
     },
   });
 
@@ -45,6 +46,7 @@ function initializeOpenTelemetry(serviceName) {
     url: metricsEndpoint,
     headers: {
       'Authorization': authToken,
+      'Dash0-Dataset': 'gtm-dash0',
     },
   });
 

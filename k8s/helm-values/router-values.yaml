@@ -111,11 +111,15 @@ router:
                 graphql.errors:
                   subgraph_on_graphql_error: true
 
+        events:
+          router:
+            error: error
+
       exporters:
         metrics:
           common:
             resource:
-              service.name: "${env.SERVICE_NAME:-apollo-router-demo}"
+              service.name: "${env.SERVICE_NAME:-apollo-router}"
               service.version: "${env.SERVICE_VERSION:-2.0}"
               deployment.environment: "${env.ENVIRONMENT:-demo}"
           otlp:
@@ -125,7 +129,8 @@ router:
             temporality: delta
             http:
               headers:
-                "Authorization": "${env.DASH0_AUTH_TOKEN}"
+                Authorization: "Bearer ${env.DASH0_AUTH_TOKEN}"
+                Dash0-Dataset: "${env.DASH0_DATASET}"
             batch_processor:
               scheduled_delay: 1s
               max_concurrent_exports: 100
@@ -141,10 +146,10 @@ router:
             datadog: false
             zipkin: false
           common:
-            sampler: 1.0
+            sampler: always_on
             parent_based_sampler: true
             resource:
-              service.name: "${env.SERVICE_NAME:-apollo-router-demo}"
+              service.name: "${env.SERVICE_NAME:-apollo-router}"
               service.version: "${env.SERVICE_VERSION:-2.0}"
               deployment.environment: "${env.ENVIRONMENT:-demo}"
           otlp:
@@ -153,7 +158,8 @@ router:
             protocol: http
             http:
               headers:
-                "Authorization": "${env.DASH0_AUTH_TOKEN}"
+                Authorization: "Bearer ${env.DASH0_AUTH_TOKEN}"
+                Dash0-Dataset: "${env.DASH0_DATASET}"
             batch_processor:
               scheduled_delay: 1s
               max_concurrent_exports: 100
@@ -194,6 +200,11 @@ extraEnvVars:
       secretKeyRef:
         name: dash0-auth
         key: token
+  - name: DASH0_DATASET
+    valueFrom:
+      configMapKeyRef:
+        name: apollo-config
+        key: DASH0_DATASET
   - name: DASH0_METRICS_ENDPOINT
     valueFrom:
       configMapKeyRef:
@@ -272,6 +283,8 @@ podAnnotations:
   prometheus.io/scrape: "true"
   prometheus.io/port: "4000"
   prometheus.io/path: "/metrics"
+  # Disable Dash0 operator auto-instrumentation since router has explicit telemetry config
+  dash0.com/auto-instrumentation: "disabled"
 
 # Security context
 securityContext:

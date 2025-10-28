@@ -39,9 +39,12 @@ def initialize_opentelemetry(service_name: str):
     })
 
     # Configure trace exporter
+    headers = {"Dash0-Dataset": "gtm-dash0"}
+    if auth_token:
+        headers["Authorization"] = auth_token
     trace_exporter = OTLPSpanExporter(
         endpoint=traces_endpoint if traces_endpoint else "http://localhost:4317/v1/traces",
-        headers={"Authorization": auth_token} if auth_token else {},
+        headers=headers,
     )
 
     # Configure tracer provider with trace exporter
