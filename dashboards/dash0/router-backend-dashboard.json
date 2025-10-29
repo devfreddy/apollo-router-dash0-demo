@@ -91,6 +91,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By status_code, name"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -116,6 +119,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Subgraph name"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -141,6 +147,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By name, status_code"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -166,6 +175,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Subgraph name"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -191,6 +203,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Subgraph name"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -216,6 +231,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Subgraph name"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {

@@ -82,6 +82,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Http response status_code"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -107,6 +110,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Total"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -132,6 +138,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Total"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -157,6 +166,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Max"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -182,6 +194,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "P99"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {

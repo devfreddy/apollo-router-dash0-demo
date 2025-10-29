@@ -109,6 +109,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -134,6 +137,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -159,6 +165,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -184,6 +193,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -209,6 +221,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -234,6 +249,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -259,6 +277,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -284,6 +305,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {

@@ -464,6 +464,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Http response status_code"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -489,10 +492,13 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Total"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "histogram_sum(sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
+                    "query": "histogram_sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -514,10 +520,13 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Total"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "histogram_sum(sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
+                    "query": "histogram_sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -539,6 +548,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Max"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -564,6 +576,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "P99"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -589,6 +604,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By status_code, name"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -614,6 +632,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Subgraph name"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -639,6 +660,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By name, status_code"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -664,6 +688,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Subgraph name"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -689,6 +716,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Subgraph name"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -714,6 +744,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Subgraph name"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -739,10 +772,13 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "histogram_avg(sum by (graphql_operation_name) (rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\"}[2m])))"
+                    "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -764,6 +800,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -789,6 +828,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "P50"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -814,6 +856,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "P50"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -839,6 +884,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Total"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -864,6 +912,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By host, pod_name, container_id"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -889,6 +940,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By kind, version"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -914,6 +968,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By kind, version"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -939,6 +996,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By host, pod_name, container_id"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -964,6 +1024,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Sum"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -989,6 +1052,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Job outcome"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1014,6 +1080,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1039,6 +1108,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1064,6 +1136,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1089,6 +1164,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1114,6 +1192,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1139,6 +1220,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1164,6 +1248,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1189,6 +1276,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1214,6 +1304,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Coprocessor stage"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1239,6 +1332,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Coprocessor stage"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1264,6 +1360,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By Coprocessor stage"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1289,6 +1388,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1314,6 +1416,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "By id, id"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1339,6 +1444,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1364,6 +1472,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Total"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1389,6 +1500,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Total"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1414,10 +1528,13 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "histogram_avg(sum by (subgraph_name) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
+                    "query": "histogram_avg(rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -1439,6 +1556,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
@@ -1464,6 +1584,9 @@
             {
               "kind": "TimeSeriesQuery",
               "spec": {
+                "display": {
+                  "name": "Avg"
+                },
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {

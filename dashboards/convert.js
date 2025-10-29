@@ -216,6 +216,40 @@ function getMetricType(metricName) {
 }
 
 /**
+ * Generate a friendly name for a query based on its characteristics
+ */
+function generateQueryName(datadogQuery, promql) {
+  // Extract key information from the Datadog query
+  const metricMatch = datadogQuery.match(/^(count|avg|sum|max|min|p\d+):([^{]+)/);
+  if (!metricMatch) return 'Query';
+
+  const [, aggregation, metricName] = metricMatch;
+  const byMatch = datadogQuery.match(/by \{([^}]+)\}/);
+  const groupBy = byMatch ? byMatch[1].split(',').map(attr => attr.trim()) : [];
+
+  // Build a human-readable name based on aggregation and grouping
+  let aggregationName = aggregation;
+  if (aggregation.startsWith('p')) {
+    aggregationName = `p${aggregation.substring(1)}`;
+  } else if (aggregation === 'count') {
+    aggregationName = 'Total';
+  }
+
+  // If grouped by single attribute, show it
+  if (groupBy.length === 1) {
+    const attr = groupBy[0].replace(/\./g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
+    return `By ${attr.charAt(0).toUpperCase() + attr.slice(1)}`;
+  }
+
+  // If multiple groupings or no grouping, just show aggregation
+  if (groupBy.length > 1) {
+    return `By ${groupBy.map(g => g.split('.').pop()).join(', ')}`;
+  }
+
+  return aggregationName.charAt(0).toUpperCase() + aggregationName.slice(1);
+}
+
+/**
  * Convert Datadog widget to Perses panel
  */
 function convertWidget(widget, panelId) {
@@ -247,6 +281,9 @@ function convertWidget(widget, panelId) {
     pluginKind = 'StatChart';
   }
 
+  // Generate a friendly name for the query
+  const queryName = generateQueryName(firstQuery.query, promql);
+
   return {
     kind: 'Panel',
     spec: {
@@ -261,6 +298,9 @@ function convertWidget(widget, panelId) {
         {
           kind: 'TimeSeriesQuery',
           spec: {
+            display: {
+              name: queryName
+            },
             plugin: {
               kind: 'PrometheusTimeSeriesQuery',
               spec: {
