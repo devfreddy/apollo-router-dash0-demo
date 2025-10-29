@@ -103,11 +103,20 @@ function convertToPromQL(datadogQuery, widgetType) {
         promql = `histogram_sum(increase(${baseSelector}[2m]))`;
       }
     } else {
-      // Default count
-      if (groupBy) {
-        promql = `sum by (${groupBy}) (rate(${baseSelector}[2m]))`;
+      // Default count - for http.server.request.duration, wrap with sum() for cleaner aggregation
+      if (cleanMetricName === 'http.server.request.duration') {
+        if (groupBy) {
+          promql = `histogram_sum(sum by (${groupBy}) (increase(${baseSelector}[2m])))`;
+        } else {
+          // Aggregate all series with sum() to avoid noise from per-operation breakdown
+          promql = `histogram_sum(sum(increase(${baseSelector}[2m])))`;
+        }
       } else {
-        promql = `sum(rate(${baseSelector}[2m]))`;
+        if (groupBy) {
+          promql = `sum by (${groupBy}) (rate(${baseSelector}[2m]))`;
+        } else {
+          promql = `sum(rate(${baseSelector}[2m]))`;
+        }
       }
     }
   } else if (aggregation === 'sum') {
@@ -116,7 +125,12 @@ function convertToPromQL(datadogQuery, widgetType) {
       if (groupBy) {
         promql = `histogram_sum(sum by (${groupBy}) (rate(${baseSelector}[2m])))`;
       } else {
-        promql = `histogram_sum(rate(${baseSelector}[2m]))`;
+        // Special handling: for client request duration baseline, group by subgraph to show per-subgraph latency
+        if (cleanMetricName === 'http.client.request.duration') {
+          promql = `histogram_sum(sum by (subgraph_name) (rate(${baseSelector}[2m])))`;
+        } else {
+          promql = `histogram_sum(rate(${baseSelector}[2m]))`;
+        }
       }
     } else if (metricType === 'sum') {
       if (groupBy) {
@@ -138,7 +152,12 @@ function convertToPromQL(datadogQuery, widgetType) {
       if (groupBy) {
         promql = `histogram_avg(sum by (${groupBy}) (rate(${baseSelector}[2m])))`;
       } else {
-        promql = `histogram_avg(rate(${baseSelector}[2m]))`;
+        // Special handling: for client request duration baseline, group by subgraph to show per-subgraph latency
+        if (cleanMetricName === 'http.client.request.duration') {
+          promql = `histogram_avg(sum by (subgraph_name) (rate(${baseSelector}[2m])))`;
+        } else {
+          promql = `histogram_avg(rate(${baseSelector}[2m]))`;
+        }
       }
     } else {
       if (groupBy) {
