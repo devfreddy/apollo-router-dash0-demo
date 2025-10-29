@@ -1562,7 +1562,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "histogram_avg(sum by (subgraph_name) (rate({otel_metric_name = \"http.client.request.body.size\", otel_metric_type = \"histogram\"}[2m])))"
+                    "query": "histogram_avg(rate({otel_metric_name = \"http.client.request.body.size\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }
@@ -1590,7 +1590,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "histogram_avg(sum by (subgraph_name) (rate({otel_metric_name = \"http.client.response.body.size\", otel_metric_type = \"histogram\"}[2m])))"
+                    "query": "histogram_avg(rate({otel_metric_name = \"http.client.response.body.size\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }

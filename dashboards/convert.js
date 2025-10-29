@@ -100,7 +100,12 @@ function convertToPromQL(datadogQuery, widgetType) {
       if (groupBy) {
         promql = `histogram_sum(sum by (${groupBy}) (increase(${baseSelector}[2m])))`;
       } else {
-        promql = `histogram_sum(increase(${baseSelector}[2m]))`;
+        // Special handling: for http.server.request.duration, wrap with sum() for cleaner aggregation
+        if (cleanMetricName === 'http.server.request.duration') {
+          promql = `histogram_sum(sum(increase(${baseSelector}[2m])))`;
+        } else {
+          promql = `histogram_sum(increase(${baseSelector}[2m]))`;
+        }
       }
     } else {
       // Default count - for http.server.request.duration, wrap with sum() for cleaner aggregation
@@ -156,6 +161,7 @@ function convertToPromQL(datadogQuery, widgetType) {
         if (cleanMetricName === 'http.client.request.duration') {
           promql = `histogram_avg(sum by (subgraph_name) (rate(${baseSelector}[2m])))`;
         } else {
+          // For other histograms, just aggregate to single value
           promql = `histogram_avg(rate(${baseSelector}[2m]))`;
         }
       }

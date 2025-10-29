@@ -440,7 +440,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "histogram_sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
+                    "query": "histogram_sum(sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
                   }
                 }
               }
@@ -468,7 +468,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "histogram_sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
+                    "query": "histogram_sum(sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
                   }
                 }
               }
