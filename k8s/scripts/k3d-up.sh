@@ -19,8 +19,10 @@ if [ ! -f .env ]; then
     exit 1
 fi
 
-# Load environment variables
+# Load environment variables and export them for envsubst
+set -a
 source .env
+set +a
 
 # Verify required variables
 if [ -z "$DASH0_AUTH_TOKEN" ]; then
@@ -140,6 +142,7 @@ kubectl create secret generic dash0-auth \
 # Create ConfigMap
 echo -e "${GREEN}Creating ConfigMap...${NC}"
 kubectl create configmap apollo-config \
+    --from-literal=DASH0_DATASET="${DASH0_DATASET}" \
     --from-literal=DASH0_METRICS_ENDPOINT="$DASH0_METRICS_ENDPOINT" \
     --from-literal=DASH0_TRACES_ENDPOINT="$DASH0_TRACES_ENDPOINT" \
     --from-literal=SERVICE_NAME="${SERVICE_NAME:-apollo-router-demo}" \
@@ -164,12 +167,17 @@ DASH0_API_ENDPOINT="https://api.${DASH0_REGION}.aws.dash0.com"
 echo -e "${YELLOW}Dash0 Operator Endpoint: $DASH0_OPERATOR_ENDPOINT${NC}"
 echo -e "${YELLOW}Dash0 API Endpoint: $DASH0_API_ENDPOINT${NC}"
 
-# Install Dash0 operator via Helm (without export config - we'll create it manually)
+# Install Dash0 operator via Helm with secret reference
 echo -e "${YELLOW}Installing Dash0 operator...${NC}"
 helm upgrade --install dash0-operator \
     dash0-operator/dash0-operator \
     --namespace dash0-system \
     --create-namespace \
+    --set operator.dash0Export.enabled=true \
+    --set operator.dash0Export.endpoint="${DASH0_OPERATOR_ENDPOINT}" \
+    --set operator.dash0Export.secretRef.name=dash0-auth \
+    --set operator.dash0Export.secretRef.key=token \
+    --set operator.dash0Export.dataset="${DASH0_DATASET}" \
     --set operator.instrumentation.delayAfterEachWorkloadMillis=100 \
     --set operator.instrumentation.delayAfterEachNamespaceMillis=100 \
     --set operator.collectKubernetesInfrastructureMetrics=true \
@@ -185,38 +193,12 @@ fi
 
 # Wait for operator to be ready
 echo -e "${YELLOW}Waiting for Dash0 operator to be ready...${NC}"
-kubectl wait --for=condition=available --timeout=120s deployment/dash0-operator-controller -n dash0-system || true
+kubectl wait --for=condition=available --timeout=120s deployment/dash0-operator -n dash0-system || true
 
-# Create Dash0OperatorConfiguration with HTTP export (avoids gRPC auth token blocking issues)
-echo -e "${YELLOW}Creating Dash0 operator configuration with HTTP export...${NC}"
-cat <<EOF | kubectl apply -f -
-apiVersion: operator.dash0.com/v1alpha1
-kind: Dash0OperatorConfiguration
-metadata:
-  name: dash0-operator-configuration
-spec:
-  export:
-    http:
-      endpoint: https://ingress.${DASH0_REGION}.aws.dash0.com
-      headers:
-        - name: Authorization
-          value: Bearer ${DASH0_AUTH_TOKEN#Bearer }
-      encoding: proto
-
-  kubernetesInfrastructureMetricsCollection:
-    enabled: true
-
-  telemetryCollection:
-    enabled: true
-
-  selfMonitoring:
-    enabled: true
-
-  collectPodLabelsAndAnnotations:
-    enabled: true
-EOF
-
-echo -e "${GREEN}Dash0 operator configuration created!${NC}"
+# Deploy monitoring and subgraph resources using kustomize
+echo -e "${YELLOW}Deploying monitoring and subgraph resources with kustomize...${NC}"
+kubectl kustomize k8s/base | kubectl apply -f -
+echo -e "${GREEN}Monitoring and subgraph resources deployed!${NC}"
 
 # Build subgraph images (if not already built)
 echo -e "${GREEN}Building subgraph Docker images...${NC}"
@@ -224,19 +206,19 @@ for subgraph in accounts products reviews inventory; do
     IMAGE_NAME="apollo-dash0-demo-$subgraph:latest"
 
     echo -e "${YELLOW}Building $subgraph subgraph...${NC}"
-    docker build -t "$IMAGE_NAME" "./subgraphs/$subgraph"
+    # Build from subgraphs directory so Dockerfile can access shared directory
+    docker build -t "$IMAGE_NAME" -f "./subgraphs/$subgraph/Dockerfile" "./subgraphs"
 
     echo -e "${YELLOW}Importing $IMAGE_NAME to k3d...${NC}"
     k3d image import "$IMAGE_NAME" -c "$CLUSTER_NAME"
 done
 
-# Deploy subgraphs
-echo -e "${GREEN}Deploying subgraphs...${NC}"
-kubectl apply -f k8s/base/subgraphs/ -n apollo-dash0-demo
-
-# Wait for subgraphs to be ready
+# Wait for subgraphs to be ready (already deployed via kustomize)
 echo -e "${YELLOW}Waiting for subgraphs to be ready...${NC}"
-kubectl wait --for=condition=available --timeout=120s deployment --all -n apollo-dash0-demo
+kubectl wait --for=condition=available --timeout=120s deployment/accounts -n apollo-dash0-demo || true
+kubectl wait --for=condition=available --timeout=120s deployment/products -n apollo-dash0-demo || true
+kubectl wait --for=condition=available --timeout=120s deployment/reviews -n apollo-dash0-demo || true
+kubectl wait --for=condition=available --timeout=120s deployment/inventory -n apollo-dash0-demo || true
 
 # Get subgraph service endpoints for supergraph composition
 echo -e "${GREEN}Getting subgraph endpoints...${NC}"
@@ -273,16 +255,11 @@ kubectl create configmap router-config \
     --namespace=apollo-dash0-demo \
     --dry-run=client -o yaml | kubectl apply -f -
 
-# Add Apollo Helm repository
-echo -e "${GREEN}Adding Apollo Helm repository...${NC}"
-helm repo add apollo https://github.com/apollographql/router/raw/dev/helm/chart || true
-helm repo update
-
 # Install Apollo Router via Helm
 echo -e "${GREEN}Installing Apollo Router via Helm...${NC}"
 helm upgrade --install apollo-router \
     oci://ghcr.io/apollographql/helm-charts/router \
-    --version 1.57.1 \
+    --version 2.8.0 \
     --namespace apollo-dash0-demo \
     --values k8s/helm-values/router-values.yaml \
     --wait
@@ -290,10 +267,6 @@ helm upgrade --install apollo-router \
 # Wait for router to be ready
 echo -e "${YELLOW}Waiting for Apollo Router to be ready...${NC}"
 kubectl wait --for=condition=available --timeout=120s deployment/apollo-router -n apollo-dash0-demo
-
-# Deploy Dash0 Monitoring Resource
-echo -e "${GREEN}Deploying Dash0 Monitoring Resource...${NC}"
-kubectl apply -f k8s/base/dash0-monitoring.yaml
 
 echo -e "${YELLOW}Dash0 operator will now automatically instrument the workloads...${NC}"
 echo -e "${YELLOW}This may take a few moments. Workloads will be restarted if needed.${NC}"
@@ -319,7 +292,7 @@ echo -e "${GREEN}Test the GraphQL API:${NC}"
 echo -e '  curl -X POST http://localhost:4000/ -H "Content-Type: application/json" -d '"'"'{"query":"{ topProducts { id name price } }"}'"'"''
 echo ""
 echo -e "${GREEN}View telemetry in Dash0:${NC}"
-echo -e "  https://app.dash0.com"
+echo -e "  https://app.dash0.com → Logs/Metrics/Traces → Filter by Dataset: ${DASH0_DATASET:-default}"
 echo ""
 echo -e "${GREEN}To tear down:${NC}"
 echo -e "  ./k8s/scripts/k3d-down.sh"

@@ -6,7 +6,7 @@ const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { buildSubgraphSchema } = require('@apollo/subgraph');
 const gql = require('graphql-tag');
-const { withErrorInjection } = require('../shared/error-injection');
+const { withErrorInjection } = require('./shared/error-injection');
 
 // Sample product data
 const products = [

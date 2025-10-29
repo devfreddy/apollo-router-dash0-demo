@@ -11,9 +11,10 @@ if [ ! -f ../.env ]; then
   exit 1
 fi
 
-# Read variables directly from .env
-DASH0_AUTH_TOKEN=$(grep "^DASH0_AUTH_TOKEN=" ../.env | cut -d '=' -f2- | sed 's/"//g')
-DASH0_REGION=$(grep "^DASH0_REGION=" ../.env | cut -d '=' -f2- | sed 's/"//g')
+# Source the .env file
+set -a
+source ../.env
+set +a
 
 # Check required environment variables
 if [ -z "$DASH0_AUTH_TOKEN" ]; then
@@ -26,12 +27,18 @@ if [ -z "$DASH0_REGION" ]; then
   exit 1
 fi
 
-DASHBOARD_FILE="dash0/apollo-router-performance.json"
-DASHBOARD_ID="apollo-router-performance"
-API_URL="https://api.${DASH0_REGION}.aws.dash0.com/api/dashboards/${DASHBOARD_ID}"
+if [ -z "$DASH0_DATASET" ]; then
+  echo "❌ Error: DASH0_DATASET not set in .env"
+  exit 1
+fi
+
+DASHBOARD_FILE="dash0/apollo-router-complete-grouped.json"
+DASHBOARD_ID="apollo-router-complete"
+API_URL="https://api.${DASH0_REGION}.aws.dash0.com/api/dashboards/${DASHBOARD_ID}?dataset=${DASH0_DATASET}"
 
 echo "🚀 Deploying Apollo Router dashboard to Dash0..."
 echo "📍 Region: ${DASH0_REGION}"
+echo "📦 Dataset: ${DASH0_DATASET}"
 echo "📊 Dashboard: ${DASHBOARD_FILE}"
 
 # Check if dashboard file exists

@@ -89,7 +89,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: accounts-service
+  name: accounts
   labels:
     app: accounts
     component: subgraph

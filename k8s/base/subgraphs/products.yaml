@@ -89,7 +89,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: products-service
+  name: products-py
   labels:
     app: products
     component: subgraph

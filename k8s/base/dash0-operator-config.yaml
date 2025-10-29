@@ -1,38 +1,31 @@
-apiVersion: operator.dash0.com/v1alpha1
-kind: Dash0OperatorConfiguration
+apiVersion: operator.dash0.com/v1beta1
+kind: Dash0Monitoring
 metadata:
   name: dash0-operator-configuration
+  namespace: apollo-dash0-demo
 spec:
-  # Use HTTP export instead of gRPC to avoid authentication token blocking issues
-  # The operator's gRPC endpoint (port 4317) may block certain auth tokens,
-  # while the HTTP endpoint (port 443/4318) works reliably
-  export:
-    http:
-      # Base OTLP HTTP endpoint - the exporter will append /v1/traces, /v1/metrics, /v1/logs
-      endpoint: https://ingress.us-west-2.aws.dash0.com
-      headers:
-        - name: Authorization
-          value: Bearer auth_nGhIW24mv8kWSH6uz19Ig8hhSdwOYKA7
-        # Dash0 dataset specification
-        # NOTE: To change the dataset, update this value AND update DASH0_DATASET in the apollo-config ConfigMap
-        # The ConfigMap value is used by the Apollo Router
-        # This value is used by the Dash0 Operator for Kubernetes infrastructure telemetry
-        - name: Dash0-Dataset
-          value: gtm-dash0
-      encoding: proto  # Use protobuf encoding (can be "proto" or "json")
+  # Instrumentation configuration for workloads
+  instrumentWorkloads:
+    # Mode: none = disable auto-instrumentation (applications are manually instrumented)
+    # Other modes: "all" = instrument all workloads, "created-and-updated" = instrument new/updated workloads
+    mode: none
 
-  # Enable collection of Kubernetes infrastructure metrics
-  kubernetesInfrastructureMetricsCollection:
+    # Label selector: only instrument workloads that explicitly opt-in with dash0.com/enable=true
+    labelSelector: "dash0.com/enable=true"
+
+  # Log collection settings
+  logCollection:
     enabled: true
 
-  # Enable telemetry collection from instrumented workloads (metrics, traces, logs)
-  telemetryCollection:
-    enabled: true
+  # Prometheus scraping settings
+  prometheusScraping:
+    enabled: false
 
-  # Enable operator self-monitoring
-  selfMonitoring:
-    enabled: true
+  # Synchronize Perses dashboards with Dash0
+  synchronizePersesDashboards: true
 
-  # Collect pod labels and annotations for enrichment
-  collectPodLabelsAndAnnotations:
-    enabled: true
+  # Synchronize Prometheus rules with Dash0
+  synchronizePrometheusRules: true
+
+  # Export configuration (inherits from operator config by default)
+  # No need to specify - will use the cluster-wide Dash0OperatorConfiguration

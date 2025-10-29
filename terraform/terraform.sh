@@ -95,7 +95,7 @@ load_env() {
 
 validate_env() {
     local required_vars=(
-        "DASH0_AUTHORIZATION_TOKEN"
+        "DASH0_AUTH_TOKEN"
         "DASH0_URL"
     )
 
@@ -131,10 +131,8 @@ validate_env() {
 
 setup_terraform_vars() {
     # Create terraform variables from environment variables
-    export TF_VAR_dash0_auth_token="${DASH0_AUTHORIZATION_TOKEN}"
-    # Export DASH0_AUTH_TOKEN for the Dash0 provider to consume
-    export DASH0_AUTH_TOKEN="${DASH0_AUTHORIZATION_TOKEN}"
-    export TF_VAR_dataset="${TERRAFORM_DASH0_DATASET:-default}"
+    export TF_VAR_dash0_auth_token="${DASH0_AUTH_TOKEN}"
+    export TF_VAR_dataset="${DASH0_DATASET:-default}"
     export TF_VAR_project_name="${TERRAFORM_PROJECT_NAME:-apollo-router}"
     export TF_VAR_environment="${ENVIRONMENT:-demo}"
     export TF_VAR_router_service_name="${SERVICE_NAME:-apollo-router-demo}"
@@ -173,7 +171,7 @@ display_config() {
     echo ""
     echo "Dash0 Settings:"
     echo "  API URL: ${DASH0_URL}"
-    echo "  Dataset: ${TERRAFORM_DASH0_DATASET:-default}"
+    echo "  Dataset: ${DASH0_DATASET:-default}"
     echo "  Project: ${TERRAFORM_PROJECT_NAME:-apollo-router}"
     echo ""
     echo "Service Settings:"

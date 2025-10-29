@@ -144,7 +144,7 @@ telemetry:
         http:
           headers:
             "Authorization": "Bearer ${env.DASH0_AUTH_TOKEN}"
-            "Dash0-Dataset": "gtm-dash0"
+            "Dash0-Dataset": "${env.DASH0_DATASET}"
 
         # Batch processor settings for optimal performance
         batch_processor:
@@ -193,7 +193,7 @@ telemetry:
         http:
           headers:
             "Authorization": "Bearer ${env.DASH0_AUTH_TOKEN}"
-            "Dash0-Dataset": "gtm-dash0"
+            "Dash0-Dataset": "${env.DASH0_DATASET}"
 
         # Batch processor settings
         batch_processor:

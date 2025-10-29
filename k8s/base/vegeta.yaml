@@ -1,0 +1,421 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vegeta-queries
+  namespace: apollo-dash0-demo
+data:
+  accounts-me.json: |
+    {
+        "query": "query AccountsMe { me { name username email } }"
+    }
+  accounts-users.json: |
+    {
+        "query": "query AccountsUsers { users { id name username email } }"
+    }
+  federated-all.json: |
+    {
+        "query": "query FederatedAll { me { name username reviews { body rating product { name price inStock shippingEstimate } } } }"
+    }
+  large.json: |
+    {
+        "query": "query Large {  me {    name    reviews {      body      product {        name        price        reviews {          body          author {            name            reviews {              body              product {                name                price                reviews {                  body                  author {                    name                  }                }              }            }          }        }      }    }  }}"
+    }
+  large1.json: |
+    {
+        "query": "query Large1 {  me {    name    reviews {      body      product {        name        price        reviews {          body          author {            name            reviews {              body              product {                name                price                reviews {                  body                  author {                    name                  }                }              }            }          }        }      }    }  }}"
+    }
+  large2.json: |
+    {
+        "query": "query Large2 {  me {    name    reviews {      body      product {        name        price        reviews {          body          author {            name            reviews {              body              product {                name                price                reviews {                  body                  author {                    name                  }                }              }            }          }        }      }    }  }}"
+    }
+  large3.json: |
+    {
+        "query": "query Large3 {  me {    name    reviews {      body      product {        name        price        reviews {          body          author {            name            reviews {              body              product {                name                price                reviews {                  body                  author {                    name                  }                }              }            }          }        }      }    }  }}"
+    }
+  large4.json: |
+    {
+        "query": "query Large4 {  me {    name    reviews {      body      product {        name        price        reviews {          body          author {            name            reviews {              body              product {                name                price                reviews {                  body                  author {                    name                  }                }              }            }          }        }      }    }  }}"
+    }
+  products-inventory.json: |
+    {
+        "query": "query ProductsInventory { topProducts { name price inStock shippingEstimate } }"
+    }
+  products.json: |
+    {
+        "query": "query Products0 { topProducts { name reviews { body  author { name } } } }"
+    }
+  products1.json: |
+    {
+        "query": "query Products1 { topProducts { name inStock reviews { body  author { name } } } }"
+    }
+  products2.json: |
+    {
+        "query": "query Products2 { topProducts { name inStock reviews { body author { name } } } }"
+    }
+  products3.json: |
+    {
+        "query": "query Products3 { topProducts { name inStock reviews { body  author { name } } } }"
+    }
+  products4.json: |
+    {
+        "query": "query Products4 { topProducts { name inStock reviews { body  author { name } } } }"
+    }
+  products5.json: |
+    {
+        "query": "query Products5 { topProducts { name inStock reviews { body  author { name } } } }"
+    }
+  products6.json: |
+    {
+        "query": "query Products6 { topProducts { name reviews { body  author { name } } } }"
+    }
+  products7.json: |
+    {
+        "query": "query Products7 { topProducts { name reviews { body  author { name } } } }"
+    }
+  products8.json: |
+    {
+        "query": "query Products8 { topProducts { name reviews { body  author { name } } } }"
+    }
+  products9.json: |
+    {
+        "query": "query Products9 { topProducts { name reviews { body  author { name } } } }"
+    }
+  recommended.json: |
+    {
+        "query": "query Recommended {  recommendedProducts {    name   inStock    price    shippingEstimate    reviews {      body      author {        name        username     }    }  } }"
+    }
+  recommended1.json: |
+    {
+        "query": "query Recommended1 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+    }
+  recommended2.json: |
+    {
+        "query": "query Recommended2 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+    }
+  recommended3.json: |
+    {
+        "query": "query Recommended3 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+    }
+  recommended4.json: |
+    {
+        "query": "query Recommended4 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+    }
+  recommended5.json: |
+    {
+        "query": "query Recommended5 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+    }
+  recommended6.json: |
+    {
+        "query": "query Recommended6 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+    }
+  recommended7.json: |
+    {
+        "query": "query Recommended7 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+    }
+  recommended8.json: |
+    {
+        "query": "query Recommended8 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+    }
+  recommended9.json: |
+    {
+        "query": "query Recommended9 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+    }
+  reviews.json: |
+    {
+        "query": "query Reviews { me { name username reviews { product { name } body author { name username } } } }"
+    }
+  reviews1.json: |
+    {
+        "query": "query Reviews1 { me { name username reviews { product { name } body author { name username } } } }"
+    }
+  reviews2.json: |
+    {
+        "query": "query Reviews2 { me { name username reviews { product { name } body author { name username } } } }"
+    }
+  reviews3.json: |
+    {
+        "query": "query Reviews3 { me { name username reviews { product { name } body author { name username } } } }"
+    }
+  reviews4.json: |
+    {
+        "query": "query Reviews4 { me { name username reviews { product { name } body author { name username } } } }"
+    }
+  reviews5.json: |
+    {
+        "query": "query Reviews5 { me { name username reviews { product { name } body author { name username } } } }"
+    }
+  reviews6.json: |
+    {
+        "query": "query Reviews6 { me { name username reviews { product { name } body author { name username } } } }"
+    }
+  reviews7.json: |
+    {
+        "query": "query Reviews7 { me { name username reviews { product { name } body author { name username } } } }"
+    }
+  reviews8.json: |
+    {
+        "query": "query Reviews8 { me { name username reviews { product { name } body author { name username } } } }"
+    }
+  reviews9.json: |
+    {
+        "query": "query Reviews9 { me { name username reviews { product { name } body author { name username } } } }"
+    }
+  targets.http: |
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/reviews.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/products.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/large.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/recommended.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/accounts-me.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/accounts-users.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/products-inventory.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/federated-all.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/reviews1.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/products1.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/large1.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/recommended1.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/reviews2.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/products2.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/large2.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/recommended2.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/reviews3.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/products3.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/large3.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/recommended3.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/reviews4.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/products4.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/large4.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/recommended4.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/reviews5.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/products5.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/recommended5.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/reviews6.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/products6.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/recommended6.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/reviews7.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/products7.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/recommended7.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/reviews8.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/products8.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/recommended8.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/reviews9.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/products9.json
+
+    POST http://apollo-router.apollo-dash0-demo.svc.cluster.local:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/recommended9.json
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vegeta
+  namespace: apollo-dash0-demo
+  labels:
+    app: vegeta
+    com.dash0.demo: load-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vegeta
+  template:
+    metadata:
+      labels:
+        app: vegeta
+        com.dash0.demo: load-generator
+    spec:
+      serviceAccountName: vegeta
+      containers:
+      - name: vegeta
+        image: jauderho/vegeta:latest
+        imagePullPolicy: IfNotPresent
+        command:
+        - vegeta
+        args:
+        - attack
+        - -targets=/etc/vegeta/targets.http
+        - -rate=5
+        - -timeout=10s
+        - -duration=0
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        volumeMounts:
+        - name: vegeta-queries
+          mountPath: /etc/vegeta
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65534
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+      volumes:
+      - name: vegeta-queries
+        configMap:
+          name: vegeta-queries
+          defaultMode: 0444
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vegeta
+  namespace: apollo-dash0-demo

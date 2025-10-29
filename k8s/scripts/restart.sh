@@ -28,8 +28,10 @@ if [ ! -f .env ]; then
     exit 1
 fi
 
-# Load environment variables
+# Load environment variables and export them for envsubst
+set -a
 source .env
+set +a
 
 # Verify required variables
 if [ -z "$DASH0_AUTH_TOKEN" ]; then
@@ -56,13 +58,12 @@ fi
 echo -e "${YELLOW}ℹ️  Restarting all components...${NC}"
 echo ""
 
-# Step 1: Update Dash0 Secret
-echo -e "${GREEN}[1/5] Updating Dash0 auth secret...${NC}"
-kubectl create secret generic dash0-auth \
-    --from-literal=token="$DASH0_AUTH_TOKEN" \
-    --namespace=apollo-dash0-demo \
-    --dry-run=client -o yaml | kubectl apply -f - > /dev/null
-echo -e "${GREEN}      ✓ Secret updated${NC}"
+# Step 1: Update Dash0 operator configuration (must be done before monitoring resource)
+echo -e "${GREEN}[1/5] Updating Dash0 operator configuration...${NC}"
+envsubst < k8s/base/dash0-operator-config.yaml | kubectl apply -f - > /dev/null
+sleep 1  # Wait for operator config webhook to process
+envsubst < <(kubectl kustomize k8s/base) | kubectl apply -f - > /dev/null
+echo -e "${GREEN}      ✓ Dash0 configuration updated${NC}"
 
 # Step 2: Update ConfigMap
 echo -e "${GREEN}[2/5] Updating configuration...${NC}"
@@ -115,11 +116,12 @@ echo -e "${BLUE}║  ✅ RESTART COMPLETE                                      �
 echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 echo -e "${GREEN}What's been updated:${NC}"
-echo -e "  • Dash0 auth secret (token)"
-echo -e "  • Configuration (endpoints, service names)"
+echo -e "  • Dash0 operator configuration (via kustomize)"
+echo -e "  • Dash0 monitoring resources (via kustomize)"
+echo -e "  • Subgraph deployments (via kustomize)"
+echo -e "  • Apollo Router configuration (endpoints, service names)"
 echo -e "  • Dash0 operator (restarted & re-instrumented pods)"
-echo -e "  • Apollo Router"
-echo -e "  • All subgraphs (accounts, products-py, reviews, inventory)"
+echo -e "  • All application deployments"
 echo ""
 echo -e "${GREEN}Next steps:${NC}"
 echo -e "  1. Wait 2-5 minutes for operator to instrument pods"
@@ -130,5 +132,5 @@ echo -e "       -d '{\"query\":\"{ topProducts { id name } }\"}'${NC}"
 echo -e "  3. View logs:"
 echo -e "     ${BLUE}kubectl logs -f deployment/apollo-router -n apollo-dash0-demo${NC}"
 echo -e "  4. Check Dash0 UI:"
-echo -e "     ${BLUE}https://app.dash0.com → Logs/Metrics/Traces → Filter by Dataset: gtm-dash0${NC}"
+echo -e "     ${BLUE}https://app.dash0.com → Logs/Metrics/Traces → Filter by Dataset: ${DASH0_DATASET:-default}${NC}"
 echo ""

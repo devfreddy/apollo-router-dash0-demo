@@ -6,7 +6,7 @@ const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { buildSubgraphSchema } = require('@apollo/subgraph');
 const gql = require('graphql-tag');
-const { withErrorInjection } = require('../shared/error-injection');
+const { withErrorInjection } = require('./shared/error-injection');
 
 // Sample user data
 const users = [
@@ -26,6 +26,7 @@ const typeDefs = gql`
     me: User
     user(id: ID!): User
     users: [User!]!
+    recommendedProducts: [Product]
   }
 
   type User @key(fields: "id") {
@@ -33,6 +34,10 @@ const typeDefs = gql`
     name: String!
     username: String!
     email: String
+  }
+
+  type Product @key(fields: "id") {
+    id: ID!
   }
 `;
 
@@ -63,6 +68,17 @@ const resolvers = {
       'accounts-subgraph',
       5,
       'Failed to fetch users'
+    ),
+    recommendedProducts: withErrorInjection(
+      () => {
+        // Return a simulated list of recommended products
+        // This would normally come from a recommendation engine
+        const productIds = ['1', '2', '3'];
+        return productIds.map(id => ({ id }));
+      },
+      'accounts-subgraph',
+      5,
+      'Failed to fetch recommended products'
     ),
   },
   User: {
