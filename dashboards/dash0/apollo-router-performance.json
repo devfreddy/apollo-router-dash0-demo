@@ -832,7 +832,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (kind, service_version) ({otel_metric_name = \"apollo.router.cache.size\", otel_metric_type = \"gauge\"})"
+                    "query": "sum by (kind, version) ({otel_metric_name = \"apollo.router.cache.size\", otel_metric_type = \"gauge\"})"
                   }
                 }
               }
@@ -860,7 +860,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (kind, service_version) (rate({otel_metric_name = \"apollo.router.cache.miss.time\", otel_metric_type = \"histogram\"}[2m]))"
+                    "query": "sum by (kind, version) (rate({otel_metric_name = \"apollo.router.cache.miss.time\", otel_metric_type = \"histogram\"}[2m]))"
                   }
                 }
               }

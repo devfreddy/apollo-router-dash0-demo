@@ -12,6 +12,15 @@ dashboards/
 ├── create-grouped-dashboard.js  # Combined grouped dashboard generator
 ├── deploy.sh              # Dashboard deployment script
 ├── DASHBOARD_ORGANIZATION.md    # Detailed dashboard guide
+├── docs/                  # 📚 Dashboard conversion documentation
+│   ├── README.md          # Documentation index (START HERE for conversion help)
+│   ├── CONVERSION_GUIDE.md           # Practical workflow & patterns
+│   ├── DATADOG_QUERY_REFERENCE.md   # Datadog syntax reference
+│   ├── PROMQL_REFERENCE.md          # PromQL patterns & functions
+│   ├── PERSES_DASHBOARD_FORMAT.md   # Dash0/Perses JSON structure
+│   ├── CONVERSION_MAPPINGS.md       # Lookup tables for conversions
+│   ├── CONVERSION_STRATEGY.md       # High-level architectural strategy
+│   └── IMPLEMENTATION_ROADMAP.md    # Next phase: JavaScript library
 ├── datadog/
 │   └── graphos-template.json  # Original Datadog dashboard template
 └── dash0/
@@ -23,6 +32,20 @@ dashboards/
     ├── infrastructure-dashboard.json            # Individual: Infrastructure (8 panels)
     └── coprocessors-dashboard.json              # Individual: Coprocessors (11 panels)
 ```
+
+## 📚 Documentation
+
+For comprehensive guidance on dashboard conversion, start here:
+
+**⭐ [docs/QUICK_START.md](docs/QUICK_START.md)** - Get started in 5 minutes
+**📖 [docs/README.md](docs/README.md)** - Documentation index and navigation
+
+Quick links to key documents:
+- **[CONVERSION_GUIDE.md](docs/CONVERSION_GUIDE.md)** - Step-by-step conversion workflow
+- **[CONVERSION_MAPPINGS.md](docs/CONVERSION_MAPPINGS.md)** - Quick lookup tables
+- **[DATADOG_QUERY_REFERENCE.md](docs/DATADOG_QUERY_REFERENCE.md)** - Datadog query syntax
+- **[PROMQL_REFERENCE.md](docs/PROMQL_REFERENCE.md)** - PromQL patterns and functions
+- **[CLEANUP_SUMMARY.md](docs/CLEANUP_SUMMARY.md)** - Project completion summary
 
 ## Quick Start
 
