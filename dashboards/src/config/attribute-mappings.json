@@ -1,0 +1,140 @@
+{
+  "description": "Datadog label name to Dash0/PromQL label name mappings",
+  "note": "All dots (.) are converted to underscores (_) for PromQL compatibility",
+  "mappings": {
+    "http.response.status_code": {
+      "dash0_name": "http_status_code",
+      "description": "HTTP response status code",
+      "examples": ["200", "404", "500", "2xx", "5xx"]
+    },
+    "http.request.method": {
+      "dash0_name": "http_method",
+      "description": "HTTP request method",
+      "examples": ["GET", "POST", "PUT", "DELETE"]
+    },
+    "http.route": {
+      "dash0_name": "http_route",
+      "description": "HTTP route or endpoint path",
+      "examples": ["/graphql", "/api/users", "/health"]
+    },
+    "subgraph.name": {
+      "dash0_name": "subgraph_name",
+      "description": "Backend subgraph/service name",
+      "examples": ["users", "products", "inventory", "orders"]
+    },
+    "graphql.operation.name": {
+      "dash0_name": "graphql_operation_name",
+      "description": "GraphQL operation name",
+      "examples": ["GetUser", "ListProducts", "CreateOrder"]
+    },
+    "graphql.operation.type": {
+      "dash0_name": "graphql_operation_type",
+      "description": "GraphQL operation type",
+      "examples": ["query", "mutation", "subscription"]
+    },
+    "apollo_router_cache_kind": {
+      "dash0_name": "kind",
+      "description": "Cache type/kind",
+      "examples": ["query", "schema", "full_response", "parse"],
+      "note": "Shortened from apollo_router_cache_kind in Dash0"
+    },
+    "cache.type": {
+      "dash0_name": "storage",
+      "description": "Cache storage backend",
+      "examples": ["redis", "in_memory", "disk"]
+    },
+    "cache.storage": {
+      "dash0_name": "storage",
+      "description": "Alternative label for cache storage",
+      "examples": ["redis", "in_memory"]
+    },
+    "host": {
+      "dash0_name": "dash0_resource_name",
+      "description": "Host/instance identifier",
+      "examples": ["router-1", "router-prod-1", "localhost"]
+    },
+    "pod_name": {
+      "dash0_name": "dash0_resource_name",
+      "description": "Kubernetes pod name (maps to same as host)",
+      "examples": ["apollo-router-1", "apollo-router-2"],
+      "note": "Both host and pod_name map to dash0_resource_name"
+    },
+    "container_id": {
+      "dash0_name": "dash0_resource_id",
+      "description": "Docker/container ID",
+      "examples": ["abc123def456"]
+    },
+    "service.name": {
+      "dash0_name": "service_name",
+      "description": "Service name",
+      "examples": ["apollo-router"]
+    },
+    "service.version": {
+      "dash0_name": "service_version",
+      "description": "Application/service version",
+      "examples": ["1.0.0", "1.1.0", "2.0.0"]
+    },
+    "service.namespace": {
+      "dash0_name": "service_namespace",
+      "description": "Kubernetes namespace or deployment namespace",
+      "examples": ["default", "production", "staging"]
+    },
+    "deployment": {
+      "dash0_name": "deployment",
+      "description": "Deployment name",
+      "examples": ["apollo-router", "router-prod"]
+    },
+    "job_outcome": {
+      "dash0_name": "job_outcome",
+      "description": "Job execution outcome",
+      "examples": ["success", "failure", "timeout"]
+    },
+    "source": {
+      "dash0_name": "source",
+      "description": "Source of the request/operation",
+      "examples": ["client", "subgraph", "cache"]
+    },
+    "environment": {
+      "dash0_name": "env",
+      "description": "Environment name",
+      "examples": ["prod", "staging", "dev", "test"]
+    }
+  },
+  "template_variables": {
+    "$service": {
+      "description": "Datadog template variable for service filtering",
+      "replacement": "Remove or replace with specific service name",
+      "example": "Datadog query may have {$service} which should become {service_name=\"apollo-router\"}"
+    },
+    "$env": {
+      "description": "Datadog template variable for environment filtering",
+      "replacement": "Remove or replace with specific environment",
+      "example": "Datadog query may have {$env} which should become {env=\"prod\"}"
+    },
+    "$version": {
+      "description": "Datadog template variable for version filtering",
+      "replacement": "Remove or replace with specific version",
+      "example": "Datadog query may have {$version} which should become {service_version=\"1.0.0\"}"
+    }
+  },
+  "conversion_rules": [
+    {
+      "rule": "Datadog dot notation to underscore notation",
+      "example_from": "http.response.status_code",
+      "example_to": "http_status_code",
+      "implementation": "name.replace(/\\./g, '_')"
+    },
+    {
+      "rule": "For unmapped attributes, apply default conversion",
+      "example_from": "custom.attribute.name",
+      "example_to": "custom_attribute_name",
+      "note": "If not in mappings table, apply dot-to-underscore conversion"
+    },
+    {
+      "rule": "Template variables should be removed or replaced",
+      "example_from": "{$service, $env}",
+      "example_to": "{service_name=\"apollo-router\", env=\"prod\"} or remove entirely",
+      "note": "Depends on use case - usually just remove for dashboard-level filtering"
+    }
+  ]
+}

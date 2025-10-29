@@ -1,0 +1,145 @@
+{
+  "description": "Metric type detection rules for Apollo Router metrics. Rules are evaluated in order.",
+  "rules": [
+    {
+      "id": "histogram_duration",
+      "pattern": "duration",
+      "type": "histogram",
+      "confidence": "high",
+      "description": "Duration and latency metrics are always histograms in OpenTelemetry"
+    },
+    {
+      "id": "histogram_time",
+      "pattern": ".time",
+      "type": "histogram",
+      "confidence": "high",
+      "description": "Time-based measurements are histograms"
+    },
+    {
+      "id": "histogram_body_size",
+      "pattern": "body.size|request.body|response.body",
+      "type": "histogram",
+      "confidence": "high",
+      "description": "Payload size metrics are histograms showing distribution of sizes"
+    },
+    {
+      "id": "histogram_query_planning",
+      "pattern": "evaluated_plans|evaluated_paths",
+      "type": "histogram",
+      "confidence": "high",
+      "description": "Query planning evaluation metrics are histograms"
+    },
+    {
+      "id": "gauge_cache_size_exception",
+      "pattern": "^apollo\\.router\\.cache\\.size$",
+      "type": "gauge",
+      "confidence": "high",
+      "description": "EXCEPTION: cache.size is gauge (current value), not histogram. This is a common mistake!"
+    },
+    {
+      "id": "sum_operations",
+      "pattern": "operations",
+      "type": "sum",
+      "confidence": "high",
+      "description": "Operation counters are monotonic sums"
+    },
+    {
+      "id": "sum_totals",
+      "pattern": "count.total|.total",
+      "type": "sum",
+      "confidence": "high",
+      "description": "Explicit .total suffix indicates cumulative counter"
+    },
+    {
+      "id": "sum_active_requests_jobs",
+      "pattern": "active_requests|active_jobs",
+      "type": "sum",
+      "confidence": "high",
+      "description": "Active request/job counters are sums"
+    },
+    {
+      "id": "sum_errors",
+      "pattern": "graphql_error",
+      "type": "sum",
+      "confidence": "high",
+      "description": "Error counts are cumulative counters"
+    },
+    {
+      "id": "sum_telemetry",
+      "pattern": "telemetry",
+      "type": "sum",
+      "confidence": "high",
+      "description": "Telemetry metrics are usually counters"
+    },
+    {
+      "id": "sum_state_changes",
+      "pattern": "state.change",
+      "type": "sum",
+      "confidence": "high",
+      "description": "State change events are counters"
+    },
+    {
+      "id": "gauge_queued",
+      "pattern": "queued",
+      "type": "gauge",
+      "confidence": "high",
+      "description": "Queue depth is an instantaneous gauge value"
+    },
+    {
+      "id": "gauge_session",
+      "pattern": "session",
+      "type": "gauge",
+      "confidence": "high",
+      "description": "Session counts are current instantaneous values"
+    },
+    {
+      "id": "gauge_connections",
+      "pattern": "open_connections",
+      "type": "gauge",
+      "confidence": "high",
+      "description": "Connection counts are instantaneous gauges"
+    },
+    {
+      "id": "gauge_pipelines",
+      "pattern": "pipelines",
+      "type": "gauge",
+      "confidence": "high",
+      "description": "Pipeline metrics are current values"
+    },
+    {
+      "id": "gauge_license",
+      "pattern": "license",
+      "type": "gauge",
+      "confidence": "high",
+      "description": "License metrics are instantaneous values"
+    },
+    {
+      "id": "gauge_federation",
+      "pattern": "federation",
+      "type": "gauge",
+      "confidence": "high",
+      "description": "Federation metrics are gauges"
+    },
+    {
+      "id": "gauge_jemalloc",
+      "pattern": "jemalloc",
+      "type": "gauge",
+      "confidence": "high",
+      "description": "Memory allocator metrics are gauges (current memory state)"
+    },
+    {
+      "id": "default_gauge",
+      "pattern": "*",
+      "type": "gauge",
+      "confidence": "low",
+      "description": "Default: assume gauge if no other rule matches. May need to refine rules if incorrect."
+    }
+  ],
+  "notes": [
+    "Rules are evaluated in order - first matching rule wins",
+    "Pattern uses string includes() match, except for ^ ^ anchored patterns (exact match)",
+    "Use | for OR patterns (e.g., 'evaluated_plans|evaluated_paths')",
+    "The exception rule for cache.size must use exact match to override duration/size rules",
+    "The default rule (pattern: '*') always matches - keep it last"
+  ]
+}

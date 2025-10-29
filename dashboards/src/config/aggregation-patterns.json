@@ -1,0 +1,120 @@
+{
+  "description": "PromQL aggregation patterns based on metric type and Datadog aggregation function",
+  "window": "2m",
+  "windowDescription": "Default time window for range vectors. Adjust based on scrape interval and desired smoothness.",
+  "patterns": {
+    "percentile": {
+      "description": "Percentile queries (p50, p75, p95, p99, p999) - only for histograms",
+      "template": "histogram_quantile(PERCENTILE, RATE_EXPR)",
+      "notes": [
+        "Only works with histogram metrics",
+        "Must include 'le' label in sum by() clause - this is critical for percentile calculation",
+        "Use rate() for time-series behavior"
+      ],
+      "examples": {
+        "without_grouping": "histogram_quantile(0.95, rate({metric}[2m]))",
+        "with_grouping": "histogram_quantile(0.95, sum by (LABEL, le) (rate({metric}[2m])))"
+      }
+    },
+    "count_histogram": {
+      "description": "Count aggregation on histogram metrics - depends on modifiers",
+      "cases": [
+        {
+          "condition": ".as_rate() modifier present",
+          "template": "sum(GROUPBY) (rate({metric}[2m]))",
+          "rationale": "Convert counter to per-second rate"
+        },
+        {
+          "condition": ".as_count() modifier present",
+          "template": "histogram_sum(sum(GROUPBY) (increase({metric}[2m])))",
+          "rationale": "Get total count over time window using increase()"
+        },
+        {
+          "condition": "No modifier (default)",
+          "note": "Special handling for http.server.request.duration - see special_cases",
+          "template": "histogram_sum(increase({metric}[2m]))"
+        }
+      ]
+    },
+    "count_sum": {
+      "description": "Count aggregation on sum/counter metrics",
+      "template": "sum(GROUPBY) (rate({metric}[2m]))",
+      "rationale": "Counters are monotonic - use rate() for per-second behavior"
+    },
+    "count_gauge": {
+      "description": "Count on gauge metrics",
+      "template": "count(GROUPBY) ({metric})",
+      "rationale": "Count the number of series, no rate needed"
+    },
+    "sum_histogram": {
+      "description": "Sum aggregation on histogram metrics",
+      "template": "histogram_sum(sum(GROUPBY) (rate({metric}[2m])))",
+      "rationale": "Extract sum from histogram buckets with rate()",
+      "note": "Special handling for http.client.request.duration - see special_cases"
+    },
+    "sum_sum": {
+      "description": "Sum aggregation on sum/counter metrics",
+      "template": "sum(GROUPBY) (rate({metric}[2m]))",
+      "rationale": "Sum the per-second rates"
+    },
+    "sum_gauge": {
+      "description": "Sum aggregation on gauge metrics",
+      "template": "sum(GROUPBY) ({metric})",
+      "rationale": "Sum current values - no rate needed for gauges"
+    },
+    "avg_histogram": {
+      "description": "Average aggregation on histogram metrics",
+      "template": "histogram_avg(sum(GROUPBY) (rate({metric}[2m])))",
+      "rationale": "Average across histogram buckets with rate()",
+      "note": "Special handling for http.client.request.duration - see special_cases"
+    },
+    "avg_sum": {
+      "description": "Average aggregation on sum/counter metrics",
+      "template": "avg(GROUPBY) (rate({metric}[2m]))",
+      "rationale": "Average the per-second rates"
+    },
+    "avg_gauge": {
+      "description": "Average aggregation on gauge metrics",
+      "template": "avg(GROUPBY) ({metric})",
+      "rationale": "Average instantaneous values - no rate"
+    },
+    "max_min": {
+      "description": "Max/Min aggregations - work on all metric types",
+      "template": "AGGREGATION(GROUPBY) ({metric})",
+      "notes": [
+        "Use with rate() for histograms and sums if measuring over time",
+        "Use without rate() for gauges"
+      ]
+    }
+  },
+  "special_cases": [
+    {
+      "metric": "http.server.request.duration",
+      "aggregation": "count",
+      "reason": "High cardinality from per-operation breakdown creates noise",
+      "adjustment": "Wrap with sum() to aggregate all operations cleanly",
+      "pattern": "histogram_sum(sum(increase({metric}[2m])))"
+    },
+    {
+      "metric": "http.client.request.duration",
+      "aggregation": ["sum", "avg"],
+      "reason": "Want to show latency per subgraph, not aggregated",
+      "adjustment": "Group by subgraph_name explicitly",
+      "pattern_sum": "histogram_sum(sum by (subgraph_name) (rate({metric}[2m])))",
+      "pattern_avg": "histogram_avg(sum by (subgraph_name) (rate({metric}[2m])))"
+    }
+  ],
+  "critical_rules": [
+    "NO rate() on gauge metrics - gauges are instantaneous values",
+    "Histogram queries MUST use rate() or increase() for time-series behavior",
+    "Percentile queries MUST include 'le' label in sum by() - this is required by Prometheus",
+    "Sum/Counter metrics MUST use rate() for per-second behavior",
+    "The 'GROUPBY' placeholder expands to 'by (label1, label2)' if grouping exists, otherwise empty"
+  ],
+  "time_window_guidance": {
+    "5m": "Default for balanced smoothness and responsiveness",
+    "1m": "For high-frequency metrics needing immediate response",
+    "10m": "For stability, reduces noise on sparse metrics",
+    "30m": "For long-term trends, very smooth"
+  }
+}
