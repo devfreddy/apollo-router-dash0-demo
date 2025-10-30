@@ -458,24 +458,10 @@
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from router\n-   If your organization has control over all clients of your supergraph:\n    -   alert on increases in 4xx responses indicating a potential misconfiguration of one or more clients.\n    -   alert on increases in GraphQL errors indicating bad queries from one or more clients.\n-   Reliability SLO: ≥99.9% of Router responses should be 2xx and without error.\n-   Metric health: unexpected zero or missing metrics indicate a potential networking or telemetry misconfiguration\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement"
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from router\n-   If your organization has control over all clients of your supergraph:\n    -   alert on increases in 4xx responses indicating a potential misconfiguration of one or more clients.\n    -   alert on increases in GraphQL errors indicating bad queries from one or more clients.\n-   Reliability SLO: ≥99.9% of Router responses should be 2xx and without error.\n-   Metric health: unexpected zero or missing metrics indicate a potential networking or telemetry misconfiguration\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement"
             }
-          ]
+          }
         }
       },
       "panel_1": {
@@ -538,56 +524,28 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows the volume of requests Apollo Rou"
+            "name": "This chart shows the volume of requests Apollo Router is han..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows the volume of requests Apollo Router is handling over time, broken down by status code.\n\n**What to look for**\n\n- Are most requests successful (`2xx`)?\n- Are clients misbehaving (`4xx`)?\n- Is the router or a subgraph failing (`5xx`)?\n\n**Why it matters**\n\n- An increase in `4xx` errors may indicate client bugs or attempts to invoke deprecated queries.\n- A spike in `5xx` errors likely indicates that something is broken downstream.\n- Changes in total volume may reflect traffic surges or outages."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows the volume of requests Apollo Router is handling over time, broken down by status code.\n\n**What to look for**\n\n- Are most requests successful (`2xx`)?\n- Are clients misbehaving (`4xx`)?\n- Is the router or a subgraph failing (`5xx`)?\n\n**Why it matters**\n\n- An increase in `4xx` errors may indicate client bugs or attempts to invoke deprecated queries.\n- A spike in `5xx` errors likely indicates that something is broken downstream.\n- Changes in total volume may reflect traffic surges or outages."
             }
-          ]
+          }
         }
       },
       "panel_4": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows requests per second (RPS) hitting"
+            "name": "This chart shows requests per second (RPS) hitting the Apoll..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows requests per second (RPS) hitting the Apollo Router. This is your clearest view into how much work the Router is doing right now.\n\n**What to look for**\n\n- A sudden drop may indicate client outages or configuration errors.\n- A flat line during known busy periods may indicate that you are hitting throttling limits."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows requests per second (RPS) hitting the Apollo Router. This is your clearest view into how much work the Router is doing right now.\n\n**What to look for**\n\n- A sudden drop may indicate client outages or configuration errors.\n- A flat line during known busy periods may indicate that you are hitting throttling limits."
             }
-          ]
+          }
         }
       },
       "panel_5": {
@@ -650,56 +608,28 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows the total error rate percentage o"
+            "name": "This chart shows the total error rate percentage of requests..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows the total error rate percentage of requests handled by the Router.\n\n**It includes**\n\n- GraphQL errors — e.g., validation failures, resolver exceptions.\n- HTTP 5xx responses — typically indicating internal or subgraph infrastructure issues.\n\nThe formula adds these two failure categories together and divides by the total request count, giving a single view into how often requests fail from the client’s perspective.\n\n**What to look for**\n\n- Spikes in error rate — especially following deploys or traffic increases.\n- Sustained error rates above 1–2% — which may indicate regressions or uncaught edge cases.\n- Increased 5xx errors without corresponding GraphQL errors — this may point to subgraph crashes or timeouts.\n- Silent drops in traffic — if error rate decreases while request volume drops, it could signal issues upstream (e.g., client timeouts or DNS problems).\n\n**Why it matters**\n\n- Reliability tracking — errors reflect user-facing failures and service health.\n- Incident detection — elevated error rates can signal broken schemas, subgraph failures, or deploy issues.\n- SLO compliance — helps teams track whether reliability objectives (like <1% error rate) are being met."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows the total error rate percentage of requests handled by the Router.\n\n**It includes**\n\n- GraphQL errors — e.g., validation failures, resolver exceptions.\n- HTTP 5xx responses — typically indicating internal or subgraph infrastructure issues.\n\nThe formula adds these two failure categories together and divides by the total request count, giving a single view into how often requests fail from the client’s perspective.\n\n**What to look for**\n\n- Spikes in error rate — especially following deploys or traffic increases.\n- Sustained error rates above 1–2% — which may indicate regressions or uncaught edge cases.\n- Increased 5xx errors without corresponding GraphQL errors — this may point to subgraph crashes or timeouts.\n- Silent drops in traffic — if error rate decreases while request volume drops, it could signal issues upstream (e.g., client timeouts or DNS problems).\n\n**Why it matters**\n\n- Reliability tracking — errors reflect user-facing failures and service health.\n- Incident detection — elevated error rates can signal broken schemas, subgraph failures, or deploy issues.\n- SLO compliance — helps teams track whether reliability objectives (like <1% error rate) are being met."
             }
-          ]
+          }
         }
       },
       "panel_7": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart focuses specifically on GraphQL errors "
+            "name": "This chart focuses specifically on GraphQL errors from subgr..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart focuses specifically on GraphQL errors from subgraphs — grouped by query operation name.\n\n**Why it matters**\n\n- These are the requests that reported back a 2xx response, but with errors within the actual GraphQL response.\n- These do not directly impact router performance, but can be an indicator of incorrect logic on your client or subgraph side.\n\n**Caveats**\n\n- This chart is populated via traces, not metrics, so the numbers will not necessarily be absolute."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart focuses specifically on GraphQL errors from subgraphs — grouped by query operation name.\n\n**Why it matters**\n\n- These are the requests that reported back a 2xx response, but with errors within the actual GraphQL response.\n- These do not directly impact router performance, but can be an indicator of incorrect logic on your client or subgraph side.\n\n**Caveats**\n\n- This chart is populated via traces, not metrics, so the numbers will not necessarily be absolute."
             }
-          ]
+          }
         }
       },
       "panel_8": {
@@ -748,28 +678,14 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows the size of incoming HTTP request"
+            "name": "This chart shows the size of incoming HTTP request bodies, h..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows the size of incoming HTTP request bodies, highlighting the largest payloads seen.\n\n**What to look for**\n\n- A stable `p99` suggests consistent request sizes.\n- Occasional `max` spikes are okay — frequent ones may require investigation.\n- Rising trends could signal a client change or growing inefficiency.\n\n**Why it matters**\n\n- `p99` — shows typical large requests.\n- `max` — shows the absolute biggest, helpful for spotting outliers.\n- Large payloads can increase parsing/validation time.\n- Large payloads can cause memory pressure or latency spikes.\n- Large payloads can indicate misuse (e.g., file uploads, bloated mutations).\n\n**Caveats**\n\n- Doesn’t reflect query complexity — a small body can still be expensive."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows the size of incoming HTTP request bodies, highlighting the largest payloads seen.\n\n**What to look for**\n\n- A stable `p99` suggests consistent request sizes.\n- Occasional `max` spikes are okay — frequent ones may require investigation.\n- Rising trends could signal a client change or growing inefficiency.\n\n**Why it matters**\n\n- `p99` — shows typical large requests.\n- `max` — shows the absolute biggest, helpful for spotting outliers.\n- Large payloads can increase parsing/validation time.\n- Large payloads can cause memory pressure or latency spikes.\n- Large payloads can indicate misuse (e.g., file uploads, bloated mutations).\n\n**Caveats**\n\n- Doesn’t reflect query complexity — a small body can still be expensive."
             }
-          ]
+          }
         }
       },
       "panel_10": {
@@ -780,24 +696,10 @@
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "**Apollo Router Latency Overview**\n\nApollo Router routes incoming GraphQL requests to subgraphs, handles query planning, and coordinates responses. Latency here reflects the total time the Router takes to process and respond to an HTTP request, including:\n\n-   Parsing and validating the GraphQL query\n-   Calling subgraphs\n-   Merging responses, handling errors, and formatting results\n-   Any middleware or plugin logic you've added\n\nIf your latency rises, the cause could be the Router itself, one or more subgraphs, or custom logic you've installed."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "**Apollo Router Latency Overview**\n\nApollo Router routes incoming GraphQL requests to subgraphs, handles query planning, and coordinates responses. Latency here reflects the total time the Router takes to process and respond to an HTTP request, including:\n\n-   Parsing and validating the GraphQL query\n-   Calling subgraphs\n-   Merging responses, handling errors, and formatting results\n-   Any middleware or plugin logic you've added\n\nIf your latency rises, the cause could be the Router itself, one or more subgraphs, or custom logic you've installed."
             }
-          ]
+          }
         }
       },
       "panel_11": {
@@ -888,28 +790,14 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows the distribution of request durat"
+            "name": "This chart shows the distribution of request durations for t..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows the distribution of request durations for the Apollo Router using the [http.server.request.duration](https://opentelemetry.io/docs/specs/semconv/http/http-metrics/#metric-httpserverrequestduration) metric.\n\n**What to look for**\n\n- Sudden shifts in duration patterns — may indicate changes in backend performance.\n- Long tail durations — can point to slow queries or infrastructure issues.\n\n**Why it matters**\n\n- Understanding latency helps identify bottlenecks and improve user experience.\n- Monitoring duration trends assists in detecting regressions early."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows the distribution of request durations for the Apollo Router using the [http.server.request.duration](https://opentelemetry.io/docs/specs/semconv/http/http-metrics/#metric-httpserverrequestduration) metric.\n\n**What to look for**\n\n- Sudden shifts in duration patterns — may indicate changes in backend performance.\n- Long tail durations — can point to slow queries or infrastructure issues.\n\n**Why it matters**\n\n- Understanding latency helps identify bottlenecks and improve user experience.\n- Monitoring duration trends assists in detecting regressions early."
             }
-          ]
+          }
         }
       },
       "panel_13": {
@@ -920,24 +808,10 @@
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "**How to interpret percentiles**\n\n- p90 / p95 — these percentiles represent the upper range of typical request latencies. If these values rise, it generally means a significant portion of requests are experiencing slower responses. Possible causes include:\n\n  - A subgraph is responding more slowly than usual (e.g., due to load or inefficiency)\n  - The Router’s query planning step is taking longer (especially with complex or highly federated queries)\n  - Overall increased load causing processing delays\n\n- p99 — this is a tail latency metric that reflects the slowest 1% of requests. Spikes here often indicate rare but impactful delays, such as:\n\n  - Intermittent subgraph performance issues or temporary timeouts\n  - Specific heavy or complex queries that take much longer to plan or execute\n  - Unusual overhead in middleware or Router internals affecting some requests\n\n- Max — the absolute slowest observed request during the timeframe. Isolated high max values are usually less concerning (e.g., caused by a single unusual request). However, frequent or sustained high max latencies may point to:\n\n  - Clients issuing extremely large or repeated queries causing resource exhaustion or retries\n  - Transient infrastructure problems (network issues, DNS delays, resource contention)\n\n- Min — represents the fastest possible response from the Router. A surprisingly high minimum usually reflects baseline overhead within the Router itself — such as:\n\n  - Middleware or plugin execution time\n  - Query parsing, validation, or planning\n  - Routing logic that's inherently non-negligible\n\n**Caveats**\n\n- Low request volumes can skew percentiles; a single slow request distorts p99 or max.\n- Slow subgraphs inflate Router latency here—this chart shows total request time, not internal breakdowns.\n- Latency spikes without load increase may point to network hiccups, subgraph cold starts, or cloud platform noise outside the Router’s control."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "**How to interpret percentiles**\n\n- p90 / p95 — these percentiles represent the upper range of typical request latencies. If these values rise, it generally means a significant portion of requests are experiencing slower responses. Possible causes include:\n\n  - A subgraph is responding more slowly than usual (e.g., due to load or inefficiency)\n  - The Router’s query planning step is taking longer (especially with complex or highly federated queries)\n  - Overall increased load causing processing delays\n\n- p99 — this is a tail latency metric that reflects the slowest 1% of requests. Spikes here often indicate rare but impactful delays, such as:\n\n  - Intermittent subgraph performance issues or temporary timeouts\n  - Specific heavy or complex queries that take much longer to plan or execute\n  - Unusual overhead in middleware or Router internals affecting some requests\n\n- Max — the absolute slowest observed request during the timeframe. Isolated high max values are usually less concerning (e.g., caused by a single unusual request). However, frequent or sustained high max latencies may point to:\n\n  - Clients issuing extremely large or repeated queries causing resource exhaustion or retries\n  - Transient infrastructure problems (network issues, DNS delays, resource contention)\n\n- Min — represents the fastest possible response from the Router. A surprisingly high minimum usually reflects baseline overhead within the Router itself — such as:\n\n  - Middleware or plugin execution time\n  - Query parsing, validation, or planning\n  - Routing logic that's inherently non-negligible\n\n**Caveats**\n\n- Low request volumes can skew percentiles; a single slow request distorts p99 or max.\n- Slow subgraphs inflate Router latency here—this chart shows total request time, not internal breakdowns.\n- Latency spikes without load increase may point to network hiccups, subgraph cold starts, or cloud platform noise outside the Router’s control."
             }
-          ]
+          }
         }
       },
       "panel_14": {
@@ -948,24 +822,10 @@
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from any subgraph or connector source.\n-   Reliability SLO: ≥99.9% of Router→backend requests should be 2xx and without error.\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement"
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from any subgraph or connector source.\n-   Reliability SLO: ≥99.9% of Router→backend requests should be 2xx and without error.\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement"
             }
-          ]
+          }
         }
       },
       "panel_15": {
@@ -1056,56 +916,28 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows the volume of outgoing HTTP reque"
+            "name": "This chart shows the volume of outgoing HTTP requests from t..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows the volume of outgoing HTTP requests from the Router to backend services, broken down by HTTP status code and subgraph or connector source.\n\n**What to look for**\n\n- High volume of `2xx` is normal and healthy.\n\n**Why it matters**\n\n- Tracks overall subgraph and connector source traffic."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows the volume of outgoing HTTP requests from the Router to backend services, broken down by HTTP status code and subgraph or connector source.\n\n**What to look for**\n\n- High volume of `2xx` is normal and healthy.\n\n**Why it matters**\n\n- Tracks overall subgraph and connector source traffic."
             }
-          ]
+          }
         }
       },
       "panel_18": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows how many requests per second (RPS"
+            "name": "This chart shows how many requests per second (RPS) each sub..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows how many requests per second (RPS) each subgraph and connector source is handling. It's useful for understanding traffic distribution across your federated architecture and identifying which subgraphs and connectors are the busiest.\n\n**What to look for**\n\n- Consistently high RPS on a subgraph or connector may indicate:\n\n  - It supports popular or frequently queried fields.\n  - It could become a performance bottleneck if not properly scaled or optimized.\n\n- Sudden spikes can signal usage surges or potential issues downstream (e.g., retry storms).\n- Low RPS subgraphs and connectors might be underutilized or intentionally lightweight.\n\n**Why it matters**\n\n- Ensure high-throughput subgraphs and connectors are well-instrumented and autoscaled where possible.\n- Investigate traffic spikes for correlation with client activity or backend issues.\n- Cross-reference with latency charts to catch early signs of degradation under load.\n\n**Caveats**\n\n- This reflects traffic from the Router to each subgraph and connector, not necessarily user-facing load.\n- Subgraphs and connectors handling many small, fast requests may show high RPS but minimal latency or load — context is key."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows how many requests per second (RPS) each subgraph and connector source is handling. It's useful for understanding traffic distribution across your federated architecture and identifying which subgraphs and connectors are the busiest.\n\n**What to look for**\n\n- Consistently high RPS on a subgraph or connector may indicate:\n\n  - It supports popular or frequently queried fields.\n  - It could become a performance bottleneck if not properly scaled or optimized.\n\n- Sudden spikes can signal usage surges or potential issues downstream (e.g., retry storms).\n- Low RPS subgraphs and connectors might be underutilized or intentionally lightweight.\n\n**Why it matters**\n\n- Ensure high-throughput subgraphs and connectors are well-instrumented and autoscaled where possible.\n- Investigate traffic spikes for correlation with client activity or backend issues.\n- Cross-reference with latency charts to catch early signs of degradation under load.\n\n**Caveats**\n\n- This reflects traffic from the Router to each subgraph and connector, not necessarily user-facing load.\n- Subgraphs and connectors handling many small, fast requests may show high RPS but minimal latency or load — context is key."
             }
-          ]
+          }
         }
       },
       "panel_19": {
@@ -1154,28 +986,14 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart focuses specifically on non-successful "
+            "name": "This chart focuses specifically on non-successful (non-2xx) ..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart focuses specifically on non-successful (non-2xx) responses from subgraphs and connector sources — grouped by subgraph, connector source, and status code.\n\n**What to look for**\n\n- Common causes of 4xx:\n  - Schema mismatch between subgraph and Supergraph (e.g., schema drift)\n  - Misconfigured connector specifications\n  - Missing auth headers or invalid inputs\n- Common causes of 5xx:\n  - Crashes, timeouts, or errors in a subgraph or connector source's logic\n- How this impacts Router performance:\n  - Frequent 5xxs inflate latency as the Router retries or collects error details.\n  - Repeated 4xxs may be harmless but still consume Router resources and can signal client or schema issues.\n- Pro tip — if a subgraph or connector source frequently appears here, coordinate with its owning team to investigate error logs or validate schema compatibility.\n\n**Why it matters**\n\n- These are the requests that failed, either due to config errors (4xx) or server-side issues (5xx).\n- The Router isn’t failing — it’s forwarding a query that the subgraph can't fulfill.\n\n**Caveats**\n\n- You might see `N/A` as a status code. This means that a request was made but a response was not received."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart focuses specifically on non-successful (non-2xx) responses from subgraphs and connector sources — grouped by subgraph, connector source, and status code.\n\n**What to look for**\n\n- Common causes of 4xx:\n  - Schema mismatch between subgraph and Supergraph (e.g., schema drift)\n  - Misconfigured connector specifications\n  - Missing auth headers or invalid inputs\n- Common causes of 5xx:\n  - Crashes, timeouts, or errors in a subgraph or connector source's logic\n- How this impacts Router performance:\n  - Frequent 5xxs inflate latency as the Router retries or collects error details.\n  - Repeated 4xxs may be harmless but still consume Router resources and can signal client or schema issues.\n- Pro tip — if a subgraph or connector source frequently appears here, coordinate with its owning team to investigate error logs or validate schema compatibility.\n\n**Why it matters**\n\n- These are the requests that failed, either due to config errors (4xx) or server-side issues (5xx).\n- The Router isn’t failing — it’s forwarding a query that the subgraph can't fulfill.\n\n**Caveats**\n\n- You might see `N/A` as a status code. This means that a request was made but a response was not received."
             }
-          ]
+          }
         }
       },
       "panel_21": {
@@ -1224,28 +1042,14 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart tracks the total volume of response dat"
+            "name": "This chart tracks the total volume of response data returned..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart tracks the total volume of response data returned by each subgraph or connector source over time. It helps identify subgraphs or connector sources that are consistently returning large payloads, which can impact overall performance and client-side load times.\n\n**What to look for**\n\n- Spikes or sustained high values from a subgraph or connector source may indicate:\n\n  - Overfetching — unnecessary fields being resolved and returned.\n  - Inefficient schema design — returning deeply nested or verbose structures.\n  - Missing pagination or filtering on list-type fields.\n\n- Flat, low-volume backends could either be healthy or underutilized — context matters.\n\n**Why it matters**\n\n- Audit GraphQL queries hitting high-volume backends.\n- Consider schema redesigns to reduce payload size (e.g., use fragments, `@defer`, or pagination).\n- If the size is expected (e.g., media, large objects), ensure proper compression is in place.\n\n**Caveats**\n\n- Values are based on the `Content-Length` header and may not reflect actual decompressed payload size.\n- This metric tracks data size returned by subgraphs and connector sources, not what is ultimately sent to the client by the router."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart tracks the total volume of response data returned by each subgraph or connector source over time. It helps identify subgraphs or connector sources that are consistently returning large payloads, which can impact overall performance and client-side load times.\n\n**What to look for**\n\n- Spikes or sustained high values from a subgraph or connector source may indicate:\n\n  - Overfetching — unnecessary fields being resolved and returned.\n  - Inefficient schema design — returning deeply nested or verbose structures.\n  - Missing pagination or filtering on list-type fields.\n\n- Flat, low-volume backends could either be healthy or underutilized — context matters.\n\n**Why it matters**\n\n- Audit GraphQL queries hitting high-volume backends.\n- Consider schema redesigns to reduce payload size (e.g., use fragments, `@defer`, or pagination).\n- If the size is expected (e.g., media, large objects), ensure proper compression is in place.\n\n**Caveats**\n\n- Values are based on the `Content-Length` header and may not reflect actual decompressed payload size.\n- This metric tracks data size returned by subgraphs and connector sources, not what is ultimately sent to the client by the router."
             }
-          ]
+          }
         }
       },
       "panel_23": {
@@ -1256,24 +1060,10 @@
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on P95 latency exceeding thresholds for critical subgraphs.\n-   Latency SLO (For High-Throughput): P95 Router → Subgraph latency should remain under 300ms\n-   Latency SLO (For Moderate-Throughput): Set threshold to (current P95 for the last week + 20%). This allows for natural variability while detecting regressions.\n"
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on P95 latency exceeding thresholds for critical subgraphs.\n-   Latency SLO (For High-Throughput): P95 Router → Subgraph latency should remain under 300ms\n-   Latency SLO (For Moderate-Throughput): Set threshold to (current P95 for the last week + 20%). This allows for natural variability while detecting regressions.\n"
             }
-          ]
+          }
         }
       },
       "panel_24": {
@@ -1350,28 +1140,14 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart tracks the 95th percentile (P95) reques"
+            "name": "This chart tracks the 95th percentile (P95) request duration..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart tracks the 95th percentile (P95) request duration from the Router to each subgraph and connector source.\n\n**What to look for**\n\n- Rising P95 values can indicate:\n\n  - Backend slowness\n  - Schema changes causing more complex queries\n  - Increased load on backends\n\n- Flat or low P95 suggests stable performance under current conditions.\n- Correlate with throughput — rising latency during peak traffic may mean you’re under-provisioned.\n\n**Why it matters**\n\n- P95 is more resilient to outliers than max but still reveals tail latency problems that affect real users.\n- Investigate consistently high-latency backends — even if they aren’t crashing, they may be degrading user experience.\n- Compare with response body size and throughput to find potential root causes (e.g., payload bloat or traffic spikes).\n- Check if retry or @requires patterns are contributing.\n- Consider the use of the @defer directive to handle fields that take a particularly long time to resolve.\n\n**Caveats**\n\n- P95 latency is unreliable for low-throughput backends because small sample sizes let outliers disproportionately skew the metric, making it hard to distinguish real issues from statistical noise.\n- P95 doesn’t reveal all latency issues — check the distribution chart for outliers and long tails."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart tracks the 95th percentile (P95) request duration from the Router to each subgraph and connector source.\n\n**What to look for**\n\n- Rising P95 values can indicate:\n\n  - Backend slowness\n  - Schema changes causing more complex queries\n  - Increased load on backends\n\n- Flat or low P95 suggests stable performance under current conditions.\n- Correlate with throughput — rising latency during peak traffic may mean you’re under-provisioned.\n\n**Why it matters**\n\n- P95 is more resilient to outliers than max but still reveals tail latency problems that affect real users.\n- Investigate consistently high-latency backends — even if they aren’t crashing, they may be degrading user experience.\n- Compare with response body size and throughput to find potential root causes (e.g., payload bloat or traffic spikes).\n- Check if retry or @requires patterns are contributing.\n- Consider the use of the @defer directive to handle fields that take a particularly long time to resolve.\n\n**Caveats**\n\n- P95 latency is unreliable for low-throughput backends because small sample sizes let outliers disproportionately skew the metric, making it hard to distinguish real issues from statistical noise.\n- P95 doesn’t reveal all latency issues — check the distribution chart for outliers and long tails."
             }
-          ]
+          }
         }
       },
       "panel_27": {
@@ -1382,136 +1158,66 @@
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows GraphQL errors by subgraph\n\n**What to look for**\n\n- Sudden spikes in errors for a specific subgraph\n\n**Why it matters**\n\n- GraphQL errors are surfaced in the response body in the `errors` array. If a request encounters a GraphQL error, the overall response still returns a `200 OK`. Looking at errors by subgraph can help highlight response degradation when individual subgraphs encounter elevated error rates."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows GraphQL errors by subgraph\n\n**What to look for**\n\n- Sudden spikes in errors for a specific subgraph\n\n**Why it matters**\n\n- GraphQL errors are surfaced in the response body in the `errors` array. If a request encounters a GraphQL error, the overall response still returns a `200 OK`. Looking at errors by subgraph can help highlight response degradation when individual subgraphs encounter elevated error rates."
             }
-          ]
+          }
         }
       },
       "panel_28": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "These charts aid in assessing the performance of i"
+            "name": "These charts aid in assessing the performance of individual ..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "These charts aid in assessing the performance of individual subgraphs and connector sources by correlating their request handling with their response times in order to identify hotspots and bottlenecks.\n\n**What to look for**\n\n- Top right — hotspot / bottleneck\n- Bottom left — healthy\n- Good:\n  - Bottom-Right Quadrant (High RPS & Low Latency) — ideal scenario indicating efficient backends.\n  - Bottom-Left Quadrant (Low RPS & Low Latency) — efficient but underutilized.\n- Warning:\n  - Top-Left Quadrant (Low RPS & High Latency) — underutilized and slow; potential future bottlenecks or issues if traffic increases.\n- Bad:\n  - Top-Right Quadrant (High RPS & High Latency) — backends handling many requests with slower responses; may need optimization.\n\n**Why it matters**\n\n- Optimize high-latency backends — perform schema optimizations or improve the performance of backends, starting with ones in the top right.\n- Annotate known outliers — use a note widget or annotations to explain any known anomalies:\n  - “This backend is intentionally slow due to external API call.”\n  - “This one was recently scaled — latency is expected to improve.”\n\n**Caveats**\n\n- Axes auto-scale — this scatterplot dynamically adjusts its axes based on the current data. As a result, a backend may appear in the top-right corner simply due to a narrow overall range — not necessarily because it has poor performance. Always interpret positions relative to other backends, and remember that a top-right placement can still be acceptable if the latency and throughput are within expected bounds."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "These charts aid in assessing the performance of individual subgraphs and connector sources by correlating their request handling with their response times in order to identify hotspots and bottlenecks.\n\n**What to look for**\n\n- Top right — hotspot / bottleneck\n- Bottom left — healthy\n- Good:\n  - Bottom-Right Quadrant (High RPS & Low Latency) — ideal scenario indicating efficient backends.\n  - Bottom-Left Quadrant (Low RPS & Low Latency) — efficient but underutilized.\n- Warning:\n  - Top-Left Quadrant (Low RPS & High Latency) — underutilized and slow; potential future bottlenecks or issues if traffic increases.\n- Bad:\n  - Top-Right Quadrant (High RPS & High Latency) — backends handling many requests with slower responses; may need optimization.\n\n**Why it matters**\n\n- Optimize high-latency backends — perform schema optimizations or improve the performance of backends, starting with ones in the top right.\n- Annotate known outliers — use a note widget or annotations to explain any known anomalies:\n  - “This backend is intentionally slow due to external API call.”\n  - “This one was recently scaled — latency is expected to improve.”\n\n**Caveats**\n\n- Axes auto-scale — this scatterplot dynamically adjusts its axes based on the current data. As a result, a backend may appear in the top-right corner simply due to a narrow overall range — not necessarily because it has poor performance. Always interpret positions relative to other backends, and remember that a top-right placement can still be acceptable if the latency and throughput are within expected bounds."
             }
-          ]
+          }
         }
       },
       "panel_29": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "These charts are a companion to the scatter plots "
+            "name": "These charts are a companion to the scatter plots to the lef..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "These charts are a companion to the scatter plots to the left, set to a fixed time window of 1 week to provide a reference point against whatever timescale you have your dashboard configured to."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "These charts are a companion to the scatter plots to the left, set to a fixed time window of 1 week to provide a reference point against whatever timescale you have your dashboard configured to."
             }
-          ]
+          }
         }
       },
       "panel_30": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows the distribution of backend reque"
+            "name": "This chart shows the distribution of backend request duratio..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows the distribution of backend request durations over time. It helps identify how long most requests take and highlights the presence of any outliers or tail latency issues.\n\n**What to look for**\n\n- A tight cluster around low durations suggests fast, consistent subgraph responses.\n- A long tail or spread to the right may indicate occasional slowness or outliers.\n- Sudden shape changes over time can highlight new regressions, changes in traffic, or schema changes."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows the distribution of backend request durations over time. It helps identify how long most requests take and highlights the presence of any outliers or tail latency issues.\n\n**What to look for**\n\n- A tight cluster around low durations suggests fast, consistent subgraph responses.\n- A long tail or spread to the right may indicate occasional slowness or outliers.\n- Sudden shape changes over time can highlight new regressions, changes in traffic, or schema changes."
             }
-          ]
+          }
         }
       },
       "panel_31": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "The query planner is the heart of the runtime's co"
+            "name": "The query planner is the heart of the runtime's computationa..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "The query planner is the heart of the runtime's computational efforts. This is where a request to your supergraph is translated into an invocation plan for the appropriate underlying subgraphs. Its performance will be very closely correlated to your supergraph schema and request characteristics, and will be the other determining factor in your response times beyond the subgraphs themselves."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "The query planner is the heart of the runtime's computational efforts. This is where a request to your supergraph is translated into an invocation plan for the appropriate underlying subgraphs. Its performance will be very closely correlated to your supergraph schema and request characteristics, and will be the other determining factor in your response times beyond the subgraphs themselves."
             }
-          ]
+          }
         }
       },
       "panel_32": {
@@ -1644,84 +1350,42 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart tracks the wait and execution durations"
+            "name": "This chart tracks the wait and execution durations for query..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**What to look for**\n\n- Low, stable execution times indicate efficient planning.\n- Spikes in max duration could signal complex or inefficient queries.\n- Rising trends after deployments or schema changes may require investigation.\n\n**Why it matters**\n\n- Query planning is critical to routing — delays here increase end-to-end latency.\n- Schema or configuration changes can unexpectedly impact planning performance.\n- High max durations may point to specific queries performing poorly in the planner.\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices)."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**What to look for**\n\n- Low, stable execution times indicate efficient planning.\n- Spikes in max duration could signal complex or inefficient queries.\n- Rising trends after deployments or schema changes may require investigation.\n\n**Why it matters**\n\n- Query planning is critical to routing — delays here increase end-to-end latency.\n- Schema or configuration changes can unexpectedly impact planning performance.\n- High max durations may point to specific queries performing poorly in the planner.\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices)."
             }
-          ]
+          }
         }
       },
       "panel_35": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows how many query plans are evaluate"
+            "name": "This chart shows how many query plans are evaluated before s..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows how many query plans are evaluated before selecting the optimal one for a request.\n\n**What to look for**\n\n- An average near 1 is ideal — it means the planner is doing the minimal possible work per request.\n- Occasional spikes in max are expected, but frequent or rising values may indicate overly complex queries.\n- Sustained increases above 1 could suggest a need to revisit schema design or client queries.\n\n**Why it matters**\n\n- Fewer evaluated plans mean faster query planning and consequently lower CPU usage and response latency."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows how many query plans are evaluated before selecting the optimal one for a request.\n\n**What to look for**\n\n- An average near 1 is ideal — it means the planner is doing the minimal possible work per request.\n- Occasional spikes in max are expected, but frequent or rising values may indicate overly complex queries.\n- Sustained increases above 1 could suggest a need to revisit schema design or client queries.\n\n**Why it matters**\n\n- Fewer evaluated plans mean faster query planning and consequently lower CPU usage and response latency."
             }
-          ]
+          }
         }
       },
       "panel_36": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Whenever your router receives an incoming GraphQL "
+            "name": "Whenever your router receives an incoming GraphQL operation,..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "Whenever your router receives an incoming GraphQL operation, it generates a [query plan](https://www.apollographql.com/docs/federation/query-plans/) to determine which subgraphs it needs to query to resolve that operation. By caching previously generated query plans, your router can — skip — generating them — again — if a client later sends the exact same operation. This improves your router's responsiveness.\n\nMonitoring your caching provides insights into both how normal your traffic is and how well your router is able to serve those requests. Your ideal cache performance and hit rates will vary depending on your expected traffic patterns. With the in-memory cache, it will be common to see spikes of cache misses and changes in cache size when new instances are deployed, new schemas are deployed, or new config versions are deployed. During this time, the cache will be evicted and re-warmed up.\n\nThese charts are pre-populated with event overlays for schema reloads and query plan warmup events. Schema reloads will accompany an expected drop in cache record count and a spike in cache miss rate as unusable cache records are evicted. [Cache warmups](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory#cache-warm-up) will accompany a period of cache misses as new plans are deliberately hit to prime them into the cache. The router does not serve traffic on the new schema until after that precompute warmup has completed.\n\nFor context on what’s cached and why, review the in-memory caching [documentation](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory) before interpreting the charts below.\n\n**Caveats**\n\n- These metrics assume that you are running an in-memory cache on your Router.\n- If you are using Redis for distributed caching, you will want to monitor that separately [via Datadog's agent](https://docs.datadoghq.com/integrations/redisdb/?tab=host).\n- If you are using Entity Caching, [separate metrics will be available](https://www.apollographql.com/docs/graphos/routing/performance/caching/entity#observability) to monitor the performance of that feature."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "Whenever your router receives an incoming GraphQL operation, it generates a [query plan](https://www.apollographql.com/docs/federation/query-plans/) to determine which subgraphs it needs to query to resolve that operation. By caching previously generated query plans, your router can — skip — generating them — again — if a client later sends the exact same operation. This improves your router's responsiveness.\n\nMonitoring your caching provides insights into both how normal your traffic is and how well your router is able to serve those requests. Your ideal cache performance and hit rates will vary depending on your expected traffic patterns. With the in-memory cache, it will be common to see spikes of cache misses and changes in cache size when new instances are deployed, new schemas are deployed, or new config versions are deployed. During this time, the cache will be evicted and re-warmed up.\n\nThese charts are pre-populated with event overlays for schema reloads and query plan warmup events. Schema reloads will accompany an expected drop in cache record count and a spike in cache miss rate as unusable cache records are evicted. [Cache warmups](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory#cache-warm-up) will accompany a period of cache misses as new plans are deliberately hit to prime them into the cache. The router does not serve traffic on the new schema until after that precompute warmup has completed.\n\nFor context on what’s cached and why, review the in-memory caching [documentation](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory) before interpreting the charts below.\n\n**Caveats**\n\n- These metrics assume that you are running an in-memory cache on your Router.\n- If you are using Redis for distributed caching, you will want to monitor that separately [via Datadog's agent](https://docs.datadoghq.com/integrations/redisdb/?tab=host).\n- If you are using Entity Caching, [separate metrics will be available](https://www.apollographql.com/docs/graphos/routing/performance/caching/entity#observability) to monitor the performance of that feature."
             }
-          ]
+          }
         }
       },
       "panel_37": {
@@ -1784,56 +1448,28 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows an aggregate view across all cach"
+            "name": "This chart shows an aggregate view across all cache types of..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows an aggregate view across all cache types of your record counts and how many cache misses are happening. This is a lower-cardinality aggregate view of all the other charts in this section, specifically for correlating events between them.\n\n**What to look for**\n\n- Drops in record counts that are not correlated to schema reloads or new instance deployments\n- Spikes in cache misses that are not correlated to a drop in record count\n- Spikes in cache misses that do correlate to a significant drop in cache hit percentage\n\n**Why it matters**\n\n- Your cache sizes impact the memory footprint of your runtime\n- Your cache miss counts represent costlier requests to your runtime,"
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows an aggregate view across all cache types of your record counts and how many cache misses are happening. This is a lower-cardinality aggregate view of all the other charts in this section, specifically for correlating events between them.\n\n**What to look for**\n\n- Drops in record counts that are not correlated to schema reloads or new instance deployments\n- Spikes in cache misses that are not correlated to a drop in record count\n- Spikes in cache misses that do correlate to a significant drop in cache hit percentage\n\n**Why it matters**\n\n- Your cache sizes impact the memory footprint of your runtime\n- Your cache miss counts represent costlier requests to your runtime,"
             }
-          ]
+          }
         }
       },
       "panel_40": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart breaks down the number of records in th"
+            "name": "This chart breaks down the number of records in the cache of..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart breaks down the number of records in the cache of each of your runtime instances.\n\n**What to look for**\n\n- An instance or instances that have an anomalous count of records without a corresponding deployment or schema change\n- An instance or instances that are growing at a different rate than the others without a corresponding deployment\n\n**Why it matters**\n\n- If your traffic isn't well-distributed across your instances, some caches will lag behind in growth rate\n- If you have an instance go into an unhealthy state, you may see the anomaly represented here\n\n**Caveats**\n\nGrouping by `host`, `pod_name`, and `container_id` may cause fragmented data if these tags aren’t consistent or unique in your setup. Update the group-by fields to whatever works best in your environment for accurate results."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart breaks down the number of records in the cache of each of your runtime instances.\n\n**What to look for**\n\n- An instance or instances that have an anomalous count of records without a corresponding deployment or schema change\n- An instance or instances that are growing at a different rate than the others without a corresponding deployment\n\n**Why it matters**\n\n- If your traffic isn't well-distributed across your instances, some caches will lag behind in growth rate\n- If you have an instance go into an unhealthy state, you may see the anomaly represented here\n\n**Caveats**\n\nGrouping by `host`, `pod_name`, and `container_id` may cause fragmented data if these tags aren’t consistent or unique in your setup. Update the group-by fields to whatever works best in your environment for accurate results."
             }
-          ]
+          }
         }
       },
       "panel_41": {
@@ -1896,56 +1532,28 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows cache record counts broken down b"
+            "name": "This chart shows cache record counts broken down by each cac..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows cache record counts broken down by each cache type.\n\n**Why it matters**\n\n- When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows cache record counts broken down by each cache type.\n\n**Why it matters**\n\n- When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail."
             }
-          ]
+          }
         }
       },
       "panel_44": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows cache misses broken down by cache"
+            "name": "This chart shows cache misses broken down by cache type."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows cache misses broken down by cache type.\n\n**Why it matters**\n\n- When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows cache misses broken down by cache type.\n\n**Why it matters**\n\n- When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail."
             }
-          ]
+          }
         }
       },
       "panel_45": {
@@ -1994,56 +1602,28 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows cache hit rate broken down by eac"
+            "name": "This chart shows cache hit rate broken down by each individu..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows cache hit rate broken down by each individual running instance of your runtime.\n\n**Why it matters**\n\n- When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail.\n\n**Caveats**\n\nGrouping by `host`, `pod_name`, and `container_id` may cause fragmented data if these tags aren’t consistent or unique in your setup. Update the group-by fields to whatever works best in your environment for accurate results."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows cache hit rate broken down by each individual running instance of your runtime.\n\n**Why it matters**\n\n- When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail.\n\n**Caveats**\n\nGrouping by `host`, `pod_name`, and `container_id` may cause fragmented data if these tags aren’t consistent or unique in your setup. Update the group-by fields to whatever works best in your environment for accurate results."
             }
-          ]
+          }
         }
       },
       "panel_47": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Compute jobs are CPU-intensive tasks that get mana"
+            "name": "Compute jobs are CPU-intensive tasks that get managed on a d..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "Compute jobs are CPU-intensive tasks that get managed on a dedicated thread pool, inclusive of query planning tasks. Non-query-planning tasks tend to be either low-cost and are consequently less commonly a performance pain point. Most diagnosis will be done against the query planning metrics directly, but this section is provided for comparative purposes."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "Compute jobs are CPU-intensive tasks that get managed on a dedicated thread pool, inclusive of query planning tasks. Non-query-planning tasks tend to be either low-cost and are consequently less commonly a performance pain point. Most diagnosis will be done against the query planning metrics directly, but this section is provided for comparative purposes."
             }
-          ]
+          }
         }
       },
       "panel_48": {
@@ -2190,56 +1770,28 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart tracks the wait and execution durations"
+            "name": "This chart tracks the wait and execution durations for query..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**What to look for**\n\n- Low, stable execution times indicate efficient planning.\n- Spikes in max duration could signal complex or inefficient queries.\n- Rising trends after deployments or schema changes may require investigation.\n\n**Why it matters**\n\n- Query planning is critical to routing — delays here increase end-to-end latency.\n- Schema or configuration changes can unexpectedly impact planning performance.\n- High max durations may point to specific queries performing poorly in the planner.\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices)."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**What to look for**\n\n- Low, stable execution times indicate efficient planning.\n- Spikes in max duration could signal complex or inefficient queries.\n- Rising trends after deployments or schema changes may require investigation.\n\n**Why it matters**\n\n- Query planning is critical to routing — delays here increase end-to-end latency.\n- Schema or configuration changes can unexpectedly impact planning performance.\n- High max durations may point to specific queries performing poorly in the planner.\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices)."
             }
-          ]
+          }
         }
       },
       "panel_51": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart tracks how long query parsing jobs take"
+            "name": "This chart tracks how long query parsing jobs take to execut..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns."
             }
-          ]
+          }
         }
       },
       "panel_52": {
@@ -2302,84 +1854,42 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart tracks the depth of the compute job que"
+            "name": "This chart tracks the depth of the compute job queue over ti..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**What to look for**\n\n- A queue of 0-1 is ideal — jobs are being processed as they arrive.\n- Short spikes can be normal during brief load surges.\n- Sustained periods above a depth of 1 may require scaling CPU resources or optimizing workload.\n\n**Why it matters**\n\n- A queue with a depth greater than 1 means jobs are backing up, introducing latency for any requests that depend on them.\n- Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n- Helps identify runtime saturation under load."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**What to look for**\n\n- A queue of 0-1 is ideal — jobs are being processed as they arrive.\n- Short spikes can be normal during brief load surges.\n- Sustained periods above a depth of 1 may require scaling CPU resources or optimizing workload.\n\n**Why it matters**\n\n- A queue with a depth greater than 1 means jobs are backing up, introducing latency for any requests that depend on them.\n- Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n- Helps identify runtime saturation under load."
             }
-          ]
+          }
         }
       },
       "panel_55": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows the total number of compute jobs "
+            "name": "This chart shows the total number of compute jobs actively r..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows the total number of compute jobs actively running in your runtime, broken down by success or failure status.\n\n**Why it matters**\n-   Failed jobs may indicate internal issues, misconfigurations, or upstream errors.\n-   Monitoring execution volume helps assess load and throughput.\n\n**What to look for**\n\n-   A steady level of `executed_ok` jobs.\n-   Any presence of failed job types (`executed_error`, `rejected_queue_full`, etc.)."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows the total number of compute jobs actively running in your runtime, broken down by success or failure status.\n\n**Why it matters**\n-   Failed jobs may indicate internal issues, misconfigurations, or upstream errors.\n-   Monitoring execution volume helps assess load and throughput.\n\n**What to look for**\n\n-   A steady level of `executed_ok` jobs.\n-   Any presence of failed job types (`executed_error`, `rejected_queue_full`, etc.)."
             }
-          ]
+          }
         }
       },
       "panel_56": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Monitoring the resource consumption of your execut"
+            "name": "Monitoring the resource consumption of your execution enviro..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "Monitoring the resource consumption of your execution environment is essential to ensuring that your runtime can perform as desired.\n\nWe recommend monitoring for and ensuring that your average CPU usage does not exceed 80% load, to leave available overhead for expensive spikes such as schema reloads. You may also find it useful to break out your charts by instance or host ID to identify individually misbehaving instances.\n\nYou can use the [router resource estimator](https://www.apollographql.com/docs/graphos/routing/self-hosted/resource-estimator) to determine what your memory thresholds and allocations should be.\n\nBelow are some example charts of how to plot this data in various deployment environments. They are parameterized using Datadog's [unified service tagging](https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging)."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "Monitoring the resource consumption of your execution environment is essential to ensuring that your runtime can perform as desired.\n\nWe recommend monitoring for and ensuring that your average CPU usage does not exceed 80% load, to leave available overhead for expensive spikes such as schema reloads. You may also find it useful to break out your charts by instance or host ID to identify individually misbehaving instances.\n\nYou can use the [router resource estimator](https://www.apollographql.com/docs/graphos/routing/self-hosted/resource-estimator) to determine what your memory thresholds and allocations should be.\n\nBelow are some example charts of how to plot this data in various deployment environments. They are parameterized using Datadog's [unified service tagging](https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging)."
             }
-          ]
+          }
         }
       },
       "panel_57": {
@@ -2764,140 +2274,70 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "These charts draw their threshold marker dynamical"
+            "name": "These charts draw their threshold marker dynamically based o..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "These charts draw their threshold marker dynamically based on the limits specified in Kubernetes for memory and CPU. If your runtime is deployed across heterogeneous container configurations for those values, the dynamic thresholds will display both the min and the max values.\n\nFor more details on available Kubernetes metrics, see the full [documentation on the Datadog Kubernetes collector](https://docs.datadoghq.com/containers/kubernetes/data_collected/)."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "These charts draw their threshold marker dynamically based on the limits specified in Kubernetes for memory and CPU. If your runtime is deployed across heterogeneous container configurations for those values, the dynamic thresholds will display both the min and the max values.\n\nFor more details on available Kubernetes metrics, see the full [documentation on the Datadog Kubernetes collector](https://docs.datadoghq.com/containers/kubernetes/data_collected/)."
             }
-          ]
+          }
         }
       },
       "panel_66": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "The memory chart draws its threshold marker dynami"
+            "name": "The memory chart draws its threshold marker dynamically base..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "The memory chart draws its threshold marker dynamically based on the available memory on your hosts. If your runtime is deployed across heterogeneous hosts, the threshold will display both the min and the max values.\n\nFor more details on available host metrics, see datadog's [documentation on the OTEL collectors hostmetrics receiver](https://docs.datadoghq.com/opentelemetry/integrations/host_metrics/?tab=host)."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "The memory chart draws its threshold marker dynamically based on the available memory on your hosts. If your runtime is deployed across heterogeneous hosts, the threshold will display both the min and the max values.\n\nFor more details on available host metrics, see datadog's [documentation on the OTEL collectors hostmetrics receiver](https://docs.datadoghq.com/opentelemetry/integrations/host_metrics/?tab=host)."
             }
-          ]
+          }
         }
       },
       "panel_67": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "These charts draw their threshold marker dynamical"
+            "name": "These charts draw their threshold marker dynamically based o..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "These charts draw their threshold marker dynamically based on the limits specified in Docker for memory and CPU. If your runtime is deployed across heterogeneous container configurations for those values, the threshold will display both the min and the max values.\n\nFor more details on available Docker metrics via the Datadog Docker Agent, see the full [documentation on the Datadog Docker Agent](https://docs.datadoghq.com/containers/docker)."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "These charts draw their threshold marker dynamically based on the limits specified in Docker for memory and CPU. If your runtime is deployed across heterogeneous container configurations for those values, the threshold will display both the min and the max values.\n\nFor more details on available Docker metrics via the Datadog Docker Agent, see the full [documentation on the Datadog Docker Agent](https://docs.datadoghq.com/containers/docker)."
             }
-          ]
+          }
         }
       },
       "panel_68": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "These charts draw their threshold marker dynamical"
+            "name": "These charts draw their threshold marker dynamically based o..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "These charts draw their threshold marker dynamically based on the limits specified in Docker for memory and CPU. If your runtime is deployed across heterogeneous container configurations for those values, the threshold will display both the min and the max values.\n\nFor more details on available Docker metrics via the OTEL collector, see Datadog's [documentation on the OTEL collector Docker/stats receiver](https://docs.datadoghq.com/opentelemetry/integrations/docker_metrics)."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "These charts draw their threshold marker dynamically based on the limits specified in Docker for memory and CPU. If your runtime is deployed across heterogeneous container configurations for those values, the threshold will display both the min and the max values.\n\nFor more details on available Docker metrics via the OTEL collector, see Datadog's [documentation on the OTEL collector Docker/stats receiver](https://docs.datadoghq.com/opentelemetry/integrations/docker_metrics)."
             }
-          ]
+          }
         }
       },
       "panel_69": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "If you incorporate [coprocessors](https://www.apol"
+            "name": "If you incorporate [coprocessors](https://www.apollographql...."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "If you incorporate [coprocessors](https://www.apollographql.com/docs/graphos/routing/customization/coprocessor) into your runtime, these metrics will be emitted. They indicate basic health and performance impact of the coprocessors on your request lifecycle. In order to correlate any issues we highly recommend you add your own instrumentation to this section to include any health and performance metrics specific to the coprocessors you run and their own request lifecycle."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "If you incorporate [coprocessors](https://www.apollographql.com/docs/graphos/routing/customization/coprocessor) into your runtime, these metrics will be emitted. They indicate basic health and performance impact of the coprocessors on your request lifecycle. In order to correlate any issues we highly recommend you add your own instrumentation to this section to include any health and performance metrics specific to the coprocessors you run and their own request lifecycle."
             }
-          ]
+          }
         }
       },
       "panel_70": {
@@ -2960,56 +2400,28 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart shows the average duration added by cop"
+            "name": "This chart shows the average duration added by coprocessor i..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart shows the average duration added by coprocessor invocations at each stage of the request lifecycle.\n\n**What to look for**\n\n- Low, stable durations suggest efficient coprocessor behavior.\n- Spikes may indicate backend slowness, increased payload size, or external service degradation.\n\n**Why it matters**\n\n- Coprocessors introduce additional network calls — even fast ones add latency.\n- High or rising durations can affect overall request performance.\n- Each stage (e.g., request, supergraph, subgraph) may have different performance profiles depending on configuration and coprocessor logic."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart shows the average duration added by coprocessor invocations at each stage of the request lifecycle.\n\n**What to look for**\n\n- Low, stable durations suggest efficient coprocessor behavior.\n- Spikes may indicate backend slowness, increased payload size, or external service degradation.\n\n**Why it matters**\n\n- Coprocessors introduce additional network calls — even fast ones add latency.\n- High or rising durations can affect overall request performance.\n- Each stage (e.g., request, supergraph, subgraph) may have different performance profiles depending on configuration and coprocessor logic."
             }
-          ]
+          }
         }
       },
       "panel_73": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart breaks down how often coprocessors are "
+            "name": "This chart breaks down how often coprocessors are invoked at..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart breaks down how often coprocessors are invoked at each stage of the request lifecycle.\n\n**What to look for**\n\n- Consistent counts per stage indicate expected behavior.\n- Unexpected drops or surges may reflect routing changes, config issues, or stage-specific errors.\n\n**Why it matters**\n\n- Helps validate where and how often your coprocessors are engaged.\n- Useful for confirming configuration and understanding the load placed on each external service.\n- Invocation patterns typically align with overall request volume, but may vary by routing logic or stage-specific conditions."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart breaks down how often coprocessors are invoked at each stage of the request lifecycle.\n\n**What to look for**\n\n- Consistent counts per stage indicate expected behavior.\n- Unexpected drops or surges may reflect routing changes, config issues, or stage-specific errors.\n\n**Why it matters**\n\n- Helps validate where and how often your coprocessors are engaged.\n- Useful for confirming configuration and understanding the load placed on each external service.\n- Invocation patterns typically align with overall request volume, but may vary by routing logic or stage-specific conditions."
             }
-          ]
+          }
         }
       },
       "panel_74": {
@@ -3058,56 +2470,28 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This chart tracks the success rate of coprocessor "
+            "name": "This chart tracks the success rate of coprocessor invocation..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This chart tracks the success rate of coprocessor invocations across each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Coprocessors are on the critical path — failures here can short-circuit requests before they reach subgraphs.\n-   A drop in success rate will correlate with elevated error responses at the supergraph level.\n-   Helps isolate external causes of failure when subgraphs appear healthy.\n\n**What to look for**\n\n-   A consistent 100% success rate is expected for stable, production-grade coprocessors.\n-   Any dip may signal availability issues, timeouts, or bugs in coprocessor logic.\n-   If supergraph error rates rise while subgraphs remain unaffected, investigate this metric as a potential root cause."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This chart tracks the success rate of coprocessor invocations across each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Coprocessors are on the critical path — failures here can short-circuit requests before they reach subgraphs.\n-   A drop in success rate will correlate with elevated error responses at the supergraph level.\n-   Helps isolate external causes of failure when subgraphs appear healthy.\n\n**What to look for**\n\n-   A consistent 100% success rate is expected for stable, production-grade coprocessors.\n-   Any dip may signal availability issues, timeouts, or bugs in coprocessor logic.\n-   If supergraph error rates rise while subgraphs remain unaffected, investigate this metric as a potential root cause."
             }
-          ]
+          }
         }
       },
       "panel_76": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This section is a collection of assorted metrics t"
+            "name": "This section is a collection of assorted metrics that do not..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This section is a collection of assorted metrics that do not provide directly actionable data, but still may be useful as sentinel values to help diagnose problems occurring in other charts."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This section is a collection of assorted metrics that do not provide directly actionable data, but still may be useful as sentinel values to help diagnose problems occurring in other charts."
             }
-          ]
+          }
         }
       },
       "panel_77": {
@@ -3170,56 +2554,28 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "[Uplink is used to retrieve your GraphOS license ("
+            "name": "[Uplink is used to retrieve your GraphOS license (where appl..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "[Uplink is used to retrieve your GraphOS license (where applicable) and published schemas from Apollo](https://www.apollographql.com/docs/graphos/routing/uplink). If Uplink has an outage or incident, your license or schema pulls may fail, and this metric can give you a warning when that is the reason."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "[Uplink is used to retrieve your GraphOS license (where applicable) and published schemas from Apollo](https://www.apollographql.com/docs/graphos/routing/uplink). If Uplink has an outage or incident, your license or schema pulls may fail, and this metric can give you a warning when that is the reason."
             }
-          ]
+          }
         }
       },
       "panel_80": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This graph can help you track the rollout of schem"
+            "name": "This graph can help you track the rollout of schema changes ..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This graph can help you track the rollout of schema changes across your fleet as a supplemental indicator beyond the query planning cache metrics. We recommend adding markers for new deployments based on your CI system's integration with Datadog where appropriate so that you can correlate those with any incidents as well.\n\nTo learn more about launches and what constitutes a new one, see [the documentation](https://www.apollographql.com/docs/graphos/platform/schema-management/delivery/launch)."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This graph can help you track the rollout of schema changes across your fleet as a supplemental indicator beyond the query planning cache metrics. We recommend adding markers for new deployments based on your CI system's integration with Datadog where appropriate so that you can correlate those with any incidents as well.\n\nTo learn more about launches and what constitutes a new one, see [the documentation](https://www.apollographql.com/docs/graphos/platform/schema-management/delivery/launch)."
             }
-          ]
+          }
         }
       },
       "panel_81": {
@@ -3310,56 +2666,28 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This graph measures the average delta between your"
+            "name": "This graph measures the average delta between your runtime's..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This graph measures the average delta between your runtime's request duration and the duration spent in compute jobs, coprocessors, and subgraph requests, normalized against your incoming request rate. This is a fuzzy metric intended to provide a birds-eye view of your runtime's overall performance health that can identify trends and potential regressions in any one of the above components.\n\nThe exponential function in this chart needs to be manually configured to provide a useful numeric value based on your overall request rate. Ideally you should set the exponent such that the metric produces a value with at least one whole number of precision.\n\nChanges in this metric should be considered only over large time windows (multiple weeks, at minimum), and treated as a suggestion to investigate other dependent metrics. Trends are not necessarily direct cause for concern if those measured values remain within acceptable bounds."
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This graph measures the average delta between your runtime's request duration and the duration spent in compute jobs, coprocessors, and subgraph requests, normalized against your incoming request rate. This is a fuzzy metric intended to provide a birds-eye view of your runtime's overall performance health that can identify trends and potential regressions in any one of the above components.\n\nThe exponential function in this chart needs to be manually configured to provide a useful numeric value based on your overall request rate. Ideally you should set the exponent such that the metric produces a value with at least one whole number of precision.\n\nChanges in this metric should be considered only over large time windows (multiple weeks, at minimum), and treated as a suggestion to investigate other dependent metrics. Trends are not necessarily direct cause for concern if those measured values remain within acceptable bounds."
             }
-          ]
+          }
         }
       },
       "panel_83": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "This section provides all of the metrics necessary"
+            "name": "This section provides all of the metrics necessary to fill o..."
           },
           "plugin": {
             "kind": "Markdown",
-            "spec": {}
-          },
-          "queries": [
-            {
-              "kind": "StaticQuery",
-              "spec": {
-                "display": {
-                  "name": "Markdown Content"
-                },
-                "plugin": {
-                  "kind": "StaticQueryPlugin",
-                  "spec": {
-                    "data": "This section provides all of the metrics necessary to fill out the [resource estimator](https://www.apollographql.com/docs/graphos/routing/self-hosted/resource-estimator) when determining what resources you need to allocate to your runtime deployment in order to handle your traffic patterns. This section is worth revisiting periodically to ensure that your allocations are still correct.\n\n**Known Issues**\n* Client request size is not populated by the router at this time"
-                  }
-                }
-              }
+            "spec": {
+              "markdown": "This section provides all of the metrics necessary to fill out the [resource estimator](https://www.apollographql.com/docs/graphos/routing/self-hosted/resource-estimator) when determining what resources you need to allocate to your runtime deployment in order to handle your traffic patterns. This section is worth revisiting periodically to ensure that your allocations are still correct.\n\n**Known Issues**\n* Client request size is not populated by the router at this time"
             }
-          ]
+          }
         }
       },
       "panel_84": {

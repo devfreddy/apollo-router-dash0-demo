@@ -50,32 +50,22 @@ function convertMarkdownWidget(widget) {
     return null;
   }
 
+  // Extract first line as title (up to 60 chars)
+  const firstLine = def.content.split('\n')[0];
+  const title = firstLine.length > 60 ? firstLine.substring(0, 60) + '...' : firstLine;
+
   return {
     kind: 'Panel',
     spec: {
       display: {
-        name: def.content.split('\n')[0].substring(0, 50) || 'Documentation'
+        name: title || 'Documentation'
       },
       plugin: {
         kind: 'Markdown',
-        spec: {}
-      },
-      queries: [
-        {
-          kind: 'StaticQuery',
-          spec: {
-            display: {
-              name: 'Markdown Content'
-            },
-            plugin: {
-              kind: 'StaticQueryPlugin',
-              spec: {
-                data: def.content
-              }
-            }
-          }
+        spec: {
+          markdown: def.content
         }
-      ]
+      }
     }
   };
 }
