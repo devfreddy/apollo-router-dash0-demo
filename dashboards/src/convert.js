@@ -470,7 +470,7 @@ function convertDashboard() {
     metadata: {
       name: 'apollo-router-performance',
       dash0Extensions: {
-        dataset: 'default'
+        dataset: 'apollo-router-demo'
       }
     },
     spec: {
@@ -495,52 +495,137 @@ function convertDashboard() {
   return dash0Dashboard;
 }
 
-// Run conversion
-const dashboard = convertDashboard();
+// ============================================================================
+// DASHBOARD GROUPING CONFIGURATION
+// ============================================================================
+// Define how panels are organized into collapsible groups
+const groupConfiguration = [
+  {
+    title: 'Client Traffic',
+    description: 'Client → Router request metrics',
+    panelIndices: [0, 1, 2, 3, 4]
+  },
+  {
+    title: 'Backend Services',
+    description: 'Router → Backend (subgraph) request metrics',
+    panelIndices: [5, 6, 7, 8, 9, 10]
+  },
+  {
+    title: 'Router Internals',
+    description: 'Query planning, cache, and compute jobs',
+    panelIndices: [11, 12, 18, 19, 13, 14, 15, 16, 17, 20, 21]
+  },
+  {
+    title: 'Infrastructure',
+    description: 'Container, host, and Kubernetes metrics',
+    panelIndices: [22, 23, 24, 25, 26, 27, 28, 29]
+  },
+  {
+    title: 'Coprocessors & Sentinel',
+    description: 'Coprocessor operations and system health',
+    panelIndices: [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]
+  }
+];
 
-// Write output
-const outputPath = path.join(__dirname, '..', 'dash0', 'apollo-router-performance.json');
-fs.writeFileSync(outputPath, JSON.stringify(dashboard, null, 2));
+/**
+ * Create a grouped dashboard with collapsible sections
+ *
+ * This converts the flat panel list into a grouped layout where:
+ * - Each group has a title and can be collapsed/expanded
+ * - Panels are positioned within their group
+ * - All panels are in the spec.panels section
+ */
+function createGroupedDashboard(flatDashboard) {
+  const allPanels = flatDashboard.spec.panels;
+  const panelList = Object.entries(allPanels).map(([id, panel]) => ({ id, ...panel }));
+
+  // Map panel indices to actual panel IDs
+  const indexToPanelId = {};
+  panelList.forEach((panel, index) => {
+    indexToPanelId[index] = panel.id;
+  });
+
+  // Create layout groups
+  const layouts = [];
+  for (const group of groupConfiguration) {
+    const groupPanels = [];
+    let y = 0;
+
+    // Add panels to this group
+    for (let i = 0; i < group.panelIndices.length; i++) {
+      const panelIndex = group.panelIndices[i];
+      const panelId = indexToPanelId[panelIndex];
+
+      if (!panelId) continue;
+
+      const x = (i % 2) === 0 ? 0 : 12;
+      if (i > 0 && (i % 2) === 0) y += 8;
+
+      groupPanels.push({
+        x,
+        y,
+        width: 12,
+        height: 8,
+        content: {
+          $ref: `#/spec/panels/${panelId}`
+        }
+      });
+    }
+
+    layouts.push({
+      kind: 'Grid',
+      spec: {
+        items: groupPanels,
+        display: {
+          title: group.title,
+          collapse: {
+            open: true
+          }
+        }
+      }
+    });
+  }
+
+  // Create grouped dashboard
+  return {
+    kind: 'Dashboard',
+    metadata: {
+      name: 'apollo-router',
+      dash0Extensions: {
+        dataset: 'apollo-router-demo'
+      }
+    },
+    spec: {
+      display: {
+        name: 'Apollo Router - Complete Dashboard',
+        description: 'GraphOS Runtime Dashboard - All metrics organized by functional area'
+      },
+      duration: '1h',
+      refreshInterval: '30s',
+      layouts: layouts,
+      panels: allPanels
+    }
+  };
+}
+
+// Run conversion
+const flatDashboard = convertDashboard();
+
+// Create grouped dashboard
+const groupedDashboard = createGroupedDashboard(flatDashboard);
+
+// Write grouped dashboard (this is the main output)
+const outputPath = path.join(__dirname, '..', 'dash0', 'apollo-router.json');
+fs.writeFileSync(outputPath, JSON.stringify(groupedDashboard, null, 2));
 
 console.log(`✅ Dashboard converted successfully!`);
-console.log(`📊 Panels created: ${Object.keys(dashboard.spec.panels).length}`);
+console.log(`📊 Panels created: ${Object.keys(groupedDashboard.spec.panels).length}`);
+console.log(`📊 Groups created: ${groupedDashboard.spec.layouts.length}`);
 console.log(`📁 Output: ${outputPath}`);
 
-// Generate organized dashboards by running organize-dashboards.js
-console.log(`\n📋 Organizing dashboards by section...`);
-const { execSync } = require('child_process');
-try {
-  execSync(`node ${path.join(__dirname, '..', 'organize-dashboards.js')}`, {
-    stdio: 'inherit',
-    cwd: path.join(__dirname, '..')
-  });
-} catch (error) {
-  console.error('Error organizing dashboards:', error.message);
-}
-
-// Create combined grouped dashboard
-console.log(`\n📊 Creating combined grouped dashboard...`);
-try {
-  execSync(`node ${path.join(__dirname, '..', 'create-grouped-dashboard.js')}`, {
-    stdio: 'inherit',
-    cwd: path.join(__dirname, '..')
-  });
-} catch (error) {
-  console.error('Error creating grouped dashboard:', error.message);
-}
-
 console.log(`\n✨ All done!`);
-console.log(`\nGenerated dashboards:`);
-console.log(`  📊 COMBINED GROUPED DASHBOARD:`);
-console.log(`     • apollo-router-complete-grouped.json - All 41 panels in 5 collapsible groups`);
-console.log(`\n  📁 INDIVIDUAL ORGANIZED DASHBOARDS:`);
-console.log(`     • client-traffic-dashboard.json - Client → Router metrics (5 panels)`);
-console.log(`     • router-backend-dashboard.json - Router → Backend metrics (6 panels)`);
-console.log(`     • router-internals-dashboard.json - Internals: Query Planning, Cache, Compute Jobs (11 panels)`);
-console.log(`     • infrastructure-dashboard.json - Container/Host/K8s metrics (8 panels)`);
-console.log(`     • coprocessors-dashboard.json - Coprocessors & Sentinel metrics (11 panels)`);
-console.log(`\n  📄 REFERENCE DASHBOARDS:`);
-console.log(`     • apollo-router-performance.json - Main flat dashboard (41 panels)`);
+console.log(`\nGenerated dashboard:`);
+console.log(`  📊 apollo-router.json - All 41 panels in 5 collapsible groups`);
 console.log(`\nNext steps:`);
 console.log(`1. Deploy to Dash0: ./dashboards/deploy.sh`);
-console.log(`2. Or import specific dashboard: dashboard/dash0/apollo-router-complete-grouped.json`);
+console.log(`2. View in Dash0: https://app.dash0.com/dashboards/apollo-router`);

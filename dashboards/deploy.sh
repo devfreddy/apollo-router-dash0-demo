@@ -32,8 +32,8 @@ if [ -z "$DASH0_DATASET" ]; then
   exit 1
 fi
 
-DASHBOARD_FILE="dash0/apollo-router-complete-grouped.json"
-DASHBOARD_ID="apollo-router-complete"
+DASHBOARD_FILE="dash0/apollo-router.json"
+DASHBOARD_ID="apollo-router"
 API_URL="https://api.${DASH0_REGION}.aws.dash0.com/api/dashboards/${DASHBOARD_ID}?dataset=${DASH0_DATASET}"
 
 echo "🚀 Deploying Apollo Router dashboard to Dash0..."

@@ -7,11 +7,9 @@ This directory contains tools and dashboards for converting Apollo GraphOS monit
 ```
 dashboards/
 ├── README.md              # This file
-├── convert.js             # Datadog to Dash0 dashboard converter
-├── organize-dashboards.js # Dashboard organization tool
-├── create-grouped-dashboard.js  # Combined grouped dashboard generator
+├── src/
+│   └── convert.js         # Unified Datadog to Dash0 dashboard converter
 ├── deploy.sh              # Dashboard deployment script
-├── DASHBOARD_ORGANIZATION.md    # Detailed dashboard guide
 ├── docs/                  # 📚 Dashboard conversion documentation
 │   ├── README.md          # Documentation index (START HERE for conversion help)
 │   ├── CONVERSION_GUIDE.md           # Practical workflow & patterns
@@ -24,13 +22,7 @@ dashboards/
 ├── datadog/
 │   └── graphos-template.json  # Original Datadog dashboard template
 └── dash0/
-    ├── apollo-router-complete-grouped.json      # ⭐ All 41 panels in 5 groups (RECOMMENDED)
-    ├── apollo-router-performance.json           # Flat dashboard (41 panels, reference)
-    ├── client-traffic-dashboard.json            # Individual: Client → Router (5 panels)
-    ├── router-backend-dashboard.json            # Individual: Router → Backend (6 panels)
-    ├── router-internals-dashboard.json          # Individual: Internals (11 panels)
-    ├── infrastructure-dashboard.json            # Individual: Infrastructure (8 panels)
-    └── coprocessors-dashboard.json              # Individual: Coprocessors (11 panels)
+    └── apollo-router.json         # ⭐ All 41 panels in 5 collapsible groups
 ```
 
 ## 📚 Documentation
@@ -55,17 +47,14 @@ Convert the Datadog template to Dash0 Perses format:
 
 ```bash
 cd dashboards
-node convert.js
+node src/convert.js
 ```
 
 This will:
 - Read the Datadog dashboard from `datadog/graphos-template.json`
 - Convert all widgets to Perses panel format
 - Transform Datadog metric queries to PromQL
-- Generate 7 dashboards:
-  - `apollo-router-complete-grouped.json` - **RECOMMENDED**: All 41 panels in 5 collapsible groups
-  - `apollo-router-performance.json` - Flat reference dashboard
-  - 5 individual focused dashboards (one per category)
+- Generate a single grouped dashboard with 41 panels organized in 5 collapsible groups
 
 ### 2. Deploy to Dash0
 
@@ -84,7 +73,7 @@ This will:
 
 Open the dashboard in Dash0:
 ```
-https://app.dash0.com/dashboards/apollo-router-performance
+https://app.dash0.com/dashboards/apollo-router
 ```
 
 ## Dashboard Conversion Details

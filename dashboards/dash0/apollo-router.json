@@ -1,15 +1,15 @@
 {
   "kind": "Dashboard",
   "metadata": {
-    "name": "apollo-router-performance",
+    "name": "apollo-router",
     "dash0Extensions": {
-      "dataset": "default"
+      "dataset": "apollo-router-demo"
     }
   },
   "spec": {
     "display": {
-      "name": "Apollo Router Performance",
-      "description": "GraphOS Runtime Dashboard - Converted from Datadog template"
+      "name": "Apollo Router - Complete Dashboard",
+      "description": "GraphOS Runtime Dashboard - All metrics organized by functional area"
     },
     "duration": "1h",
     "refreshInterval": "30s",
@@ -62,10 +62,23 @@
               "content": {
                 "$ref": "#/spec/panels/panel_4"
               }
-            },
+            }
+          ],
+          "display": {
+            "title": "Client Traffic",
+            "collapse": {
+              "open": true
+            }
+          }
+        }
+      },
+      {
+        "kind": "Grid",
+        "spec": {
+          "items": [
             {
-              "x": 12,
-              "y": 16,
+              "x": 0,
+              "y": 0,
               "width": 12,
               "height": 8,
               "content": {
@@ -73,8 +86,8 @@
               }
             },
             {
-              "x": 0,
-              "y": 24,
+              "x": 12,
+              "y": 0,
               "width": 12,
               "height": 8,
               "content": {
@@ -82,8 +95,8 @@
               }
             },
             {
-              "x": 12,
-              "y": 24,
+              "x": 0,
+              "y": 8,
               "width": 12,
               "height": 8,
               "content": {
@@ -91,8 +104,8 @@
               }
             },
             {
-              "x": 0,
-              "y": 32,
+              "x": 12,
+              "y": 8,
               "width": 12,
               "height": 8,
               "content": {
@@ -100,8 +113,8 @@
               }
             },
             {
-              "x": 12,
-              "y": 32,
+              "x": 0,
+              "y": 16,
               "width": 12,
               "height": 8,
               "content": {
@@ -109,17 +122,30 @@
               }
             },
             {
-              "x": 0,
-              "y": 40,
+              "x": 12,
+              "y": 16,
               "width": 12,
               "height": 8,
               "content": {
                 "$ref": "#/spec/panels/panel_10"
               }
-            },
+            }
+          ],
+          "display": {
+            "title": "Backend Services",
+            "collapse": {
+              "open": true
+            }
+          }
+        }
+      },
+      {
+        "kind": "Grid",
+        "spec": {
+          "items": [
             {
-              "x": 12,
-              "y": 40,
+              "x": 0,
+              "y": 0,
               "width": 12,
               "height": 8,
               "content": {
@@ -127,8 +153,8 @@
               }
             },
             {
-              "x": 0,
-              "y": 48,
+              "x": 12,
+              "y": 0,
               "width": 12,
               "height": 8,
               "content": {
@@ -136,53 +162,8 @@
               }
             },
             {
-              "x": 12,
-              "y": 48,
-              "width": 12,
-              "height": 8,
-              "content": {
-                "$ref": "#/spec/panels/panel_13"
-              }
-            },
-            {
               "x": 0,
-              "y": 56,
-              "width": 12,
-              "height": 8,
-              "content": {
-                "$ref": "#/spec/panels/panel_14"
-              }
-            },
-            {
-              "x": 12,
-              "y": 56,
-              "width": 12,
-              "height": 8,
-              "content": {
-                "$ref": "#/spec/panels/panel_15"
-              }
-            },
-            {
-              "x": 0,
-              "y": 64,
-              "width": 12,
-              "height": 8,
-              "content": {
-                "$ref": "#/spec/panels/panel_16"
-              }
-            },
-            {
-              "x": 12,
-              "y": 64,
-              "width": 12,
-              "height": 8,
-              "content": {
-                "$ref": "#/spec/panels/panel_17"
-              }
-            },
-            {
-              "x": 0,
-              "y": 72,
+              "y": 8,
               "width": 12,
               "height": 8,
               "content": {
@@ -191,7 +172,7 @@
             },
             {
               "x": 12,
-              "y": 72,
+              "y": 8,
               "width": 12,
               "height": 8,
               "content": {
@@ -200,7 +181,52 @@
             },
             {
               "x": 0,
-              "y": 80,
+              "y": 16,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_13"
+              }
+            },
+            {
+              "x": 12,
+              "y": 16,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_14"
+              }
+            },
+            {
+              "x": 0,
+              "y": 24,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_15"
+              }
+            },
+            {
+              "x": 12,
+              "y": 24,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_16"
+              }
+            },
+            {
+              "x": 0,
+              "y": 32,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/panel_17"
+              }
+            },
+            {
+              "x": 12,
+              "y": 32,
               "width": 12,
               "height": 8,
               "content": {
@@ -208,17 +234,30 @@
               }
             },
             {
-              "x": 12,
-              "y": 80,
+              "x": 0,
+              "y": 40,
               "width": 12,
               "height": 8,
               "content": {
                 "$ref": "#/spec/panels/panel_21"
               }
-            },
+            }
+          ],
+          "display": {
+            "title": "Router Internals",
+            "collapse": {
+              "open": true
+            }
+          }
+        }
+      },
+      {
+        "kind": "Grid",
+        "spec": {
+          "items": [
             {
               "x": 0,
-              "y": 88,
+              "y": 0,
               "width": 12,
               "height": 8,
               "content": {
@@ -227,7 +266,7 @@
             },
             {
               "x": 12,
-              "y": 88,
+              "y": 0,
               "width": 12,
               "height": 8,
               "content": {
@@ -236,7 +275,7 @@
             },
             {
               "x": 0,
-              "y": 96,
+              "y": 8,
               "width": 12,
               "height": 8,
               "content": {
@@ -245,7 +284,7 @@
             },
             {
               "x": 12,
-              "y": 96,
+              "y": 8,
               "width": 12,
               "height": 8,
               "content": {
@@ -254,7 +293,7 @@
             },
             {
               "x": 0,
-              "y": 104,
+              "y": 16,
               "width": 12,
               "height": 8,
               "content": {
@@ -263,7 +302,7 @@
             },
             {
               "x": 12,
-              "y": 104,
+              "y": 16,
               "width": 12,
               "height": 8,
               "content": {
@@ -272,7 +311,7 @@
             },
             {
               "x": 0,
-              "y": 112,
+              "y": 24,
               "width": 12,
               "height": 8,
               "content": {
@@ -281,16 +320,29 @@
             },
             {
               "x": 12,
-              "y": 112,
+              "y": 24,
               "width": 12,
               "height": 8,
               "content": {
                 "$ref": "#/spec/panels/panel_29"
               }
-            },
+            }
+          ],
+          "display": {
+            "title": "Infrastructure",
+            "collapse": {
+              "open": true
+            }
+          }
+        }
+      },
+      {
+        "kind": "Grid",
+        "spec": {
+          "items": [
             {
               "x": 0,
-              "y": 120,
+              "y": 0,
               "width": 12,
               "height": 8,
               "content": {
@@ -299,7 +351,7 @@
             },
             {
               "x": 12,
-              "y": 120,
+              "y": 0,
               "width": 12,
               "height": 8,
               "content": {
@@ -308,7 +360,7 @@
             },
             {
               "x": 0,
-              "y": 128,
+              "y": 8,
               "width": 12,
               "height": 8,
               "content": {
@@ -317,7 +369,7 @@
             },
             {
               "x": 12,
-              "y": 128,
+              "y": 8,
               "width": 12,
               "height": 8,
               "content": {
@@ -326,7 +378,7 @@
             },
             {
               "x": 0,
-              "y": 136,
+              "y": 16,
               "width": 12,
               "height": 8,
               "content": {
@@ -335,7 +387,7 @@
             },
             {
               "x": 12,
-              "y": 136,
+              "y": 16,
               "width": 12,
               "height": 8,
               "content": {
@@ -344,7 +396,7 @@
             },
             {
               "x": 0,
-              "y": 144,
+              "y": 24,
               "width": 12,
               "height": 8,
               "content": {
@@ -353,7 +405,7 @@
             },
             {
               "x": 12,
-              "y": 144,
+              "y": 24,
               "width": 12,
               "height": 8,
               "content": {
@@ -362,7 +414,7 @@
             },
             {
               "x": 0,
-              "y": 152,
+              "y": 32,
               "width": 12,
               "height": 8,
               "content": {
@@ -371,7 +423,7 @@
             },
             {
               "x": 12,
-              "y": 152,
+              "y": 32,
               "width": 12,
               "height": 8,
               "content": {
@@ -380,14 +432,20 @@
             },
             {
               "x": 0,
-              "y": 160,
+              "y": 40,
               "width": 12,
               "height": 8,
               "content": {
                 "$ref": "#/spec/panels/panel_40"
               }
             }
-          ]
+          ],
+          "display": {
+            "title": "Coprocessors & Sentinel",
+            "collapse": {
+              "open": true
+            }
+          }
         }
       }
     ],
