@@ -58,12 +58,17 @@ function convertMarkdownWidget(widget) {
     kind: 'Panel',
     spec: {
       display: {
-        name: title || 'Documentation'
+        name: title || 'Documentation',
+        description: ''
+      },
+      links: [],
+      options: {
+        hideHeader: true
       },
       plugin: {
         kind: 'Markdown',
         spec: {
-          markdown: def.content
+          text: def.content
         }
       }
     }
@@ -129,21 +134,30 @@ function convertWidget(widget, panelId, metricTypeRules, attributeMappings) {
     return null;
   }
 
-  // Determine panel plugin type
+  // Determine panel plugin type and configuration
   let pluginKind = 'TimeSeriesChart';
+  let pluginSpec = {};
+
   if (def.type === 'query_value') {
     pluginKind = 'StatChart';
+    // StatChart requires a calculation method
+    // Default to 'mean' for general aggregation - can be overridden per widget
+    pluginSpec = {
+      calculation: 'mean'
+    };
   }
 
   return {
     kind: 'Panel',
     spec: {
       display: {
-        name: def.title || 'Untitled Panel'
+        name: def.title || 'Untitled Panel',
+        description: ''
       },
+      links: [],
       plugin: {
         kind: pluginKind,
-        spec: {}
+        spec: pluginSpec
       },
       queries: promqlQueries
     }

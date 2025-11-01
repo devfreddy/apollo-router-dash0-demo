@@ -1,0 +1,22 @@
+{
+  "name": "apollo-router-dashboards",
+  "version": "1.0.0",
+  "description": "Dashboard management tools for Apollo Router Dash0 and Datadog dashboards",
+  "scripts": {
+    "generate:references": "node src/dashboard-query-reference.js",
+    "watch:dashboards": "node src/watch-dashboards.js",
+    "lookup": "node src/dashboard-query-lookup.js",
+    "lookup:help": "node src/dashboard-query-lookup.js help",
+    "validate": "percli lint -f dash0/apollo-router/apollo-router.json"
+  },
+  "keywords": [
+    "apollo",
+    "router",
+    "dashboard",
+    "monitoring",
+    "dash0",
+    "datadog"
+  ],
+  "author": "",
+  "license": "MIT"
+}
