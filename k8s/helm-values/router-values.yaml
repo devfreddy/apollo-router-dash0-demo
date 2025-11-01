@@ -98,6 +98,26 @@ router:
                   operation_name: string
                 graphql.errors:
                   on_graphql_error: true
+
+            # Compute jobs
+            # apollo.router.compute_jobs.duration: true
+            # apollo.router.compute_jobs.execution.duration: true
+            # apollo.router.compute_jobs.queue.wait.duration: true
+            # apollo.router.compute_jobs.active_jobs: true
+            # apollo.router.compute_jobs.queued: true
+
+            # Query planning
+            # apollo.router.query_planning.plan.duration: true
+            # apollo.router.query_planning.total.duration: true
+            # apollo.router.query_planning.plan.evaluated_plans: true
+
+            # Other useful metrics
+            # apollo.router.graphql_error: true
+            # apollo.router.session.count.active: true
+            # apollo.router.operations: true
+            # apollo.router.overhead: true
+
+
           subgraph:
             http.client.request.body.size: true
             http.client.response.body.size: true
@@ -122,6 +142,20 @@ router:
               service.name: "${env.SERVICE_NAME:-apollo-router}"
               service.version: "${env.SERVICE_VERSION:-2.0}"
               deployment.environment: "${env.ENVIRONMENT:-demo}"
+            views:
+              - name: http.server.request.body.size
+                aggregation:
+                  histogram:
+                    buckets:
+                      - 100        # 100 bytes
+                      - 500        # 500 bytes
+                      - 1000       # 1KB
+                      - 5000       # 5KB
+                      - 10000      # 10KB
+                      - 50000      # 50KB
+                      - 100000     # 100KB
+                      - 500000     # 500KB
+                      - 1000000    # 1MB
           otlp:
             enabled: true
             endpoint: "${env.DASH0_METRICS_ENDPOINT}"
