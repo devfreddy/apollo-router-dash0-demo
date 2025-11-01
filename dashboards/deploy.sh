@@ -32,7 +32,7 @@ if [ -z "$DASH0_DATASET" ]; then
   exit 1
 fi
 
-DASHBOARD_FILE="dash0/apollo-router.json"
+DASHBOARD_FILE="dash0/apollo-router/apollo-router.json"
 DASHBOARD_ID="apollo-router"
 API_URL="https://api.${DASH0_REGION}.aws.dash0.com/api/dashboards/${DASHBOARD_ID}?dataset=${DASH0_DATASET}"
 
@@ -64,9 +64,6 @@ if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 201 ]; then
   echo "✅ Dashboard deployed successfully!"
   echo "📊 Dashboard ID: ${DASHBOARD_ID}"
   echo "🔗 View in Dash0: https://app.dash0.com/dashboards/${DASHBOARD_ID}"
-  echo ""
-  echo "Response:"
-  echo "$BODY" | jq '.'
 else
   echo "❌ Failed to deploy dashboard (HTTP ${HTTP_CODE})"
   echo "Response:"
