@@ -1,9 +1,47 @@
+# Apollo Router Dash0 Demo - Docker Compose Configuration
+#
+# 📚 Documentation: See docs/ folder for complete guides
+#    - docs/START_HERE.md         - Quick start guide
+#    - docs/WILLFUL_WASTE_SETUP.md - Complete setup instructions
+#    - docs/QUICK_REFERENCE.md     - Common commands
+#    - docs/INDEX.md              - Full documentation index
+#
+# 🚀 Quick Start:
+#    docker-compose up -d          # Start all services
+#    docker-compose --profile bot up -d  # Include traffic bot
+#
+# 📖 Documentation: docs/WILLFUL_WASTE_SETUP.md
+# 🤖 Bot Documentation: website-bot/README.md
+# 🌐 Website Documentation: website/README.md
+
 name: apollo-dash0-demo
 
 services:
+  # PostgreSQL Database for Inventory Subgraph
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=inventory_user
+      - POSTGRES_PASSWORD=inventory_password
+      - POSTGRES_DB=inventory_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./subgraphs/inventory/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventory_user -d inventory_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    labels:
+      - "com.dash0.demo=postgres-db"
+
+
   # Apollo Router v2 - The supergraph gateway
   router:
-    image: ghcr.io/apollographql/router:v2.7.0
+    image: ghcr.io/apollographql/router:v2.8.0
     ports:
       - "4000:4000"
       - "8088:8088"  # Health check endpoint
@@ -14,7 +52,7 @@ services:
       - DASH0_METRICS_ENDPOINT=${DASH0_METRICS_ENDPOINT}
       - DASH0_TRACES_ENDPOINT=${DASH0_TRACES_ENDPOINT}
       - SERVICE_NAME=${SERVICE_NAME:-apollo-router-demo}
-      - SERVICE_VERSION=${SERVICE_VERSION:-2.7}
+      - SERVICE_VERSION=${SERVICE_VERSION:-2.8}
       - ENVIRONMENT=${ENVIRONMENT:-demo}
       - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
     volumes:
@@ -56,6 +94,7 @@ services:
       - DASH0_TRACES_ENDPOINT=${DASH0_TRACES_ENDPOINT}
       - SERVICE_VERSION=${SERVICE_VERSION:-1.0.0}
       - ENVIRONMENT=${ENVIRONMENT:-demo}
+      - ACCOUNTS_SUBGRAPH_ERROR_RATE=${ACCOUNTS_SUBGRAPH_ERROR_RATE:-0}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "--header=apollo-require-preflight: true", "http://localhost:4001/graphql?query={__typename}"]
       interval: 10s
@@ -112,6 +151,7 @@ services:
       - DASH0_TRACES_ENDPOINT=${DASH0_TRACES_ENDPOINT}
       - SERVICE_VERSION=${SERVICE_VERSION:-1.0.0}
       - ENVIRONMENT=${ENVIRONMENT:-demo}
+      - PRODUCTS_SUBGRAPH_PY_ERROR_RATE=${PRODUCTS_SUBGRAPH_PY_ERROR_RATE:-0}
     restart: unless-stopped
     labels:
       - "com.dash0.demo=products-subgraph-python"
@@ -132,6 +172,7 @@ services:
       - DASH0_TRACES_ENDPOINT=${DASH0_TRACES_ENDPOINT}
       - SERVICE_VERSION=${SERVICE_VERSION:-1.0.0}
       - ENVIRONMENT=${ENVIRONMENT:-demo}
+      - REVIEWS_SUBGRAPH_ERROR_RATE=${REVIEWS_SUBGRAPH_ERROR_RATE:-0}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "--header=apollo-require-preflight: true", "http://localhost:4002/graphql?query={__typename}"]
       interval: 10s
@@ -158,6 +199,16 @@ services:
       - DASH0_TRACES_ENDPOINT=${DASH0_TRACES_ENDPOINT}
       - SERVICE_VERSION=${SERVICE_VERSION:-1.0.0}
       - ENVIRONMENT=${ENVIRONMENT:-demo}
+      - INVENTORY_SUBGRAPH_ERROR_RATE=${INVENTORY_SUBGRAPH_ERROR_RATE:-0}
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=inventory_db
+      - DATABASE_USER=inventory_user
+      - DATABASE_PASSWORD=inventory_password
+      - DATABASE_POOL_SIZE=10
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "--header=apollo-require-preflight: true", "http://localhost:4004/graphql?query={__typename}"]
       interval: 10s
@@ -167,6 +218,51 @@ services:
     restart: unless-stopped
     labels:
       - "com.dash0.demo=inventory-subgraph"
+
+  # Willful Waste Retail Website
+  willful-waste-website:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_GRAPHQL_URL=http://router:4000/graphql
+      - VITE_ENVIRONMENT=demo
+      - NODE_ENV=production
+    depends_on:
+      - router
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    labels:
+      - "com.dash0.demo=willful-waste-website"
+
+  # Willful Waste Bot - Traffic Generator
+  willful-waste-bot:
+    build:
+      context: ./website-bot
+      dockerfile: Dockerfile
+    environment:
+      - WEBSITE_URL=http://willful-waste-website:3000
+      - GRAPHQL_URL=http://router:4000/graphql
+      - BOT_INTERVAL=10000
+      - SESSION_DURATION=300000
+      - CONCURRENT_BOTS=2
+      - HEADLESS=true
+      - NODE_ENV=production
+    depends_on:
+      - router
+      - willful-waste-website
+    restart: unless-stopped
+    labels:
+      - "com.dash0.demo=willful-waste-bot"
+    profiles:
+      - bot
 
   # Vegeta Load Generator (optional - use with --profile load-testing)
   vegeta:
@@ -185,7 +281,9 @@ services:
       - load-testing
 
 # Volumes for persistent state
-volumes: {}
+volumes:
+  postgres_data:
+    driver: local
 
 # Optional: Networks configuration for better isolation
 networks:
