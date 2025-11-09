@@ -1,0 +1,19 @@
+{
+  "name": "willful-waste-bot",
+  "version": "1.0.0",
+  "description": "Automated bot for generating traffic on Willful Waste retail store",
+  "main": "bot.js",
+  "type": "module",
+  "scripts": {
+    "start": "node bot.js",
+    "dev": "node --watch bot.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0",
+    "axios": "^1.5.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0"
+  }
+}

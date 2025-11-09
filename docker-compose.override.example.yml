@@ -1,0 +1,63 @@
+# Docker Compose Override File
+# This file can be used for local development to override compose configuration
+# Usage: Copy to docker-compose.override.yml and Docker will automatically use it
+# Reference: https://docs.docker.com/compose/extends/
+
+services:
+  # Override bot configuration for heavy load testing
+  willful-waste-bot:
+    environment:
+      # Increase concurrent bots for more load
+      - CONCURRENT_BOTS=5
+      # Decrease interval for faster actions
+      - BOT_INTERVAL=5000
+      # Longer session duration for sustained load
+      - SESSION_DURATION=1800000
+      # Show browser windows (set to false in production)
+      - HEADLESS=false
+
+  # Override website for development with hot reload
+  willful-waste-website:
+    # Uncomment to use local code with hot reload
+    # volumes:
+    #   - ./website/src:/app/src
+    #   - ./website/index.html:/app/index.html
+    environment:
+      # Use local GraphQL URL
+      - VITE_GRAPHQL_URL=http://localhost:4000/graphql
+
+  # Override router for debugging
+  router:
+    environment:
+      # Set to trace for verbose logging
+      # - RUST_LOG=trace
+      # Set to debug for more details
+      - RUST_LOG=debug
+
+  # Override subgraphs for local development
+  accounts:
+    # Uncomment to mount local code
+    # volumes:
+    #   - ./subgraphs/accounts:/app
+    environment:
+      # Increase error rate for chaos testing
+      # - ACCOUNTS_SUBGRAPH_ERROR_RATE=10
+      pass
+
+  products-py:
+    environment:
+      # Increase error rate for chaos testing
+      # - PRODUCTS_SUBGRAPH_PY_ERROR_RATE=10
+      pass
+
+  reviews:
+    environment:
+      # Increase error rate for chaos testing
+      # - REVIEWS_SUBGRAPH_ERROR_RATE=10
+      pass
+
+  inventory:
+    environment:
+      # Increase error rate for chaos testing
+      # - INVENTORY_SUBGRAPH_ERROR_RATE=10
+      pass

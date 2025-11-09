@@ -1,0 +1,22 @@
+.app {
+  min-height: 100vh;
+}
+
+main {
+  padding: 20px 0;
+}
+
+@media (max-width: 768px) {
+  header {
+    padding: 15px 20px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+  }
+}
