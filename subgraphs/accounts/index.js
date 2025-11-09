@@ -6,7 +6,10 @@ const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { buildSubgraphSchema } = require('@apollo/subgraph');
 const gql = require('graphql-tag');
-const { withErrorInjection } = require('./shared/error-injection');
+const { withErrorInjection } = require('../shared/error-injection');
+
+// Get error rate from environment variable
+const ACCOUNTS_ERROR_RATE = parseInt(process.env.ACCOUNTS_SUBGRAPH_ERROR_RATE || '0', 10);
 
 // Sample user data
 const users = [
@@ -50,7 +53,7 @@ const resolvers = {
         return users[Math.floor(Math.random() * users.length)];
       },
       'accounts-subgraph',
-      5,
+      ACCOUNTS_ERROR_RATE,
       'Failed to fetch current user'
     ),
     user: withErrorInjection(
@@ -58,7 +61,7 @@ const resolvers = {
         return users.find(user => user.id === id);
       },
       'accounts-subgraph',
-      5,
+      ACCOUNTS_ERROR_RATE,
       'Failed to fetch user'
     ),
     users: withErrorInjection(
@@ -66,7 +69,7 @@ const resolvers = {
         return users;
       },
       'accounts-subgraph',
-      5,
+      ACCOUNTS_ERROR_RATE,
       'Failed to fetch users'
     ),
     recommendedProducts: withErrorInjection(
@@ -77,7 +80,7 @@ const resolvers = {
         return productIds.map(id => ({ id }));
       },
       'accounts-subgraph',
-      5,
+      ACCOUNTS_ERROR_RATE,
       'Failed to fetch recommended products'
     ),
   },

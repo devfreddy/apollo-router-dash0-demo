@@ -6,16 +6,11 @@ const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { buildSubgraphSchema } = require('@apollo/subgraph');
 const gql = require('graphql-tag');
-const { withErrorInjection } = require('./shared/error-injection');
+const { withErrorInjection } = require('../shared/error-injection');
+const { getInventory, healthCheck } = require('./db/database');
 
-// Sample inventory data
-const inventory = [
-  { productId: '1', quantity: 15, warehouse: 'West Coast', estimatedDelivery: '3-5 days' },
-  { productId: '2', quantity: 42, warehouse: 'East Coast', estimatedDelivery: '2-4 days' },
-  { productId: '3', quantity: 128, warehouse: 'Midwest', estimatedDelivery: '2-3 days' },
-  { productId: '4', quantity: 0, warehouse: 'West Coast', estimatedDelivery: 'Out of stock' },
-  { productId: '5', quantity: 23, warehouse: 'East Coast', estimatedDelivery: '3-5 days' },
-];
+// Get error rate from environment variable
+const INVENTORY_ERROR_RATE = parseInt(process.env.INVENTORY_SUBGRAPH_ERROR_RATE || '0', 10);
 
 // Type definitions for the inventory subgraph
 const typeDefs = gql`
@@ -38,19 +33,32 @@ const typeDefs = gql`
 const resolvers = {
   Product: {
     inventory: withErrorInjection(
-      (product) => {
-        const inv = inventory.find(item => item.productId === product.id);
-        if (!inv) {
+      async (product) => {
+        try {
+          const inv = await getInventory(product.id);
+          if (!inv) {
+            return {
+              quantity: 0,
+              warehouse: 'Unknown',
+              estimatedDelivery: 'N/A',
+            };
+          }
+          return {
+            quantity: inv.quantity,
+            warehouse: inv.warehouse,
+            estimatedDelivery: inv.estimated_delivery,
+          };
+        } catch (error) {
+          console.error(`Error fetching inventory for product ${product.id}:`, error);
           return {
             quantity: 0,
             warehouse: 'Unknown',
             estimatedDelivery: 'N/A',
           };
         }
-        return inv;
       },
       'inventory-subgraph',
-      5,
+      INVENTORY_ERROR_RATE,
       'Failed to fetch inventory'
     ),
   },
@@ -68,4 +76,21 @@ startStandaloneServer(server, {
   listen: { port: PORT },
 }).then(({ url }) => {
   console.log(`🚀 Inventory subgraph ready at ${url}`);
+
+  // Check database connectivity
+  healthCheck().then(health => {
+    if (health.healthy) {
+      console.log('✓ Database connection verified');
+    } else {
+      console.warn('⚠ Database health check failed:', health.error);
+    }
+  });
+});
+
+// Graceful shutdown
+process.on('SIGTERM', async () => {
+  console.log('SIGTERM received, closing gracefully...');
+  const { closePool } = require('./db/database');
+  await closePool();
+  process.exit(0);
 });
