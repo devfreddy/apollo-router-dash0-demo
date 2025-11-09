@@ -40,11 +40,11 @@ echo ""
 
 # Restart all deployments in apollo-dash0-demo namespace
 echo -e "${GREEN}Redeploying all applications in apollo-dash0-demo namespace...${NC}"
-kubectl rollout restart deployment -n apollo-dash0-demo
+kubectl rollout restart deployment -n apollo-dash0-demo -l app!=apollo-router
 
 echo -e "${GREEN}Waiting for rollout...${NC}"
 # Wait for each deployment individually
-for deployment in apollo-router accounts products-py reviews inventory; do
+for deployment in accounts products-py reviews inventory vegeta; do
     echo -e "  Waiting for $deployment..."
     kubectl rollout status deployment/$deployment -n apollo-dash0-demo --timeout=120s > /dev/null 2>&1 || true
 done
@@ -61,6 +61,8 @@ echo -e "  • Products Subgraph (Python)"
 echo -e "  • Reviews Subgraph"
 echo -e "  • Inventory Subgraph"
 echo ""
-echo -e "${YELLOW}Note:${NC} Dash0 operator was NOT restarted"
+echo -e "${YELLOW}Notes:${NC}"
+echo -e "  • PostgreSQL cluster was NOT redeployed (persistent data retained)"
+echo -e "  • Dash0 operator was NOT restarted"
 echo -e "  If you changed operator config, use: ${BLUE}./k8s/scripts/restart-dash0.sh${NC}"
 echo ""

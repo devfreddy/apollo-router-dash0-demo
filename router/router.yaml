@@ -83,6 +83,8 @@ telemetry:
                 - subgraph_on_graphql_error: true
           error.message:
             subgraph_response_errors: $[0].message
+          otel.status_message:
+            subgraph_response_errors: $[0].message
 
     # Metric instruments configuration
     instruments:
@@ -118,6 +120,24 @@ telemetry:
               supergraph_operation_name: string
             graphql.errors:
               subgraph_on_graphql_error: true
+
+    # Event configuration
+    events:
+      # Router-level events
+      router:
+        error: error
+      # Supergraph-level events
+      supergraph:
+        error: error
+        # Custom event to log responses with GraphQL errors
+        graphql.error.detected:
+          message: "GraphQL error in request"
+          "on": "response"
+          level: info
+          condition:
+            eq:
+              - on_graphql_error: true
+              - true
 
   exporters:
     # Configure metrics export to Dash0
@@ -171,8 +191,8 @@ telemetry:
         zipkin: false
 
       common:
-        # Sample 100% of traces for demo purposes (adjust to 0.1 or lower for production)
-        sampler: 1.0
+        # Sample 25% of traces to reduce span data volume
+        sampler: 0.25
         # Parent-based sampling respects upstream sampling decisions
         parent_based_sampler: true
 
@@ -203,7 +223,7 @@ telemetry:
           max_export_timeout: 30s
           max_queue_size: 2048
 
-    # NOTE: Apollo Router v2.7.0 does not yet support OTLP Logs API
+    # NOTE: Apollo Router v2.8.0 does not yet support OTLP Logs API
     # Use Fluent Bit sidecar container (see docker-compose.yaml) to collect router logs
     # and forward them to Dash0. See LOG_COLLECTION.md for details.
 

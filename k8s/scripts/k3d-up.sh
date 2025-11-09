@@ -148,8 +148,31 @@ kubectl create configmap apollo-config \
     --from-literal=SERVICE_NAME="${SERVICE_NAME:-apollo-router-demo}" \
     --from-literal=SERVICE_VERSION="${SERVICE_VERSION:-2.0}" \
     --from-literal=ENVIRONMENT="${ENVIRONMENT:-demo}" \
+    --from-literal=ACCOUNTS_SUBGRAPH_ERROR_RATE="${ACCOUNTS_SUBGRAPH_ERROR_RATE:-0}" \
+    --from-literal=REVIEWS_SUBGRAPH_ERROR_RATE="${REVIEWS_SUBGRAPH_ERROR_RATE:-0}" \
+    --from-literal=PRODUCTS_SUBGRAPH_PY_ERROR_RATE="${PRODUCTS_SUBGRAPH_PY_ERROR_RATE:-0}" \
+    --from-literal=INVENTORY_SUBGRAPH_ERROR_RATE="${INVENTORY_SUBGRAPH_ERROR_RATE:-0}" \
     --namespace=apollo-dash0-demo \
     --dry-run=client -o yaml | kubectl apply -f -
+
+# Install CloudNativePG Operator for PostgreSQL
+echo -e "${GREEN}Installing CloudNativePG Operator for PostgreSQL...${NC}"
+echo -e "${YELLOW}Adding CloudNativePG Helm repository...${NC}"
+helm repo add cnpg https://cloudnative-pg.io/charts 2>/dev/null || true
+helm repo update cnpg
+
+echo -e "${YELLOW}Installing CloudNativePG operator...${NC}"
+helm upgrade --install cnpg cnpg/cloudnative-pg \
+    --namespace cnpg-system \
+    --create-namespace \
+    --wait \
+    --timeout=3m
+
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}CloudNativePG operator installed successfully!${NC}"
+else
+    echo -e "${YELLOW}Warning: CloudNativePG operator installation had issues, but continuing...${NC}"
+fi
 
 # Install Dash0 Kubernetes Operator
 echo -e "${GREEN}Installing Dash0 Kubernetes Operator...${NC}"
@@ -195,19 +218,29 @@ fi
 echo -e "${YELLOW}Waiting for Dash0 operator to be ready...${NC}"
 kubectl wait --for=condition=available --timeout=120s deployment/dash0-operator -n dash0-system || true
 
-# Deploy monitoring and subgraph resources using kustomize
-echo -e "${YELLOW}Deploying monitoring and subgraph resources with kustomize...${NC}"
+# Deploy monitoring, database, and subgraph resources using kustomize
+echo -e "${YELLOW}Deploying PostgreSQL cluster, monitoring, and subgraph resources with kustomize...${NC}"
 kubectl kustomize k8s/base | kubectl apply -f -
-echo -e "${GREEN}Monitoring and subgraph resources deployed!${NC}"
+echo -e "${GREEN}Resources deployed!${NC}"
+
+# Wait for PostgreSQL cluster to be ready before deploying subgraphs
+echo -e "${YELLOW}Waiting for PostgreSQL cluster to be ready (this may take 1-2 minutes)...${NC}"
+kubectl wait --for=condition=ready cluster/inventory-db -n apollo-dash0-demo --timeout=180s || echo -e "${YELLOW}PostgreSQL cluster availability check timing out, but continuing...${NC}"
 
 # Build subgraph images (if not already built)
 echo -e "${GREEN}Building subgraph Docker images...${NC}"
-for subgraph in accounts products reviews inventory; do
-    IMAGE_NAME="apollo-dash0-demo-$subgraph:latest"
+for subgraph in accounts products-py reviews inventory; do
+    if [ "$subgraph" = "products-py" ]; then
+        IMAGE_NAME="apollo-dash0-demo-products-py:latest"
+        SUBGRAPH_DIR="products-py"
+    else
+        IMAGE_NAME="apollo-dash0-demo-$subgraph:latest"
+        SUBGRAPH_DIR="$subgraph"
+    fi
 
     echo -e "${YELLOW}Building $subgraph subgraph...${NC}"
     # Build from subgraphs directory so Dockerfile can access shared directory
-    docker build -t "$IMAGE_NAME" -f "./subgraphs/$subgraph/Dockerfile" "./subgraphs"
+    docker build -t "$IMAGE_NAME" -f "./subgraphs/$SUBGRAPH_DIR/Dockerfile" "./subgraphs"
 
     echo -e "${YELLOW}Importing $IMAGE_NAME to k3d...${NC}"
     k3d image import "$IMAGE_NAME" -c "$CLUSTER_NAME"
@@ -267,6 +300,10 @@ helm upgrade --install apollo-router \
 # Wait for router to be ready
 echo -e "${YELLOW}Waiting for Apollo Router to be ready...${NC}"
 kubectl wait --for=condition=available --timeout=120s deployment/apollo-router -n apollo-dash0-demo
+
+# Deploy vegeta load generator (after router is ready to avoid DNS lookup failures)
+echo -e "${YELLOW}Deploying vegeta load generator...${NC}"
+kubectl apply -f k8s/base/vegeta.yaml
 
 echo -e "${YELLOW}Dash0 operator will now automatically instrument the workloads...${NC}"
 echo -e "${YELLOW}This may take a few moments. Workloads will be restarted if needed.${NC}"

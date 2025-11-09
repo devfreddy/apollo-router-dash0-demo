@@ -38,6 +38,13 @@ echo ""
 echo -e "${YELLOW}Redeploying Apollo Router...${NC}"
 echo ""
 
+# Update router config from router-values.yaml
+echo -e "${GREEN}Updating router-config ConfigMap from k8s/helm-values/router-values.yaml...${NC}"
+kubectl create configmap router-config \
+    --from-file=router-values.yaml=k8s/helm-values/router-values.yaml \
+    --namespace=apollo-dash0-demo \
+    --dry-run=client -o yaml | kubectl apply -f -
+
 # Restart router deployment
 echo -e "${GREEN}Redeploying apollo-router in apollo-dash0-demo namespace...${NC}"
 kubectl rollout restart deployment/apollo-router -n apollo-dash0-demo
