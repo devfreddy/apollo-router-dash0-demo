@@ -54,7 +54,7 @@ function convertMarkdownWidget(widget) {
   const firstLine = def.content.split('\n')[0];
   const title = firstLine.length > 60 ? firstLine.substring(0, 60) + '...' : firstLine;
 
-  return {
+  const panel = {
     kind: 'Panel',
     spec: {
       display: {
@@ -73,6 +73,15 @@ function convertMarkdownWidget(widget) {
       }
     }
   };
+
+  // Mark this as a markdown panel so we can apply a minimum height in the layout
+  // Store the layout info if available, or signal that we should use a default minimum height
+  if (widget.layout) {
+    panel._datadogLayout = widget.layout;
+  }
+  panel._isMarkdownPanel = true;
+
+  return panel;
 }
 
 /**

@@ -1,3 +1,3 @@
 {
-    "query": "query FederatedAll { me { name username reviews { body rating product { name price inStock shippingEstimate } } } }"
+    "query": "query FederatedAll { me { name username reviews { body rating product { name price inStock } } } }"
 }

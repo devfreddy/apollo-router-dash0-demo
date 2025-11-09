@@ -76,6 +76,11 @@ function convertDashboard() {
         continue;
       }
 
+      // Store panel metadata for layout processing, then clean it up before final output
+      const isMarkdownPanel = panel._isMarkdownPanel;
+      delete panel._isMarkdownPanel;
+      delete panel._datadogLayout;
+
       // Add panel to panels collection
       allPanels[panelId] = panel;
 
@@ -85,10 +90,16 @@ function convertDashboard() {
       // Height: multiply by 2 (2 in Datadog = 4 in Dash0, 6 in Datadog = 12 in Dash0)
       // X/Y positions: multiply by 2 to account for grid scaling
       const datadogLayout = nestedWidget.layout;
-      const width = (datadogLayout?.width || 12) * 2;
-      const height = (datadogLayout?.height || 8) * 2;
+      let width = (datadogLayout?.width || 12) * 2;
+      let height = (datadogLayout?.height || 8) * 2;
       const x = (datadogLayout?.x || 0) * 2;
       const y = (datadogLayout?.y || 0) * 2;
+
+      // For markdown panels, ensure a minimum height of 12 units (at least as tall as other panels)
+      // This makes documentation panels more readable and visually consistent
+      if (isMarkdownPanel && height < 12) {
+        height = 12;
+      }
 
       groupLayoutItems.push({
         x,

@@ -49,7 +49,7 @@
               "x": 0,
               "y": 20,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_3"
               }
@@ -58,7 +58,7 @@
               "x": 12,
               "y": 20,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_4"
               }
@@ -76,7 +76,7 @@
               "x": 0,
               "y": 32,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_6"
               }
@@ -85,7 +85,7 @@
               "x": 12,
               "y": 32,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_7"
               }
@@ -116,7 +116,7 @@
               "x": 0,
               "y": 8,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_9"
               }
@@ -138,7 +138,7 @@
               "x": 0,
               "y": 0,
               "width": 24,
-              "height": 6,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_10"
               }
@@ -156,7 +156,7 @@
               "x": 0,
               "y": 14,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_12"
               }
@@ -165,7 +165,7 @@
               "x": 12,
               "y": 14,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_13"
               }
@@ -187,7 +187,7 @@
               "x": 0,
               "y": 0,
               "width": 24,
-              "height": 10,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_14"
               }
@@ -214,7 +214,7 @@
               "x": 0,
               "y": 18,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_17"
               }
@@ -223,7 +223,7 @@
               "x": 12,
               "y": 18,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_18"
               }
@@ -241,7 +241,7 @@
               "x": 0,
               "y": 30,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_20"
               }
@@ -272,7 +272,7 @@
               "x": 0,
               "y": 8,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_22"
               }
@@ -294,7 +294,7 @@
               "x": 0,
               "y": 0,
               "width": 24,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_23"
               }
@@ -321,7 +321,7 @@
               "x": 0,
               "y": 12,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_26"
               }
@@ -330,7 +330,7 @@
               "x": 12,
               "y": 12,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_27"
               }
@@ -339,7 +339,7 @@
               "x": 0,
               "y": 32,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_28"
               }
@@ -348,7 +348,7 @@
               "x": 12,
               "y": 32,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_29"
               }
@@ -357,7 +357,7 @@
               "x": 0,
               "y": 44,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_30"
               }
@@ -379,7 +379,7 @@
               "x": 0,
               "y": 0,
               "width": 24,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_31"
               }
@@ -406,7 +406,7 @@
               "x": 0,
               "y": 12,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_34"
               }
@@ -415,7 +415,7 @@
               "x": 12,
               "y": 12,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_35"
               }
@@ -437,7 +437,7 @@
               "x": 0,
               "y": 0,
               "width": 24,
-              "height": 10,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_36"
               }
@@ -464,7 +464,7 @@
               "x": 0,
               "y": 18,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_39"
               }
@@ -473,7 +473,7 @@
               "x": 12,
               "y": 18,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_40"
               }
@@ -500,7 +500,7 @@
               "x": 0,
               "y": 30,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_43"
               }
@@ -509,7 +509,7 @@
               "x": 12,
               "y": 30,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_44"
               }
@@ -527,7 +527,7 @@
               "x": 0,
               "y": 42,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_46"
               }
@@ -549,7 +549,7 @@
               "x": 0,
               "y": 0,
               "width": 24,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_47"
               }
@@ -576,7 +576,7 @@
               "x": 0,
               "y": 12,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_50"
               }
@@ -585,7 +585,7 @@
               "x": 12,
               "y": 12,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_51"
               }
@@ -612,7 +612,7 @@
               "x": 0,
               "y": 24,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_54"
               }
@@ -621,7 +621,7 @@
               "x": 12,
               "y": 24,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_55"
               }
@@ -643,7 +643,7 @@
               "x": 0,
               "y": 0,
               "width": 24,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_56"
               }
@@ -724,7 +724,7 @@
               "x": 0,
               "y": 16,
               "width": 6,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_65"
               }
@@ -733,7 +733,7 @@
               "x": 6,
               "y": 16,
               "width": 6,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_66"
               }
@@ -742,7 +742,7 @@
               "x": 12,
               "y": 16,
               "width": 6,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_67"
               }
@@ -751,7 +751,7 @@
               "x": 18,
               "y": 16,
               "width": 6,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_68"
               }
@@ -773,7 +773,7 @@
               "x": 0,
               "y": 0,
               "width": 24,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_69"
               }
@@ -800,7 +800,7 @@
               "x": 0,
               "y": 12,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_72"
               }
@@ -809,7 +809,7 @@
               "x": 12,
               "y": 12,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_73"
               }
@@ -827,7 +827,7 @@
               "x": 0,
               "y": 24,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_75"
               }
@@ -849,7 +849,7 @@
               "x": 0,
               "y": 0,
               "width": 24,
-              "height": 2,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_76"
               }
@@ -876,7 +876,7 @@
               "x": 0,
               "y": 10,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_79"
               }
@@ -885,7 +885,7 @@
               "x": 12,
               "y": 10,
               "width": 12,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_80"
               }
@@ -903,7 +903,7 @@
               "x": 0,
               "y": 22,
               "width": 12,
-              "height": 6,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_82"
               }
@@ -925,7 +925,7 @@
               "x": 0,
               "y": 0,
               "width": 24,
-              "height": 4,
+              "height": 12,
               "content": {
                 "$ref": "#/spec/panels/panel_83"
               }
