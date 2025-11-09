@@ -3,13 +3,13 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Copy package files
-COPY products/package*.json ./
+COPY products/package*.json ./products/
 
 # Install dependencies
-RUN npm install --omit=dev
+RUN cd products && npm install --omit=dev
 
 # Copy application files
-COPY products/ .
+COPY products/ ./products/
 
 # Copy shared utilities
 COPY shared ./shared
@@ -18,4 +18,5 @@ COPY shared ./shared
 EXPOSE 4003
 
 # Start the service
+WORKDIR /app/products
 CMD ["npm", "start"]
