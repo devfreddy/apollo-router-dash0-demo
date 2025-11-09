@@ -1,0 +1,67 @@
+@url = http://router:4000/graphql
+
+POST {{ url }}
+Content-Type: application/json
+
+{
+  "query": "query GetProduct($id: ID!) { product(id: $id) { id name inventory { quantity warehouse estimatedDelivery } } }",
+  "variables": { "id": "1" }
+}
+
+---
+
+POST {{ url }}
+Content-Type: application/json
+
+{
+  "query": "query GetProduct($id: ID!) { product(id: $id) { id name inventory { quantity warehouse estimatedDelivery } } }",
+  "variables": { "id": "2" }
+}
+
+---
+
+POST {{ url }}
+Content-Type: application/json
+
+{
+  "query": "query GetProduct($id: ID!) { product(id: $id) { id name inventory { quantity warehouse estimatedDelivery } } }",
+  "variables": { "id": "3" }
+}
+
+---
+
+POST {{ url }}
+Content-Type: application/json
+
+{
+  "query": "query GetProduct($id: ID!) { product(id: $id) { id name inventory { quantity warehouse estimatedDelivery } } }",
+  "variables": { "id": "4" }
+}
+
+---
+
+POST {{ url }}
+Content-Type: application/json
+
+{
+  "query": "query GetProduct($id: ID!) { product(id: $id) { id name inventory { quantity warehouse estimatedDelivery } } }",
+  "variables": { "id": "5" }
+}
+
+---
+
+POST {{ url }}
+Content-Type: application/json
+
+{
+  "query": "query GetAllProducts { topProducts { id name reviews { author rating } inventory { quantity warehouse estimatedDelivery } } }"
+}
+
+---
+
+POST {{ url }}
+Content-Type: application/json
+
+{
+  "query": "query GetProductRecommendations { productRecommendations { id name inventory { quantity warehouse estimatedDelivery } } }"
+}
