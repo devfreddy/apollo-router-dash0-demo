@@ -36,6 +36,11 @@ spec:
             secretKeyRef:
               name: dash0-auth
               key: token
+        - name: DASH0_DATASET
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: DASH0_DATASET
         - name: DASH0_METRICS_ENDPOINT
           valueFrom:
             configMapKeyRef:
@@ -56,6 +61,11 @@ spec:
             configMapKeyRef:
               name: apollo-config
               key: ENVIRONMENT
+        - name: REVIEWS_SUBGRAPH_ERROR_RATE
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: REVIEWS_SUBGRAPH_ERROR_RATE
         livenessProbe:
           httpGet:
             path: /graphql?query={__typename}

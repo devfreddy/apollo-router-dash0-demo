@@ -36,6 +36,11 @@ spec:
             secretKeyRef:
               name: dash0-auth
               key: token
+        - name: DASH0_DATASET
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: DASH0_DATASET
         - name: DASH0_METRICS_ENDPOINT
           valueFrom:
             configMapKeyRef:
@@ -56,6 +61,26 @@ spec:
             configMapKeyRef:
               name: apollo-config
               key: ENVIRONMENT
+        - name: INVENTORY_SUBGRAPH_ERROR_RATE
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: INVENTORY_SUBGRAPH_ERROR_RATE
+        - name: DATABASE_HOST
+          value: "inventory-db-rw"
+        - name: DATABASE_PORT
+          value: "5432"
+        - name: DATABASE_NAME
+          value: "inventory_db"
+        - name: DATABASE_USER
+          value: "inventory_user"
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: inventory-db-credentials
+              key: password
+        - name: DATABASE_POOL_SIZE
+          value: "10"
         livenessProbe:
           httpGet:
             path: /graphql?query={__typename}

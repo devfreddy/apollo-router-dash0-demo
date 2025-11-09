@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: products
-        image: apollo-dash0-demo-products:latest
+        image: apollo-dash0-demo-products-py:latest
         imagePullPolicy: Never  # Use local image imported to k3d
         ports:
         - containerPort: 4003
@@ -36,6 +36,11 @@ spec:
             secretKeyRef:
               name: dash0-auth
               key: token
+        - name: DASH0_DATASET
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: DASH0_DATASET
         - name: DASH0_METRICS_ENDPOINT
           valueFrom:
             configMapKeyRef:
@@ -56,9 +61,14 @@ spec:
             configMapKeyRef:
               name: apollo-config
               key: ENVIRONMENT
+        - name: PRODUCTS_SUBGRAPH_PY_ERROR_RATE
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: PRODUCTS_SUBGRAPH_PY_ERROR_RATE
         livenessProbe:
           httpGet:
-            path: /graphql?query={__typename}
+            path: /graphql
             port: 4003
             httpHeaders:
             - name: apollo-require-preflight
@@ -69,7 +79,7 @@ spec:
           failureThreshold: 3
         readinessProbe:
           httpGet:
-            path: /graphql?query={__typename}
+            path: /graphql
             port: 4003
             httpHeaders:
             - name: apollo-require-preflight

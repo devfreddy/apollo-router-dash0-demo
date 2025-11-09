@@ -14,7 +14,7 @@ data:
     }
   federated-all.json: |
     {
-        "query": "query FederatedAll { me { name username reviews { body rating product { name price inStock shippingEstimate } } } }"
+        "query": "query FederatedAll { me { name username reviews { body rating product { name price inStock } } } }"
     }
   large.json: |
     {
@@ -38,7 +38,7 @@ data:
     }
   products-inventory.json: |
     {
-        "query": "query ProductsInventory { topProducts { name price inStock shippingEstimate } }"
+        "query": "query ProductsInventory { topProducts { name price inStock } }"
     }
   products.json: |
     {
@@ -82,43 +82,43 @@ data:
     }
   recommended.json: |
     {
-        "query": "query Recommended {  recommendedProducts {    name   inStock    price    shippingEstimate    reviews {      body      author {        name        username     }    }  } }"
+        "query": "query Recommended {  recommendedProducts {    name   inStock    price    reviews {      body      author {        name        username     }    }  } }"
     }
   recommended1.json: |
     {
-        "query": "query Recommended1 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+        "query": "query Recommended1 {  recommendedProducts {    name    inStock    price    reviews {      body      author {        name        username      }    }  }}"
     }
   recommended2.json: |
     {
-        "query": "query Recommended2 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+        "query": "query Recommended2 {  recommendedProducts {    name    inStock    price    reviews {      body      author {        name        username      }    }  }}"
     }
   recommended3.json: |
     {
-        "query": "query Recommended3 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+        "query": "query Recommended3 {  recommendedProducts {    name    inStock    price    reviews {      body      author {        name        username      }    }  }}"
     }
   recommended4.json: |
     {
-        "query": "query Recommended4 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+        "query": "query Recommended4 {  recommendedProducts {    name    inStock    price    reviews {      body      author {        name        username      }    }  }}"
     }
   recommended5.json: |
     {
-        "query": "query Recommended5 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+        "query": "query Recommended5 {  recommendedProducts {    name    inStock    price    reviews {      body      author {        name        username      }    }  }}"
     }
   recommended6.json: |
     {
-        "query": "query Recommended6 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+        "query": "query Recommended6 {  recommendedProducts {    name    inStock    price    reviews {      body      author {        name        username      }    }  }}"
     }
   recommended7.json: |
     {
-        "query": "query Recommended7 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+        "query": "query Recommended7 {  recommendedProducts {    name    inStock    price    reviews {      body      author {        name        username      }    }  }}"
     }
   recommended8.json: |
     {
-        "query": "query Recommended8 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+        "query": "query Recommended8 {  recommendedProducts {    name    inStock    price    reviews {      body      author {        name        username      }    }  }}"
     }
   recommended9.json: |
     {
-        "query": "query Recommended9 {  recommendedProducts {    name    inStock    price    shippingEstimate    reviews {      body      author {        name        username      }    }  }}"
+        "query": "query Recommended9 {  recommendedProducts {    name    inStock    price    reviews {      body      author {        name        username      }    }  }}"
     }
   reviews.json: |
     {

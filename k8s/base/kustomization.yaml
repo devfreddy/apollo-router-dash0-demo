@@ -4,8 +4,10 @@ kind: Kustomization
 namespace: apollo-dash0-demo
 
 resources:
+  - postgres-cluster.yaml
   - dash0-monitoring.yaml
-  - vegeta.yaml
+  - website.yaml
+  - website-bot.yaml
   - subgraphs/accounts.yaml
   - subgraphs/inventory.yaml
   - subgraphs/products.yaml
