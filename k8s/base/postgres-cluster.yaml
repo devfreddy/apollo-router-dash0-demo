@@ -1,0 +1,161 @@
+---
+# CloudNativePG Operator Cluster for Inventory Database
+# Install operator first: helm repo add cnpg https://cloudnative-pg.io/charts
+#                       helm repo update
+#                       helm install cnpg cnpg/cloudnative-pg --namespace cnpg-system --create-namespace
+# Then apply this manifest: kubectl apply -f k8s/base/postgres-cluster.yaml
+
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: inventory-db
+  namespace: apollo-dash0-demo
+spec:
+  instances: 1
+  primaryUpdateStrategy: unsupervised
+  postgresql:
+    parameters:
+      shared_preload_libraries: "auto_explain"
+      # Performance tuning
+      shared_buffers: "256MB"
+      effective_cache_size: "1GB"
+      maintenance_work_mem: "64MB"
+      checkpoint_completion_target: "0.9"
+      wal_buffers: "16MB"
+      default_statistics_target: "100"
+      random_page_cost: "1.1"
+      effective_io_concurrency: "200"
+      work_mem: "4MB"
+      min_wal_size: "1GB"
+      max_wal_size: "4GB"
+
+  bootstrap:
+    initdb:
+      database: inventory_db
+      owner: inventory_user
+      secret:
+        name: inventory-db-credentials
+      postInitApplicationSQL:
+        - |
+          CREATE TABLE IF NOT EXISTS inventory (
+            id SERIAL PRIMARY KEY,
+            product_id VARCHAR(255) UNIQUE NOT NULL,
+            quantity INTEGER NOT NULL DEFAULT 0,
+            warehouse VARCHAR(255) NOT NULL,
+            estimated_delivery VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+          );
+          CREATE INDEX IF NOT EXISTS idx_inventory_product_id ON inventory(product_id);
+          INSERT INTO inventory (product_id, quantity, warehouse, estimated_delivery)
+          VALUES
+            ('1', 15, 'West Coast', '3-5 days'),
+            ('2', 42, 'East Coast', '2-4 days'),
+            ('3', 128, 'Midwest', '2-3 days'),
+            ('4', 0, 'West Coast', 'Out of stock'),
+            ('5', 23, 'East Coast', '3-5 days')
+          ON CONFLICT (product_id) DO NOTHING;
+          CREATE TABLE IF NOT EXISTS inventory_audit (
+            id SERIAL PRIMARY KEY,
+            product_id VARCHAR(255) NOT NULL,
+            quantity_before INTEGER,
+            quantity_after INTEGER,
+            warehouse VARCHAR(255),
+            operation VARCHAR(50) NOT NULL,
+            performed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+          );
+          CREATE INDEX IF NOT EXISTS idx_inventory_audit_product_id ON inventory_audit(product_id);
+          CREATE INDEX IF NOT EXISTS idx_inventory_audit_performed_at ON inventory_audit(performed_at);
+
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+  storage:
+    size: 10Gi
+    storageClass: standard
+
+  monitoring:
+    enabled: true
+    pgAdmin4:
+      enabled: false
+
+  backup:
+    retentionPolicy: "7d"
+    barmanObjectStore:
+      # Uncomment and configure if using S3 for backups
+      # s3Credentials:
+      #   accessKeyId:
+      #     name: aws-creds
+      #     key: access-key-id
+      #   secretAccessKey:
+      #     name: aws-creds
+      #     key: secret-access-key
+      # bucket: inventory-db-backups
+      # endpoint: s3.amazonaws.com
+      # historyTags:
+      #   environment: demo
+      #   cluster: apollo-dash0
+      # compression: gzip
+      # tags:
+      #   environment: demo
+      #   cluster: apollo-dash0
+      # archiveMode: "on"
+      # archiveTimeout: "300"
+      # archiveWalVolume:
+      #   persistentVolumeClaimSpec:
+      #     accessModes:
+      #       - ReadWriteOnce
+      #     resources:
+      #       requests:
+      #         storage: 5Gi
+
+---
+# Secret for database credentials
+apiVersion: v1
+kind: Secret
+metadata:
+  name: inventory-db-credentials
+  namespace: apollo-dash0-demo
+type: Opaque
+stringData:
+  username: inventory_user
+  password: inventory_password
+
+---
+# Service to expose the database
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-db-rw
+  namespace: apollo-dash0-demo
+spec:
+  selector:
+    cnpg.io/cluster: inventory-db
+    role: primary
+  ports:
+    - name: postgresql
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+
+---
+# Read-only service for replicas (useful for scaling)
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-db-r
+  namespace: apollo-dash0-demo
+spec:
+  selector:
+    cnpg.io/cluster: inventory-db
+    role: replica
+  ports:
+    - name: postgresql
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP

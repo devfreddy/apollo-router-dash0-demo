@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: Deployment
+metadata:
+  name: willful-waste-bot
+  namespace: apollo-dash0-demo
+  labels:
+    app: willful-waste-bot
+    tier: bot
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: willful-waste-bot
+  template:
+    metadata:
+      labels:
+        app: willful-waste-bot
+        tier: bot
+      annotations:
+        instrumentation.dash0.com/enable: "true"
+    spec:
+      serviceAccountName: default
+      containers:
+      - name: bot
+        image: apollo-dash0-demo-willful-waste-bot:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: WEBSITE_URL
+          value: "http://willful-waste-website/index.html"
+        - name: GRAPHQL_URL
+          value: "http://apollo-router:4000/graphql"
+        - name: BOT_INTERVAL
+          value: "5000"
+        - name: SESSION_DURATION
+          value: "300000"
+        - name: CONCURRENT_BOTS
+          value: "2"
+        - name: HEADLESS
+          value: "true"
+        - name: NODE_ENV
+          value: "production"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        securityContext:
+          runAsNonRoot: false
+          capabilities:
+            add:
+              - NET_BIND_SERVICE
+      restartPolicy: Always

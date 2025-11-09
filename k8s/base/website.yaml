@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: willful-waste-website
+  namespace: apollo-dash0-demo
+  labels:
+    app: willful-waste-website
+    tier: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: willful-waste-website
+  template:
+    metadata:
+      labels:
+        app: willful-waste-website
+        tier: frontend
+      annotations:
+        instrumentation.dash0.com/enable: "true"
+    spec:
+      containers:
+      - name: website
+        image: apollo-dash0-demo-willful-waste-website:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: VITE_GRAPHQL_URL
+          value: "http://apollo-router:4000/graphql"
+        - name: VITE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: ENVIRONMENT
+        - name: NODE_ENV
+          value: "production"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: willful-waste-website
+  namespace: apollo-dash0-demo
+  labels:
+    app: willful-waste-website
+    tier: frontend
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  selector:
+    app: willful-waste-website
