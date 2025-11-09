@@ -18,11 +18,12 @@ function initializeOpenTelemetry(serviceName) {
   const authToken = process.env.DASH0_AUTH_TOKEN;
   const tracesEndpoint = process.env.DASH0_TRACES_ENDPOINT;
   const metricsEndpoint = process.env.DASH0_METRICS_ENDPOINT;
+  const dataset = process.env.DASH0_DATASET;
 
   // Validate required configuration
-  if (!authToken || !tracesEndpoint || !metricsEndpoint) {
+  if (!authToken || !tracesEndpoint || !metricsEndpoint || !dataset) {
     console.warn('⚠️  OpenTelemetry configuration incomplete. Telemetry data will not be exported.');
-    console.warn('   Required: DASH0_AUTH_TOKEN, DASH0_TRACES_ENDPOINT, DASH0_METRICS_ENDPOINT');
+    console.warn('   Required: DASH0_AUTH_TOKEN, DASH0_TRACES_ENDPOINT, DASH0_METRICS_ENDPOINT, DASH0_DATASET');
   }
 
   // Configure resource with service information
@@ -37,7 +38,7 @@ function initializeOpenTelemetry(serviceName) {
     url: tracesEndpoint,
     headers: {
       'Authorization': authToken,
-      'Dash0-Dataset': 'gtm-dash0',
+      'Dash0-Dataset': dataset,
     },
   });
 
@@ -46,7 +47,7 @@ function initializeOpenTelemetry(serviceName) {
     url: metricsEndpoint,
     headers: {
       'Authorization': authToken,
-      'Dash0-Dataset': 'gtm-dash0',
+      'Dash0-Dataset': dataset,
     },
   });
 

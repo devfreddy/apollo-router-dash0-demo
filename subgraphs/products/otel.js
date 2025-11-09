@@ -5,6 +5,7 @@ const { OTLPMetricExporter } = require('@opentelemetry/exporter-metrics-otlp-htt
 const { PeriodicExportingMetricReader } = require('@opentelemetry/sdk-metrics');
 const { Resource } = require('@opentelemetry/resources');
 const { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } = require('@opentelemetry/semantic-conventions');
+const { W3CTraceContextPropagator } = require('@opentelemetry/core');
 
 /**
  * Initialize OpenTelemetry instrumentation for a subgraph service
@@ -17,11 +18,12 @@ function initializeOpenTelemetry(serviceName) {
   const authToken = process.env.DASH0_AUTH_TOKEN;
   const tracesEndpoint = process.env.DASH0_TRACES_ENDPOINT;
   const metricsEndpoint = process.env.DASH0_METRICS_ENDPOINT;
+  const dataset = process.env.DASH0_DATASET;
 
   // Validate required configuration
-  if (!authToken || !tracesEndpoint || !metricsEndpoint) {
+  if (!authToken || !tracesEndpoint || !metricsEndpoint || !dataset) {
     console.warn('⚠️  OpenTelemetry configuration incomplete. Telemetry data will not be exported.');
-    console.warn('   Required: DASH0_AUTH_TOKEN, DASH0_TRACES_ENDPOINT, DASH0_METRICS_ENDPOINT');
+    console.warn('   Required: DASH0_AUTH_TOKEN, DASH0_TRACES_ENDPOINT, DASH0_METRICS_ENDPOINT, DASH0_DATASET');
   }
 
   // Configure resource with service information
@@ -36,7 +38,7 @@ function initializeOpenTelemetry(serviceName) {
     url: tracesEndpoint,
     headers: {
       'Authorization': authToken,
-      'Dash0-Dataset': 'gtm-dash0',
+      'Dash0-Dataset': dataset,
     },
   });
 
@@ -45,7 +47,7 @@ function initializeOpenTelemetry(serviceName) {
     url: metricsEndpoint,
     headers: {
       'Authorization': authToken,
-      'Dash0-Dataset': 'gtm-dash0',
+      'Dash0-Dataset': dataset,
     },
   });
 
@@ -57,6 +59,9 @@ function initializeOpenTelemetry(serviceName) {
       exporter: metricExporter,
       exportIntervalMillis: 60000, // Export metrics every 60 seconds
     }),
+    // Configure trace context propagation to extract parent spans from incoming requests
+    // This enables the router's trace context (traceparent header) to be properly linked
+    textMapPropagator: new W3CTraceContextPropagator(),
     instrumentations: [
       getNodeAutoInstrumentations({
         // Enable only the instrumentations we need

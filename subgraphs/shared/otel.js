@@ -53,6 +53,10 @@ function initializeOpenTelemetry(serviceName) {
   const sdk = new NodeSDK({
     resource: resource,
     traceExporter: traceExporter,
+    sampler: {
+      shouldSample: () => Math.random() < 0.25,
+      getDescription: () => 'ProbabilitySampler{0.25}',
+    },
     metricReader: new PeriodicExportingMetricReader({
       exporter: metricExporter,
       exportIntervalMillis: 60000, // Export metrics every 60 seconds
