@@ -131,7 +131,7 @@ k8s/
 The router is deployed using the official Apollo Helm chart with custom values in [helm-values/router-values.yaml](helm-values/router-values.yaml).
 
 Key configurations:
-- **Image**: `ghcr.io/apollographql/router:v2.7.0`
+- **Image**: `ghcr.io/apollographql/router:v2.8.0`
 - **Service Type**: LoadBalancer (exposed on localhost:4000)
 - **Configuration**: Mounted from ConfigMap (uses same `router.yaml` as Docker Compose)
 - **Supergraph Schema**: Mounted from ConfigMap

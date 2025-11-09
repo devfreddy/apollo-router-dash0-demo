@@ -128,6 +128,20 @@ This project creates a production-like environment to evaluate how Apollo Router
 - **Large Query**: Complex nested query to test performance
 - **Recommended Query**: Multi-hop federated query
 
+## 📚 Documentation
+
+**Willful Waste Retail Store** (New Feature!)
+- Complete e-commerce demo with frontend, bot, and full observability
+- Quick start: See [docs/START_HERE.md](./docs/START_HERE.md)
+- Full setup: See [docs/WILLFUL_WASTE_SETUP.md](./docs/WILLFUL_WASTE_SETUP.md)
+- Website docs: See [website/README.md](./website/README.md)
+- Bot docs: See [website-bot/README.md](./website-bot/README.md)
+
+**General Documentation**
+- Quick commands: [docs/QUICK_REFERENCE.md](./docs/QUICK_REFERENCE.md)
+- Complete index: [docs/INDEX.md](./docs/INDEX.md)
+- Implementation details: [docs/IMPLEMENTATION_DETAILS.md](./docs/IMPLEMENTATION_DETAILS.md)
+
 ## Getting Started
 
 ### Prerequisites
