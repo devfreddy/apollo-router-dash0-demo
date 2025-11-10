@@ -62,7 +62,7 @@ echo ""
 echo -e "${GREEN}[1/3] Updating Dash0 operator configuration...${NC}"
 envsubst < kubernetes/base/dash0-operator-config.yaml | kubectl apply -f - > /dev/null
 sleep 1  # Wait for operator config webhook to process
-envsubst < <(kubectl kustomize kubernetes/base) | kubectl apply -f - > /dev/null
+kubectl kustomize kubernetes/base | kubectl apply -f - > /dev/null
 echo -e "${GREEN}      ✓ Dash0 configuration updated${NC}"
 
 # Step 2: Restart Dash0 Operator

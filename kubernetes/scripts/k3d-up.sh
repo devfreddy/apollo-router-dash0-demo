@@ -12,16 +12,21 @@ NC='\033[0m' # No Color
 
 echo -e "${GREEN}=== Apollo Router + Dash0 k3d Setup ===${NC}"
 
+# Get the root directory (two levels up from this script)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+ENV_FILE="$ROOT_DIR/.env"
+
 # Check if .env exists
-if [ ! -f .env ]; then
-    echo -e "${RED}Error: .env file not found!${NC}"
+if [ ! -f "$ENV_FILE" ]; then
+    echo -e "${RED}Error: .env file not found at $ENV_FILE${NC}"
     echo "Please copy .env.sample to .env and configure your Dash0 credentials"
     exit 1
 fi
 
 # Load environment variables and export them for envsubst
 set -a
-source .env
+source "$ENV_FILE"
 set +a
 
 # Verify required variables
@@ -109,7 +114,10 @@ if ! k3d cluster list | grep -q "$CLUSTER_NAME"; then
     k3d cluster create "$CLUSTER_NAME" \
         --api-port 6550 \
         --servers 1 \
-        --agents 1 \
+        --agents 2 \
+        --servers-memory 3G \
+        --agents-memory 4G \
+        --volume "/tmp/k3d-apollo-storage:/var/lib/rancher/k3s/storage" \
         --port "4000:4000@loadbalancer" \
         --port "8088:8088@loadbalancer" \
         --wait
@@ -220,7 +228,7 @@ kubectl wait --for=condition=available --timeout=120s deployment/dash0-operator 
 
 # Deploy monitoring, database, and subgraph resources using kustomize
 echo -e "${YELLOW}Deploying PostgreSQL cluster, monitoring, and subgraph resources with kustomize...${NC}"
-kubectl kustomize kubernetes/base | kubectl apply -f -
+kubectl kustomize ../base | kubectl apply -f -
 echo -e "${GREEN}Resources deployed!${NC}"
 
 # Wait for PostgreSQL cluster to be ready before deploying subgraphs
