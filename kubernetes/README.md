@@ -82,11 +82,15 @@ This script will:
 1. Install k3d and kubectl if not present
 2. Create a k3d cluster named `apollo-dash0-demo`
 3. Create namespace, secrets, and configmaps
-4. Build and import subgraph Docker images
+4. Build and import all Docker images:
+   - Subgraphs: accounts, products-py, reviews, inventory
+   - Website services: willful-waste-website, willful-waste-bot
 5. Deploy all subgraphs
 6. Compose the supergraph schema
 7. Deploy Apollo Router via Helm
 8. Expose the router on `localhost:4000`
+
+**Note:** Building Docker images can take 2-3 minutes on first run. All subsequent starts use the `k3d cluster start` command.
 
 ### 3. Test the deployment
 
@@ -120,9 +124,51 @@ kubernetes/
 ├── helm-values/
 │   └── router-values.yaml      # Helm values for Apollo Router
 └── scripts/
-    ├── k3d-up.sh               # Deploy everything
-    └── k3d-down.sh             # Tear down cluster
+    ├── k3d-up.sh               # Deploy everything (builds images)
+    ├── k3d-down.sh             # Tear down cluster
+    ├── redeploy-apps.sh        # Redeploy apps (config changes only)
+    ├── rebuild-and-reimport-images.sh  # Rebuild and reimport all images
+    └── restart-dash0.sh        # Restart Dash0 operator
 ```
+
+## Development Workflows
+
+### Initial Setup (Fresh Cluster)
+```bash
+# From the kubernetes/ directory
+./start.sh
+```
+This calls `k3d-up.sh` which builds all Docker images and deploys everything.
+
+### After Changing Subgraph or Website Code
+```bash
+# From the project root
+./kubernetes/scripts/rebuild-and-reimport-images.sh
+```
+This rebuilds Docker images for:
+- All subgraphs (accounts, products-py, reviews, inventory)
+- Website services (willful-waste-website, willful-waste-bot)
+
+Then it restarts the deployments to use the new images. Takes ~2-3 minutes.
+
+### After Changing Router or Configuration (Not Code)
+```bash
+# From the project root
+./kubernetes/scripts/redeploy-apps.sh
+```
+This only redeploys the applications without rebuilding Docker images. Use this when you've changed:
+- Router configuration (`shared/router/router.yaml`)
+- Environment variables in `.env`
+- Kubernetes manifests
+
+Takes ~30-60 seconds.
+
+### After Changing Dash0 Operator Configuration
+```bash
+# From the project root
+./kubernetes/scripts/restart-dash0.sh
+```
+This restarts the Dash0 operator to pick up new configuration without restarting applications.
 
 ## Configuration
 
@@ -211,6 +257,17 @@ helm upgrade apollo-router \
 ```
 
 ## Troubleshooting
+
+### Pods showing ErrImageNeverPull
+This means the Docker images haven't been built or imported into k3d yet.
+
+**Solution:**
+```bash
+# Rebuild and import all images
+./kubernetes/scripts/rebuild-and-reimport-images.sh
+```
+
+This is automatically run during `./kubernetes/start.sh`, but if you manually started the cluster with `k3d cluster start`, you'll need to run this to import the images.
 
 ### Pods not starting
 ```bash

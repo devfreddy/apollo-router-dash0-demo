@@ -241,14 +241,33 @@ for subgraph in accounts products-py reviews inventory; do
     if [ "$subgraph" = "products-py" ]; then
         IMAGE_NAME="apollo-dash0-demo-products-py:latest"
         SUBGRAPH_DIR="products-py"
+        CONTEXT_DIR="./shared/subgraphs/$SUBGRAPH_DIR"
     else
         IMAGE_NAME="apollo-dash0-demo-$subgraph:latest"
         SUBGRAPH_DIR="$subgraph"
+        CONTEXT_DIR="./shared/subgraphs"
     fi
 
     echo -e "${YELLOW}Building $subgraph subgraph...${NC}"
-    # Build from shared subgraphs directory so Dockerfile can access shared directory
-    docker build -t "$IMAGE_NAME" -f "./shared/subgraphs/$SUBGRAPH_DIR/Dockerfile" "./shared/subgraphs"
+    docker build -t "$IMAGE_NAME" -f "./shared/subgraphs/$SUBGRAPH_DIR/Dockerfile" "$CONTEXT_DIR"
+
+    echo -e "${YELLOW}Importing $IMAGE_NAME to k3d...${NC}"
+    k3d image import "$IMAGE_NAME" -c "$CLUSTER_NAME"
+done
+
+# Build website and bot images
+echo -e "${GREEN}Building website service Docker images...${NC}"
+for service in website bot; do
+    if [ "$service" = "website" ]; then
+        IMAGE_NAME="apollo-dash0-demo-willful-waste-website:latest"
+        SERVICE_DIR="website"
+    else
+        IMAGE_NAME="apollo-dash0-demo-willful-waste-bot:latest"
+        SERVICE_DIR="website-bot"
+    fi
+
+    echo -e "${YELLOW}Building willful-waste-$service...${NC}"
+    docker build -t "$IMAGE_NAME" -f "./shared/$SERVICE_DIR/Dockerfile" "./shared/$SERVICE_DIR"
 
     echo -e "${YELLOW}Importing $IMAGE_NAME to k3d...${NC}"
     k3d image import "$IMAGE_NAME" -c "$CLUSTER_NAME"
