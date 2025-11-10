@@ -7,7 +7,7 @@ metadata:
     app: willful-waste-website
     tier: frontend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: willful-waste-website
@@ -41,8 +41,8 @@ spec:
             memory: "128Mi"
             cpu: "100m"
           limits:
-            memory: "256Mi"
-            cpu: "500m"
+            memory: "128Mi"
+            cpu: "100m"
         livenessProbe:
           httpGet:
             path: /
@@ -72,7 +72,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
+  - port: 8080
     targetPort: 3000
     protocol: TCP
     name: http

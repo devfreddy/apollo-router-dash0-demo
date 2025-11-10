@@ -1,4 +1,4 @@
-apiVersion: batch/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: willful-waste-bot
@@ -7,7 +7,7 @@ metadata:
     app: willful-waste-bot
     tier: bot
 spec:
-  replicas: 2
+  replicas: 0
   selector:
     matchLabels:
       app: willful-waste-bot

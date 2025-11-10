@@ -15,7 +15,6 @@ spec:
   primaryUpdateStrategy: unsupervised
   postgresql:
     parameters:
-      shared_preload_libraries: "auto_explain"
       # Performance tuning
       shared_buffers: "256MB"
       effective_cache_size: "1GB"
@@ -78,11 +77,6 @@ spec:
   storage:
     size: 10Gi
     storageClass: standard
-
-  monitoring:
-    enabled: true
-    pgAdmin4:
-      enabled: false
 
   backup:
     retentionPolicy: "7d"

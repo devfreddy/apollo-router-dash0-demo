@@ -23,3 +23,7 @@ fi
 echo ""
 echo -e "${GREEN}✓ Kubernetes cluster started!${NC}"
 echo ""
+
+echo "Starting local port forwards..."
+./scripts/local-port-forwards.sh start
+echo ""

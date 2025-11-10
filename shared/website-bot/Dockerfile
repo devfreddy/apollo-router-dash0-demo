@@ -6,9 +6,6 @@ WORKDIR /app
 # Install Chrome dependencies for Puppeteer
 RUN apk add --no-cache \
     chromium \
-    noto-sans-arabic \
-    noto-sans-hebrew \
-    noto-sans-thai \
     ttf-dejavu \
     fontconfig
 

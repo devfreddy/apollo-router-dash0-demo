@@ -20,6 +20,10 @@ if [ ! -f scripts/k3d-down.sh ]; then
     exit 1
 fi
 
+echo "Stopping local port forwards..."
+./scripts/local-port-forwards.sh stop
+echo ""
+
 ./scripts/k3d-down.sh
 
 echo ""
