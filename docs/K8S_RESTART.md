@@ -4,7 +4,7 @@ Quick reference for restarting your Apollo Router stack in Kubernetes.
 
 ## Scripts Overview
 
-### 1. `./k8s/scripts/restart.sh` - Full Restart (2-3 minutes) ⭐ RECOMMENDED
+### 1. `./kubernetes/scripts/restart.sh` - Full Restart (2-3 minutes) ⭐ RECOMMENDED
 **Use this when:**
 - You changed .env variables (token, endpoints)
 - You changed operator configuration
@@ -19,10 +19,10 @@ Quick reference for restarting your Apollo Router stack in Kubernetes.
 5. Waits for everything to be healthy
 
 ```bash
-./k8s/scripts/restart.sh
+./kubernetes/scripts/restart.sh
 ```
 
-### 2. `./k8s/scripts/quick-restart.sh` - Fast Restart (30-60 seconds)
+### 2. `./kubernetes/scripts/quick-restart.sh` - Fast Restart (30-60 seconds)
 **Use this when:**
 - You only changed application code (not config)
 - You changed OTLP headers in otel.js files
@@ -34,10 +34,10 @@ Quick reference for restarting your Apollo Router stack in Kubernetes.
 2. Waits for rollout to complete
 
 ```bash
-./k8s/scripts/quick-restart.sh
+./kubernetes/scripts/quick-restart.sh
 ```
 
-### 3. `./k8s/scripts/k3d-up.sh` - Full Cluster Deploy (10+ minutes)
+### 3. `./kubernetes/scripts/k3d-up.sh` - Full Cluster Deploy (10+ minutes)
 **Use this when:**
 - Starting from scratch
 - Cluster doesn't exist yet
@@ -45,16 +45,16 @@ Quick reference for restarting your Apollo Router stack in Kubernetes.
 - First-time setup
 
 ```bash
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 ```
 
-### 4. `./k8s/scripts/k3d-down.sh` - Destroy Cluster
+### 4. `./kubernetes/scripts/k3d-down.sh` - Destroy Cluster
 **Use this when:**
 - You want to completely tear down the cluster
 - Freeing up resources
 
 ```bash
-./k8s/scripts/k3d-down.sh
+./kubernetes/scripts/k3d-down.sh
 ```
 
 ## Comparison
@@ -70,26 +70,26 @@ Quick reference for restarting your Apollo Router stack in Kubernetes.
 
 ### Scenario 1: Changed .env (token, endpoints)
 ```bash
-./k8s/scripts/restart.sh
+./kubernetes/scripts/restart.sh
 ```
 The script sources .env and updates the Secrets/ConfigMaps.
 
 ### Scenario 2: Updated OTLP headers (Dash0-Dataset)
 ```bash
-./k8s/scripts/quick-restart.sh
+./kubernetes/scripts/quick-restart.sh
 ```
 Since code changes are in otel.js files, just restart the apps.
 
 ### Scenario 3: Changed router/router.yaml config
 ```bash
-./k8s/scripts/quick-restart.sh
+./kubernetes/scripts/quick-restart.sh
 ```
 ConfigMap is already mounted, restart to pick up new config.
 
 ### Scenario 4: Want to completely rebuild
 ```bash
-./k8s/scripts/k3d-down.sh
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-down.sh
+./kubernetes/scripts/k3d-up.sh
 ```
 Or just run k3d-up.sh which checks if cluster exists first.
 
@@ -118,7 +118,7 @@ Or just run k3d-up.sh which checks if cluster exists first.
 vim subgraphs/accounts/otel.js
 
 # 2. Quick restart to pick up changes
-./k8s/scripts/quick-restart.sh
+./kubernetes/scripts/quick-restart.sh
 
 # 3. Verify with logs
 kubectl logs -f deployment/accounts -n apollo-dash0-demo
@@ -171,7 +171,7 @@ kubectl logs -f <pod-name> -n apollo-dash0-demo --previous
 ### ConfigMap changes not picked up
 ```bash
 # ConfigMaps need pod restart to take effect
-./k8s/scripts/quick-restart.sh
+./kubernetes/scripts/quick-restart.sh
 ```
 
 ### Need to see what changed

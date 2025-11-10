@@ -117,7 +117,7 @@ docker run \
 
 ```bash
 # From the project root
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 ```
 
 The bot is automatically configured in the Kubernetes deployment with:
@@ -130,7 +130,7 @@ The bot is automatically configured in the Kubernetes deployment with:
 ### Manual Kubernetes Deployment
 
 ```bash
-kubectl apply -k k8s/base
+kubectl apply -k kubernetes/base
 ```
 
 ### View Bot Activity
@@ -319,7 +319,7 @@ kubectl exec -it deployment/willful-waste-bot -- nslookup apollo-router.apollo-d
 
 ```bash
 # From project root
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 ```
 
 ### Step 2: Verify Website is Accessible

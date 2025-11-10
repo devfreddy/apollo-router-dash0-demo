@@ -121,7 +121,7 @@ helm install cnpg cnpg/cloudnative-pg \
 ### Deploy PostgreSQL Cluster
 
 ```bash
-kubectl apply -f k8s/base/postgres-cluster.yaml
+kubectl apply -f kubernetes/base/postgres-cluster.yaml
 ```
 
 This creates:
@@ -159,7 +159,7 @@ psql -h localhost -U inventory_user -d inventory_db
 
 To add replicas (for read-heavy workloads):
 
-Edit `k8s/base/postgres-cluster.yaml`:
+Edit `kubernetes/base/postgres-cluster.yaml`:
 ```yaml
 spec:
   instances: 3  # Increase from 1 to 3
@@ -167,14 +167,14 @@ spec:
 
 Apply changes:
 ```bash
-kubectl apply -f k8s/base/postgres-cluster.yaml
+kubectl apply -f kubernetes/base/postgres-cluster.yaml
 ```
 
 ### Backup and Recovery
 
 The cluster is configured with a 7-day retention policy. To enable S3 backups:
 
-Edit `k8s/base/postgres-cluster.yaml` and uncomment the `backup.barmanObjectStore` section:
+Edit `kubernetes/base/postgres-cluster.yaml` and uncomment the `backup.barmanObjectStore` section:
 
 ```yaml
 backup:

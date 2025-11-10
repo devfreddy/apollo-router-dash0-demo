@@ -47,10 +47,10 @@ docker compose logs -f router
 **Commands**:
 ```bash
 # Deploy
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 
 # Tear down
-./k8s/scripts/k3d-down.sh
+./kubernetes/scripts/k3d-down.sh
 
 # View logs
 kubectl logs -f deployment/apollo-router -n apollo-dash0-demo
@@ -141,8 +141,8 @@ Host Machine
 - Environment: `.env`
 
 ### k3d
-- Helm values: `k8s/helm-values/router-values.yaml`
-- Subgraph manifests: `k8s/base/subgraphs/*.yaml`
+- Helm values: `kubernetes/helm-values/router-values.yaml`
+- Subgraph manifests: `kubernetes/base/subgraphs/*.yaml`
 - Supergraph: Auto-generated from Docker Compose services, then converted for k8s DNS
 - Environment: ConfigMaps and Secrets (created from `.env`)
 
@@ -153,7 +153,7 @@ Host Machine
 **Problem**: Port 4000 already in use
 ```bash
 # Stop k3d first
-./k8s/scripts/k3d-down.sh
+./kubernetes/scripts/k3d-down.sh
 # Then start Docker Compose
 docker compose up -d
 ```
@@ -171,7 +171,7 @@ docker compose logs <service-name>
 # Stop Docker Compose first
 docker compose down
 # Then deploy k3d
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 ```
 
 **Problem**: Pods not starting

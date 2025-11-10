@@ -60,24 +60,24 @@ An intelligent automation bot that simulates realistic user behavior and generat
 - Axios for HTTP requests
 - Chrome/Chromium for headless browsing
 
-### 3. **Kubernetes Deployment Configuration** (`k8s/base/`)
+### 3. **Kubernetes Deployment Configuration** (`kubernetes/base/`)
 Production-grade Kubernetes manifests with full observability integration.
 
 **Files Created:**
-- `k8s/base/website.yaml` - Website Deployment + LoadBalancer Service
+- `kubernetes/base/website.yaml` - Website Deployment + LoadBalancer Service
   - 2 replicas by default
   - Health checks (liveness + readiness probes)
   - Resource limits (256Mi memory, 500m CPU)
   - LoadBalancer service on port 80 → 3000
 
-- `k8s/base/website-bot.yaml` - Bot Deployment
+- `kubernetes/base/website-bot.yaml` - Bot Deployment
   - 2 replicas for distributed load generation
   - Health checks and monitoring
   - Resource limits (1Gi memory, 1000m CPU)
   - Configured environment variables
 
 **Updated Files:**
-- `k8s/base/kustomization.yaml` - Added website and website-bot resources
+- `kubernetes/base/kustomization.yaml` - Added website and website-bot resources
 
 ### 4. **Docker Compose Integration** (`docker-compose.yaml`)
 Updated the main compose file to include website and bot services.
@@ -148,7 +148,7 @@ docker-compose down
 ### Kubernetes (Production)
 ```bash
 # Full deployment
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 
 # Port forward to website
 kubectl port-forward -n apollo-dash0-demo svc/willful-waste-website 3000:80
@@ -376,7 +376,7 @@ Created Files:
 │   ├── .gitignore
 │   └── README.md
 │
-├── k8s/base/
+├── kubernetes/base/
 │   ├── website.yaml (created)
 │   ├── website-bot.yaml (created)
 │   └── kustomization.yaml (updated)

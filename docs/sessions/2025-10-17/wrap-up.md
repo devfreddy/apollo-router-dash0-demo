@@ -25,14 +25,14 @@ This session was a continuation from a previous session that hit the context lim
 ### Operator Configuration
 
 - ✅ Switched Dash0 operator from gRPC export (`dash0` type) to HTTP export
-- ✅ Created [k8s/base/dash0-operator-config.yaml](../../../k8s/base/dash0-operator-config.yaml) with HTTP export template
-- ✅ Updated [k8s/scripts/k3d-up.sh](../../../k8s/scripts/k3d-up.sh#L167-L219) to create operator configuration automatically during cluster setup
+- ✅ Created [kubernetes/base/dash0-operator-config.yaml](../../../kubernetes/base/dash0-operator-config.yaml) with HTTP export template
+- ✅ Updated [kubernetes/scripts/k3d-up.sh](../../../kubernetes/scripts/k3d-up.sh#L167-L219) to create operator configuration automatically during cluster setup
 - ✅ Verified operator successfully exports telemetry to Dash0 via HTTP
 
 ### Documentation
 
-- ✅ Updated [k8s/README.md](../../../k8s/README.md#L237-L251) with troubleshooting section explaining HTTP vs gRPC differences
-- ✅ Updated [k8s/DASH0-OPERATOR.md](../../../k8s/DASH0-OPERATOR.md#L100-L160) with comprehensive configuration explanation
+- ✅ Updated [kubernetes/README.md](../../../kubernetes/README.md#L237-L251) with troubleshooting section explaining HTTP vs gRPC differences
+- ✅ Updated [kubernetes/DASH0-OPERATOR.md](../../../kubernetes/DASH0-OPERATOR.md#L100-L160) with comprehensive configuration explanation
 - ✅ Added detailed reasoning for HTTP export choice with benefits comparison
 
 ### Infrastructure Changes
@@ -72,20 +72,20 @@ Key points:
 
 ### Files Modified
 
-1. **k8s/scripts/k3d-up.sh**:
+1. **kubernetes/scripts/k3d-up.sh**:
    - Removed Helm values for `operator.dash0Export.*`
    - Added inline YAML creation for `Dash0OperatorConfiguration` with HTTP export
    - Fixed deployment wait command (corrected deployment name)
 
-2. **k8s/base/dash0-operator-config.yaml** (new):
+2. **kubernetes/base/dash0-operator-config.yaml** (new):
    - Template configuration for HTTP export
    - Documented all configuration options
 
-3. **k8s/README.md**:
+3. **kubernetes/README.md**:
    - Enhanced troubleshooting section
    - Explained HTTP vs gRPC protocol differences
 
-4. **k8s/DASH0-OPERATOR.md**:
+4. **kubernetes/DASH0-OPERATOR.md**:
    - Replaced gRPC configuration examples with HTTP
    - Added comparison of export types
    - Documented why HTTP is recommended

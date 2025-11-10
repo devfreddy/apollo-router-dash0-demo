@@ -34,7 +34,7 @@ npm run dev
 ### Option 4: Kubernetes
 ```bash
 # From project root
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 
 # Wait ~2-5 minutes...
 # Then:

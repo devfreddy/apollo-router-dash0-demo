@@ -157,7 +157,7 @@ spec:
 
 ### Operator Settings
 
-**Helm values**: `k8s/helm-values/dash0-operator-values.yaml`
+**Helm values**: `kubernetes/helm-values/dash0-operator-values.yaml`
 
 Key settings:
 ```yaml
@@ -178,7 +178,7 @@ operator:
 
 ### Monitoring Resource
 
-**Manifest**: `k8s/base/dash0-monitoring.yaml`
+**Manifest**: `kubernetes/base/dash0-monitoring.yaml`
 
 Key settings:
 ```yaml
@@ -232,7 +232,7 @@ curl -X POST http://localhost:4000/ \
 The operator is automatically installed when you deploy with k3d:
 
 ```bash
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 ```
 
 The script:
@@ -269,7 +269,7 @@ helm install dash0-operator dash0-operator/dash0-operator \
   --set operator.dash0Export.secretRef.key="token"
 
 # 4. Deploy monitoring resource
-kubectl apply -f k8s/base/dash0-monitoring.yaml
+kubectl apply -f kubernetes/base/dash0-monitoring.yaml
 ```
 
 ## Opt-Out Options
@@ -309,8 +309,8 @@ kubectl patch dash0monitoring dash0-monitoring-resource -n apollo-dash0-demo \
 
 ## Documentation
 
-- **Full operator docs**: [k8s/DASH0-OPERATOR.md](k8s/DASH0-OPERATOR.md)
-- **k8s deployment**: [k8s/README.md](k8s/README.md)
+- **Full operator docs**: [kubernetes/DASH0-OPERATOR.md](kubernetes/DASH0-OPERATOR.md)
+- **k8s deployment**: [kubernetes/README.md](kubernetes/README.md)
 - **Dash0 docs**: https://www.dash0.com/documentation/dash0/dash0-kubernetes-operator
 
 ## What's in Dash0 Now

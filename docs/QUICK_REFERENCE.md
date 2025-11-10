@@ -38,7 +38,7 @@ docker-compose up -d --build
 
 ```bash
 # Deploy everything
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 
 # Port forward website
 kubectl port-forward -n apollo-dash0-demo svc/willful-waste-website 3000:80
@@ -116,7 +116,7 @@ website-bot/          # Traffic bot
 ├── Dockerfile        # Docker image
 └── README.md         # Detailed docs
 
-k8s/base/
+kubernetes/base/
 ├── website.yaml      # K8s deployment
 ├── website-bot.yaml  # K8s deployment
 └── kustomization.yaml # K8s manifest

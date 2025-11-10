@@ -220,7 +220,7 @@ kubectl wait --for=condition=available --timeout=120s deployment/dash0-operator 
 
 # Deploy monitoring, database, and subgraph resources using kustomize
 echo -e "${YELLOW}Deploying PostgreSQL cluster, monitoring, and subgraph resources with kustomize...${NC}"
-kubectl kustomize k8s/base | kubectl apply -f -
+kubectl kustomize kubernetes/base | kubectl apply -f -
 echo -e "${GREEN}Resources deployed!${NC}"
 
 # Wait for PostgreSQL cluster to be ready before deploying subgraphs
@@ -239,8 +239,8 @@ for subgraph in accounts products-py reviews inventory; do
     fi
 
     echo -e "${YELLOW}Building $subgraph subgraph...${NC}"
-    # Build from subgraphs directory so Dockerfile can access shared directory
-    docker build -t "$IMAGE_NAME" -f "./subgraphs/$SUBGRAPH_DIR/Dockerfile" "./subgraphs"
+    # Build from shared subgraphs directory so Dockerfile can access shared directory
+    docker build -t "$IMAGE_NAME" -f "./shared/subgraphs/$SUBGRAPH_DIR/Dockerfile" "./shared/subgraphs"
 
     echo -e "${YELLOW}Importing $IMAGE_NAME to k3d...${NC}"
     k3d image import "$IMAGE_NAME" -c "$CLUSTER_NAME"
@@ -277,14 +277,14 @@ fi
 # Create ConfigMap for supergraph schema
 echo -e "${GREEN}Creating supergraph schema ConfigMap...${NC}"
 kubectl create configmap supergraph-schema \
-    --from-file=supergraph.graphql=router/supergraph.graphql \
+    --from-file=supergraph.graphql=shared/router/supergraph.graphql \
     --namespace=apollo-dash0-demo \
     --dry-run=client -o yaml | kubectl apply -f -
 
 # Create ConfigMap for router configuration
 echo -e "${GREEN}Creating router configuration ConfigMap...${NC}"
 kubectl create configmap router-config \
-    --from-file=router.yaml=router/router.yaml \
+    --from-file=router.yaml=shared/router/router.yaml \
     --namespace=apollo-dash0-demo \
     --dry-run=client -o yaml | kubectl apply -f -
 
@@ -294,7 +294,7 @@ helm upgrade --install apollo-router \
     oci://ghcr.io/apollographql/helm-charts/router \
     --version 2.8.0 \
     --namespace apollo-dash0-demo \
-    --values k8s/helm-values/router-values.yaml \
+    --values kubernetes/helm-values/router-values.yaml \
     --wait
 
 # Wait for router to be ready
@@ -303,7 +303,7 @@ kubectl wait --for=condition=available --timeout=120s deployment/apollo-router -
 
 # Deploy vegeta load generator (after router is ready to avoid DNS lookup failures)
 echo -e "${YELLOW}Deploying vegeta load generator...${NC}"
-kubectl apply -f k8s/base/vegeta.yaml
+kubectl apply -f kubernetes/base/vegeta.yaml
 
 echo -e "${YELLOW}Dash0 operator will now automatically instrument the workloads...${NC}"
 echo -e "${YELLOW}This may take a few moments. Workloads will be restarted if needed.${NC}"
@@ -332,4 +332,4 @@ echo -e "${GREEN}View telemetry in Dash0:${NC}"
 echo -e "  https://app.dash0.com → Logs/Metrics/Traces → Filter by Dataset: ${DASH0_DATASET:-default}"
 echo ""
 echo -e "${GREEN}To tear down:${NC}"
-echo -e "  ./k8s/scripts/k3d-down.sh"
+echo -e "  ./kubernetes/scripts/k3d-down.sh"

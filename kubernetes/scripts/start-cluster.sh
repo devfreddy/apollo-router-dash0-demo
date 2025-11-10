@@ -165,7 +165,7 @@ else
     PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
     cd "$PROJECT_ROOT"
-    bash k8s/scripts/k3d-up.sh
+    bash kubernetes/scripts/k3d-up.sh
     exit $?
 fi
 

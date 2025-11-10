@@ -63,13 +63,13 @@ node scripts/inventory-load-test.js 30 5
 #### Kubernetes
 ```bash
 # Deploy everything
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 
 # Manage PostgreSQL
-./k8s/scripts/manage-postgres.sh [status|logs|connect|port-forward|restart|reset-data]
+./kubernetes/scripts/manage-postgres.sh [status|logs|connect|port-forward|restart|reset-data]
 
 # Verify integration
-./k8s/scripts/verify-postgres-integration.sh
+./kubernetes/scripts/verify-postgres-integration.sh
 
 # View data
 kubectl exec -it pod/inventory-db-1 -n apollo-dash0-demo -- \
@@ -144,17 +144,17 @@ kubectl exec -it deployment/inventory -n apollo-dash0-demo -- \
 
 #### Kubernetes Cluster Status
 ```bash
-./k8s/scripts/manage-postgres.sh status
+./kubernetes/scripts/manage-postgres.sh status
 ```
 
 #### Database Logs
 ```bash
-./k8s/scripts/manage-postgres.sh logs
+./kubernetes/scripts/manage-postgres.sh logs
 ```
 
 #### Connect to Database
 ```bash
-./k8s/scripts/manage-postgres.sh connect
+./kubernetes/scripts/manage-postgres.sh connect
 ```
 
 #### Dash0 Integration
@@ -175,7 +175,7 @@ DATABASE_USER=inventory_user
 DATABASE_PASSWORD=inventory_password
 DATABASE_POOL_SIZE=10
 
-# Kubernetes (from k8s/base/subgraphs/inventory.yaml)
+# Kubernetes (from kubernetes/base/subgraphs/inventory.yaml)
 # Sourced from: inventory-db-credentials secret
 ```
 
@@ -204,13 +204,13 @@ docker-compose up -d
 #### Kubernetes Issues
 ```bash
 # Check cluster status
-./k8s/scripts/manage-postgres.sh status
+./kubernetes/scripts/manage-postgres.sh status
 
 # View logs
-./k8s/scripts/manage-postgres.sh logs
+./kubernetes/scripts/manage-postgres.sh logs
 
 # Reset database
-./k8s/scripts/manage-postgres.sh reset-data
+./kubernetes/scripts/manage-postgres.sh reset-data
 ```
 
 See [POSTGRES_SETUP.md#troubleshooting](POSTGRES_SETUP.md#troubleshooting) for detailed troubleshooting.
@@ -227,12 +227,12 @@ See [POSTGRES_SETUP.md#troubleshooting](POSTGRES_SETUP.md#troubleshooting) for d
 | Task | Command |
 |------|---------|
 | Deploy (Docker) | `docker-compose up -d` |
-| Deploy (K8s) | `./k8s/scripts/k3d-up.sh` |
-| Verify integration | `./k8s/scripts/verify-postgres-integration.sh` |
-| View data | `./k8s/scripts/manage-postgres.sh connect` |
-| View logs | `./k8s/scripts/manage-postgres.sh logs` |
-| Restart DB | `./k8s/scripts/manage-postgres.sh restart` |
-| Reset data | `./k8s/scripts/manage-postgres.sh reset-data` |
+| Deploy (K8s) | `./kubernetes/scripts/k3d-up.sh` |
+| Verify integration | `./kubernetes/scripts/verify-postgres-integration.sh` |
+| View data | `./kubernetes/scripts/manage-postgres.sh connect` |
+| View logs | `./kubernetes/scripts/manage-postgres.sh logs` |
+| Restart DB | `./kubernetes/scripts/manage-postgres.sh restart` |
+| Reset data | `./kubernetes/scripts/manage-postgres.sh reset-data` |
 | Test GraphQL | `node scripts/inventory-load-test.js` |
 | Stress test DB | `node scripts/inventory-db-stress-test.js` |
 
@@ -267,7 +267,7 @@ What do I need?
     │  └─ → KUBERNETES_INTEGRATION_SUMMARY.md
     │
     ├─ "I need to manage the database"
-    │  └─ → ./k8s/scripts/manage-postgres.sh --help
+    │  └─ → ./kubernetes/scripts/manage-postgres.sh --help
     │
     └─ "I need deployment reference"
        └─ → CLAUDE.md

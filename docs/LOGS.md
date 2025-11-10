@@ -8,7 +8,7 @@ Logs from your Apollo Router and subgraphs are automatically collected and sent 
 
 ```bash
 # Deploy the full stack including Dash0 Operator with log collection enabled
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 ```
 
 The script will:
@@ -92,7 +92,7 @@ kubectl describe pod <pod-name> -n apollo-dash0-demo | grep -i "otel\|dash0"
 
 ## Configuration
 
-Log collection is configured in `k8s/base/dash0-operator-config.yaml`:
+Log collection is configured in `kubernetes/base/dash0-operator-config.yaml`:
 
 ```yaml
 apiVersion: operator.dash0.com/v1alpha1
@@ -225,7 +225,7 @@ kubectl edit deployment dash0-operator-controller-manager -n dash0-system
 - **Flush interval**: 1 second
 - **Dataset**: Currently using "default" for all logs
 
-To change dataset or flush settings, edit `k8s/base/dash0-operator-config.yaml`.
+To change dataset or flush settings, edit `kubernetes/base/dash0-operator-config.yaml`.
 
 ## Related Documentation
 

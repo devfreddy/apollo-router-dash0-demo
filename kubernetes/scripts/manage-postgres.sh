@@ -160,7 +160,7 @@ reset_data() {
     sleep 5
 
     echo -e "${YELLOW}Redeploying PostgreSQL cluster...${NC}"
-    kubectl apply -f k8s/base/postgres-cluster.yaml
+    kubectl apply -f kubernetes/base/postgres-cluster.yaml
 
     echo -e "${YELLOW}Waiting for cluster to be ready...${NC}"
     kubectl wait --for=condition=ready cluster/$CLUSTER_NAME -n $NAMESPACE --timeout=180s

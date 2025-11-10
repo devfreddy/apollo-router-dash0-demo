@@ -19,7 +19,7 @@ echo -e "${BLUE}╚════════════════════�
 echo ""
 
 # Check if we're in the right directory
-if [ ! -f "k8s/scripts/k3d-up.sh" ]; then
+if [ ! -f "kubernetes/scripts/k3d-up.sh" ]; then
     echo -e "${RED}Error: Please run this script from the project root directory${NC}"
     exit 1
 fi
@@ -45,7 +45,7 @@ fi
 # Check if cluster exists
 if ! kubectl cluster-info &> /dev/null; then
     echo -e "${RED}Error: Kubernetes cluster not accessible${NC}"
-    echo -e "${YELLOW}Did you run ./k8s/scripts/k3d-up.sh first?${NC}"
+    echo -e "${YELLOW}Did you run ./kubernetes/scripts/k3d-up.sh first?${NC}"
     exit 1
 fi
 
@@ -70,7 +70,7 @@ for subgraph in "${SUBGRAPHS[@]}"; do
     echo -e "${GREEN}[$subgraph]${NC} Building Docker image..."
 
     # Build from subgraphs directory so Dockerfile can access shared directory
-    if docker build -t "$IMAGE_NAME" -f "./subgraphs/$subgraph/Dockerfile" "./subgraphs"; then
+    if docker build -t "$IMAGE_NAME" -f "./shared/subgraphs/$subgraph/Dockerfile" "./shared/subgraphs"; then
         echo -e "${GREEN}[$subgraph]${NC} Image built successfully: $IMAGE_NAME"
     else
         echo -e "${RED}Error: Failed to build $subgraph image${NC}"

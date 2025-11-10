@@ -49,30 +49,33 @@ This guide walks you through setting up and running the Willful Waste retail sto
 ### Option 1: Docker Compose (Easiest)
 
 ```bash
-# 1. Build and start all services
-docker-compose up -d
+# 1. Navigate to compose directory
+cd docker-compose
 
-# 2. Wait for services to be healthy (30-60 seconds)
+# 2. Build and start all services (full version with website + bot)
+docker-compose -f docker-compose.full.yaml up -d
+
+# 3. Wait for services to be healthy (30-60 seconds)
 docker-compose ps
 
-# 3. Access the website
+# 4. Access the website
 open http://localhost:3000
 
-# 4. View logs
+# 5. View logs
 docker-compose logs -f willful-waste-website
 
-# 5. Start the bot (optional)
-docker-compose --profile bot up -d willful-waste-bot
+# 6. Start the bot (optional, if not already started with profile)
+docker-compose -f docker-compose.full.yaml --profile bot up -d willful-waste-bot
 
-# 6. Stop everything
-docker-compose down
+# 7. Stop everything
+docker-compose -f docker-compose.full.yaml down
 ```
 
 ### Option 2: Kubernetes (Production-like)
 
 ```bash
 # 1. Full deployment with all services
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 
 # 2. Verify deployment
 kubectl get all -n apollo-dash0-demo
@@ -93,7 +96,10 @@ kubectl logs -f deployment/willful-waste-bot -n apollo-dash0-demo
 ### Option 3: Local Development
 
 ```bash
-# 1. Start backend services
+# 1. Navigate to compose directory
+cd docker-compose
+
+# 2. Start backend services only (core services)
 docker-compose up -d router accounts products-py reviews inventory
 
 # 2. Wait for services to be healthy
@@ -221,16 +227,18 @@ docker run \
 
 ### Step 4: Docker Compose Orchestration
 
-The `docker-compose.yaml` includes both the website and bot:
+The `docker-compose.full.yaml` includes both the website and bot:
 
-**Run everything:**
+**Run everything from the compose folder:**
 
 ```bash
+cd docker-compose
+
 # Start all services (without bot)
-docker-compose up -d
+docker-compose -f docker-compose.full.yaml up -d
 
 # Start all services (with bot)
-docker-compose --profile bot up -d
+docker-compose -f docker-compose.full.yaml --profile bot up -d
 
 # View logs
 docker-compose logs -f
@@ -240,11 +248,11 @@ docker-compose logs -f willful-waste-website
 docker-compose logs -f willful-waste-bot
 
 # Stop all services
-docker-compose down
+docker-compose -f docker-compose.full.yaml down
 
 # Remove volumes and start fresh
-docker-compose down -v
-docker-compose up -d
+docker-compose -f docker-compose.full.yaml down -v
+docker-compose -f docker-compose.full.yaml up -d
 ```
 
 **Service Dependencies:**
@@ -261,7 +269,7 @@ willful-waste-bot ← depends on → router, willful-waste-website
 
 ```bash
 # One-command deployment of everything
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 
 # This includes:
 # - k3d cluster creation
@@ -286,7 +294,7 @@ kubectl create configmap apollo-config \
   -n apollo-dash0-demo
 
 # Deploy with Kustomize
-kubectl apply -k k8s/base
+kubectl apply -k kubernetes/base
 
 # Verify deployment
 kubectl get all -n apollo-dash0-demo
@@ -504,9 +512,10 @@ docker-compose logs willful-waste-bot
 
 **Solution**:
 ```bash
+cd docker-compose
 # Reduce bot count
-docker-compose down
-# Edit docker-compose.yaml: CONCURRENT_BOTS=1
+docker-compose -f docker-compose.full.yaml down
+# Edit docker-compose.full.yaml: CONCURRENT_BOTS=1
 docker-compose --profile bot up -d
 ```
 
@@ -541,8 +550,8 @@ kubectl logs <pod-name> -n apollo-dash0-demo
 | **Bot** | `website-bot/` | (none) |
 | **Router** | `router/` | 4000 |
 | **Subgraphs** | `subgraphs/` | 4001-4004 |
-| **Kubernetes** | `k8s/base/{website,website-bot}.yaml` | - |
-| **Docker Compose** | `docker-compose.yaml` | - |
+| **Kubernetes** | `kubernetes/base/{website,website-bot}.yaml` | - |
+| **Docker Compose** | `docker-compose/docker-compose.full.yaml` | - |
 | **Documentation** | `website/README.md`, `website-bot/README.md` | - |
 
 ## Next Steps
@@ -556,17 +565,19 @@ kubectl logs <pod-name> -n apollo-dash0-demo
 ## Useful Commands
 
 ```bash
+cd docker-compose
+
 # View all services status
 docker-compose ps
 
 # Tail all logs
-docker-compose logs -f
+docker-compose -f docker-compose.full.yaml logs -f
 
 # Rebuild a specific service
-docker-compose up -d --build willful-waste-website
+docker-compose -f docker-compose.full.yaml up -d --build willful-waste-website
 
 # Execute command in container
-docker-compose exec willful-waste-bot npm start
+docker-compose -f docker-compose.full.yaml exec willful-waste-bot npm start
 
 # View resource usage
 docker stats
@@ -615,13 +626,15 @@ project/
 │   ├── .env.example
 │   └── README.md
 │
-├── k8s/base/
+├── kubernetes/base/
 │   ├── website.yaml          # Kubernetes deployment
 │   ├── website-bot.yaml      # Kubernetes deployment
 │   └── kustomization.yaml    # Updated with new services
 │
-├── docker-compose.yaml       # Updated with new services
-└── WILLFUL_WASTE_SETUP.md   # This file
+├── compose/
+│   └── docker-compose.full.yaml  # Full-featured: website + bot
+│
+└── docs/WILLFUL_WASTE_SETUP.md   # This file
 ```
 
 Enjoy running your Willful Waste demo! 🛍️

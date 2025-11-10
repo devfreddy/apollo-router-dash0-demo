@@ -72,38 +72,46 @@ This project creates a production-like environment to evaluate how Apollo Router
 
 ## Project Structure
 
+The project is organized into **two clear deployment paths** - choose the one that fits your needs:
+
 ```
 .
-├── .env.sample               # Sample environment configuration
-├── .env                      # Your local configuration (not committed)
-├── router/
-│   ├── router.yaml           # Apollo Router v2 config (uses env vars)
-│   └── supergraph-config.yaml # Federation composition config
-├── subgraphs/
-│   ├── products/             # Product catalog subgraph
-│   ├── reviews/              # Product reviews subgraph
-│   ├── accounts/             # User accounts subgraph
-│   └── inventory/            # Inventory management subgraph
-├── vegeta/
-│   ├── targets.http          # Load test target definitions
-│   └── *.json                # GraphQL query payloads for different scenarios
-├── k8s/                      # Kubernetes deployment
-│   ├── README.md             # Detailed Kubernetes documentation
-│   ├── base/
-│   │   └── subgraphs/        # Subgraph Kubernetes manifests
-│   ├── helm-values/
-│   │   └── router-values.yaml # Apollo Router Helm chart values
-│   └── scripts/
-│       ├── k3d-up.sh         # Deploy to k3d
-│       └── k3d-down.sh       # Tear down k3d cluster
-├── scripts/
-│   └── switch-env.sh         # Switch between Docker Compose and k3d
+├── docker-compose/           # Docker Compose deployment (local development)
+│   ├── docker-compose.yaml   # Core services only (router + subgraphs + DB)
+│   ├── start.sh              # Quick start script
+│   ├── stop.sh               # Shutdown script
+│   ├── status.sh             # Check status
+│   └── README.md             # Compose-specific documentation
+│
+├── kubernetes/               # Kubernetes deployment (k3d)
+│   ├── start.sh              # Start k3d cluster
+│   ├── stop.sh               # Tear down cluster
+│   ├── status.sh             # Check cluster status
+│   ├── helm-values/          # Helm chart values for router
+│   ├── base/                 # Kubernetes manifests
+│   ├── scripts/              # Deployment scripts (k3d-up.sh, etc.)
+│   ├── README.md             # Main Kubernetes docs
+│   └── README-DEPLOYMENT.md  # Deployment guide
+│
+├── shared/                   # Shared across both deployments
+│   ├── router/               # Apollo Router config and schema
+│   │   ├── router.yaml       # Router configuration
+│   │   └── supergraph.graphql # Federation schema
+│   └── subgraphs/            # All subgraph services
+│       ├── accounts/         # User accounts subgraph
+│       ├── products-py/      # Product catalog (Python)
+│       ├── reviews/          # Reviews subgraph
+│       ├── inventory/        # Inventory management
+│       └── shared/           # Common utilities
+│
+├── .env                      # Your credentials (shared by both paths)
+├── .env.sample               # Template with all options
 ├── dashboards/               # Dash0 dashboard templates
-├── docker-compose.yaml       # Docker Compose orchestration
-├── compose-supergraph.sh     # Helper script for schema composition
-├── quickstart.sh             # Automated Docker Compose setup
+├── docs/                     # Documentation
+├── scripts/                  # Root-level utilities
+├── terraform/                # Infrastructure as code
 ├── README.md                 # This file
-└── SETUP.md                  # Detailed setup instructions
+└── CLAUDE.md                 # AI assistant guidelines
 ```
 
 ## Key Features
@@ -138,6 +146,8 @@ This project creates a production-like environment to evaluate how Apollo Router
 - Bot docs: See [website-bot/README.md](./website-bot/README.md)
 
 **General Documentation**
+- Project structure guide: [docs/STRUCTURE.md](./docs/STRUCTURE.md)
+- Migration guide: [docs/MIGRATION.md](./docs/MIGRATION.md) (what changed in restructuring)
 - Quick commands: [docs/QUICK_REFERENCE.md](./docs/QUICK_REFERENCE.md)
 - Complete index: [docs/INDEX.md](./docs/INDEX.md)
 - Implementation details: [docs/IMPLEMENTATION_DETAILS.md](./docs/IMPLEMENTATION_DETAILS.md)
@@ -146,94 +156,66 @@ This project creates a production-like environment to evaluate how Apollo Router
 
 ### Prerequisites
 - Docker (or Colima on macOS)
-- Dash0 account with API token
-- **For Docker Compose**: Docker Compose
-- **For Kubernetes**: kubectl and Helm 3 (k3d will be auto-installed)
+- Dash0 account with API token (for observability features)
 - (Optional) Node.js 18+ for local subgraph development
 
 ### Quick Start
 
-This demo supports two deployment methods:
-1. **Docker Compose** - Simple, fast, great for local development
-2. **k3d (Kubernetes)** - Production-like environment with Helm charts
+Choose your deployment path:
 
-#### Option 1: Docker Compose (Recommended for Quick Start)
+#### Option 1: Docker Compose (Recommended for Local Development)
 
-1. **Copy the environment file and configure your credentials:**
-   ```bash
-   cp .env.sample .env
-   ```
-
-   Then edit `.env` and update:
-   - `DASH0_AUTH_TOKEN` - Your Dash0 API token
-   - `DASH0_REGION` - Your Dash0 region (e.g., us-west-2)
-   - (Optional) `APOLLO_KEY` and `APOLLO_GRAPH_REF` for GraphOS
-
-2. **Run the automated setup:**
-   ```bash
-   ./quickstart.sh
-   ```
-
-   Or manually start the stack:
-   ```bash
-   docker compose up -d
-   ```
-
-3. Access the Apollo Sandbox:
-   ```
-   http://localhost:4000
-   ```
-
-4. View metrics and traces in your Dash0 dashboard
-
-#### Option 2: k3d (Kubernetes)
-
-1. **Ensure .env is configured** (same as above)
-
-2. **Deploy to k3d:**
-   ```bash
-   ./k8s/scripts/k3d-up.sh
-   ```
-
-   This script will:
-   - Install k3d and kubectl if needed
-   - Create a local Kubernetes cluster
-   - Build and import subgraph images
-   - Deploy all services using Kubernetes manifests
-   - Deploy Apollo Router using the official Helm chart
-   - Expose the router on `localhost:4000`
-
-3. **Access the API:**
-   ```
-   http://localhost:4000
-   ```
-
-4. **View logs:**
-   ```bash
-   kubectl logs -f deployment/apollo-router -n apollo-dash0-demo
-   ```
-
-5. **Tear down:**
-   ```bash
-   ./k8s/scripts/k3d-down.sh
-   ```
-
-See [k8s/README.md](k8s/README.md) for detailed Kubernetes deployment documentation.
-
-#### Switching Between Environments
-
-Use the convenient switcher script:
+Perfect for fast iteration and testing. ~1-2 minute startup.
 
 ```bash
-# Switch to Docker Compose
-./scripts/switch-env.sh compose
+# 1. Configure credentials
+cp .env.sample .env
+# Edit .env and set:
+#   - DASH0_AUTH_TOKEN
+#   - DASH0_REGION
 
-# Switch to k3d
-./scripts/switch-env.sh k3d
+# 2. Start services
+cd compose
+./start.sh
 
-# Check status
-./scripts/switch-env.sh status
+# 3. Access GraphQL API
+# http://localhost:4000
 ```
+
+For more details, see [compose/README.md](compose/README.md).
+
+#### Option 2: Kubernetes (k3d) - Production-like Deployment
+
+Full Kubernetes cluster with Dash0 operator, auto-instrumentation, and CloudNativePG database. ~5-10 minute setup.
+
+```bash
+# 1. Configure credentials
+cp .env.sample .env
+# Edit .env and set:
+#   - DASH0_AUTH_TOKEN
+#   - DASH0_REGION
+#   - DASH0_METRICS_ENDPOINT
+#   - DASH0_TRACES_ENDPOINT
+
+# 2. Start cluster
+cd kubernetes
+./start.sh
+
+# 3. Check status
+./status.sh
+```
+
+For more details, see [kubernetes/README-DEPLOYMENT.md](kubernetes/README-DEPLOYMENT.md).
+
+### Comparison
+
+| Feature | Docker Compose | Kubernetes |
+|---------|---|---|
+| **Setup time** | ~1-2 min | ~5-10 min |
+| **Complexity** | Low | Medium |
+| **Observability** | Basic | Full (Dash0) |
+| **Database** | Single PostgreSQL | CloudNativePG replicated |
+| **Best for** | Local dev, quick tests | Production evaluation |
 
 ### Load Testing
 
@@ -345,7 +327,7 @@ See [dashboards/README.md](dashboards/README.md) for detailed documentation.
 2. ✅ ~~Test Dash0 MCP server functionality~~ - **Completed** (All MCP tools verified working)
 3. ✅ ~~Pull in Datadog template and recreate in Dash0~~ - **Completed** (See [dashboards/README.md](dashboards/README.md))
 4. ✅ ~~Fix broken dashboard panels and temporality configuration~~ - **Completed** (See [2025-10-15 wrap-up](docs/sessions/2025-10-15/wrap-up.md))
-5. ✅ ~~Add Kubernetes (k3d) deployment option~~ - **Completed** (See [k8s/README.md](k8s/README.md))
+5. ✅ ~~Add Kubernetes (k3d) deployment option~~ - **Completed** (See [kubernetes/README.md](kubernetes/README.md))
 6. ✅ ~~Integrate Dash0 Kubernetes operator~~ - **Completed** (See [2025-10-17 wrap-up](docs/sessions/2025-10-17/wrap-up.md))
 
 ### Next Steps

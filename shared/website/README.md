@@ -103,13 +103,13 @@ The website is configured for deployment to the Apollo Dash0 demo Kubernetes clu
 
 ```bash
 # From the project root
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 ```
 
 Or manually:
 
 ```bash
-kubectl apply -k k8s/base
+kubectl apply -k kubernetes/base
 ```
 
 ### Verify Deployment

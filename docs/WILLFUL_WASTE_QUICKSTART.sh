@@ -3,9 +3,9 @@
 set -e
 
 # Get the project root directory
-if [ -f "docker-compose.yaml" ]; then
+if [ -f "compose/docker-compose.yaml" ]; then
     PROJECT_ROOT="."
-elif [ -f "../docker-compose.yaml" ]; then
+elif [ -f "../compose/docker-compose.yaml" ]; then
     PROJECT_ROOT=".."
 else
     echo "Error: Could not find project root. Please run from project root or website/ directory."

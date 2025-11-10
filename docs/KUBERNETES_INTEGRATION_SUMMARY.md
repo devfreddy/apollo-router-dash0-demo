@@ -8,17 +8,17 @@ PostgreSQL has been fully integrated into the Kubernetes deployment automation. 
 
 ### Scripts Updated
 
-**k8s/scripts/k3d-up.sh** (Main deployment script)
+**kubernetes/scripts/k3d-up.sh** (Main deployment script)
 - Lines 158-175: Added CloudNativePG operator installation
 - Lines 221-228: Added PostgreSQL cluster wait condition
 - Updated messages to reflect database integration
 
-**k8s/scripts/redeploy-apps.sh**
+**kubernetes/scripts/redeploy-apps.sh**
 - Updated notes to clarify PostgreSQL is not redeployed (persistent data)
 
 ### New Scripts Created
 
-**k8s/scripts/manage-postgres.sh** (PostgreSQL management utility)
+**kubernetes/scripts/manage-postgres.sh** (PostgreSQL management utility)
 - Status: Show cluster and pod status
 - Logs: Stream database logs
 - Connect: Connect to database via psql
@@ -26,7 +26,7 @@ PostgreSQL has been fully integrated into the Kubernetes deployment automation. 
 - Restart: Restart the cluster
 - Reset-data: Delete and reinitialize database
 
-**k8s/scripts/verify-postgres-integration.sh** (Integration verification)
+**kubernetes/scripts/verify-postgres-integration.sh** (Integration verification)
 - Verifies PostgreSQL cluster is healthy
 - Checks database pod is running
 - Tests database connectivity
@@ -35,18 +35,18 @@ PostgreSQL has been fully integrated into the Kubernetes deployment automation. 
 
 ### Configuration Files Updated
 
-**k8s/base/kustomization.yaml**
+**kubernetes/base/kustomization.yaml**
 - Added `postgres-cluster.yaml` to resources list
 - Ensures database is deployed before subgraphs
 
-**k8s/base/postgres-cluster.yaml** (New - Main PostgreSQL definition)
+**kubernetes/base/postgres-cluster.yaml** (New - Main PostgreSQL definition)
 - CloudNativePG cluster definition
 - Database initialization and seed data
 - 10GB storage, performance tuning
 - Backup configuration (S3 ready)
 - Read-write and read-only services
 
-**k8s/base/subgraphs/inventory.yaml** (Updated)
+**kubernetes/base/subgraphs/inventory.yaml** (Updated)
 - Database environment variables
 - Service dependency on `inventory-db-rw`
 - Secret reference for credentials
@@ -67,7 +67,7 @@ PostgreSQL has been fully integrated into the Kubernetes deployment automation. 
 ### Single-Command Deployment
 
 ```bash
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 ```
 
 This command now:
@@ -126,28 +126,28 @@ PostgreSQL data is persistent:
 
 ### Start Everything
 ```bash
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 ```
 
 ### Verify Integration
 ```bash
-./k8s/scripts/verify-postgres-integration.sh
+./kubernetes/scripts/verify-postgres-integration.sh
 ```
 
 ### Manage PostgreSQL
 ```bash
-./k8s/scripts/manage-postgres.sh status        # Show status
-./k8s/scripts/manage-postgres.sh logs          # View logs
-./k8s/scripts/manage-postgres.sh connect       # Connect to database
-./k8s/scripts/manage-postgres.sh port-forward  # Port forward
-./k8s/scripts/manage-postgres.sh restart       # Restart cluster
-./k8s/scripts/manage-postgres.sh reset-data    # Reset database
+./kubernetes/scripts/manage-postgres.sh status        # Show status
+./kubernetes/scripts/manage-postgres.sh logs          # View logs
+./kubernetes/scripts/manage-postgres.sh connect       # Connect to database
+./kubernetes/scripts/manage-postgres.sh port-forward  # Port forward
+./kubernetes/scripts/manage-postgres.sh restart       # Restart cluster
+./kubernetes/scripts/manage-postgres.sh reset-data    # Reset database
 ```
 
 ### Redeploy Services
 ```bash
-./k8s/scripts/redeploy-apps.sh     # All services (except DB)
-./k8s/scripts/redeploy-router.sh   # Router only
+./kubernetes/scripts/redeploy-apps.sh     # All services (except DB)
+./kubernetes/scripts/redeploy-router.sh   # Router only
 ```
 
 ## Key Features
@@ -184,10 +184,10 @@ PostgreSQL data is persistent:
 
 ```bash
 # Wait for everything to be ready (~5 minutes total)
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 
 # Verify integration
-./k8s/scripts/verify-postgres-integration.sh
+./kubernetes/scripts/verify-postgres-integration.sh
 
 # Test GraphQL
 curl -X POST http://localhost:4000/graphql \
@@ -197,7 +197,7 @@ curl -X POST http://localhost:4000/graphql \
   }'
 
 # View database
-./k8s/scripts/manage-postgres.sh connect
+./kubernetes/scripts/manage-postgres.sh connect
 # Then in psql: SELECT * FROM inventory;
 ```
 
@@ -216,7 +216,7 @@ curl -X POST http://localhost:4000/graphql \
 Development → Docker Compose
               (test locally)
                    ↓
-              ./k8s/scripts/k3d-up.sh
+              ./kubernetes/scripts/k3d-up.sh
               (test in k3d cluster)
                    ↓
               CloudNativePG Operator
@@ -248,12 +248,12 @@ kubectl get svc -n apollo-dash0-demo -l cnpg.io/cluster=inventory-db
 
 ### Database Status
 ```bash
-./k8s/scripts/manage-postgres.sh status
+./kubernetes/scripts/manage-postgres.sh status
 ```
 
 ### Logs
 ```bash
-./k8s/scripts/manage-postgres.sh logs
+./kubernetes/scripts/manage-postgres.sh logs
 ```
 
 ### Dash0 Integration
@@ -266,8 +266,8 @@ kubectl get svc -n apollo-dash0-demo -l cnpg.io/cluster=inventory-db
 
 ### PostgreSQL won't start
 ```bash
-./k8s/scripts/manage-postgres.sh status
-./k8s/scripts/manage-postgres.sh logs
+./kubernetes/scripts/manage-postgres.sh status
+./kubernetes/scripts/manage-postgres.sh logs
 ```
 
 ### Inventory subgraph can't connect
@@ -277,17 +277,17 @@ kubectl logs deployment/inventory -n apollo-dash0-demo
 
 ### Reset everything
 ```bash
-./k8s/scripts/manage-postgres.sh reset-data
+./kubernetes/scripts/manage-postgres.sh reset-data
 # Or delete cluster manually:
 kubectl delete cluster inventory-db -n apollo-dash0-demo
-kubectl apply -f k8s/base/postgres-cluster.yaml
+kubectl apply -f kubernetes/base/postgres-cluster.yaml
 ```
 
 ## Next Steps
 
 ### Immediate
-1. Deploy: `./k8s/scripts/k3d-up.sh`
-2. Verify: `./k8s/scripts/verify-postgres-integration.sh`
+1. Deploy: `./kubernetes/scripts/k3d-up.sh`
+2. Verify: `./kubernetes/scripts/verify-postgres-integration.sh`
 3. Test: Use GraphQL queries
 
 ### Short Term
@@ -303,16 +303,16 @@ kubectl apply -f k8s/base/postgres-cluster.yaml
 ## Files Modified/Created
 
 ### Modified
-- `k8s/scripts/k3d-up.sh` - Added PostgreSQL operator and cluster setup
-- `k8s/scripts/redeploy-apps.sh` - Updated notes about persistence
-- `k8s/base/kustomization.yaml` - Added postgres-cluster resource
-- `k8s/base/subgraphs/inventory.yaml` - Added database config
+- `kubernetes/scripts/k3d-up.sh` - Added PostgreSQL operator and cluster setup
+- `kubernetes/scripts/redeploy-apps.sh` - Updated notes about persistence
+- `kubernetes/base/kustomization.yaml` - Added postgres-cluster resource
+- `kubernetes/base/subgraphs/inventory.yaml` - Added database config
 - `CLAUDE.md` - Added PostgreSQL management documentation
 
 ### Created
-- `k8s/scripts/manage-postgres.sh` - PostgreSQL management utility
-- `k8s/scripts/verify-postgres-integration.sh` - Integration verification
-- `k8s/base/postgres-cluster.yaml` - PostgreSQL cluster definition
+- `kubernetes/scripts/manage-postgres.sh` - PostgreSQL management utility
+- `kubernetes/scripts/verify-postgres-integration.sh` - Integration verification
+- `kubernetes/base/postgres-cluster.yaml` - PostgreSQL cluster definition
 - `docs/KUBERNETES_POSTGRES_INTEGRATION.md` - Integration documentation
 
 ## Compatibility

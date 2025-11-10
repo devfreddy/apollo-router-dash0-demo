@@ -20,8 +20,8 @@ services:
   willful-waste-website:
     # Uncomment to use local code with hot reload
     # volumes:
-    #   - ./website/src:/app/src
-    #   - ./website/index.html:/app/index.html
+    #   - ../shared/website/src:/app/src
+    #   - ../shared/website/index.html:/app/index.html
     environment:
       # Use local GraphQL URL
       - VITE_GRAPHQL_URL=http://localhost:4000/graphql
@@ -38,7 +38,7 @@ services:
   accounts:
     # Uncomment to mount local code
     # volumes:
-    #   - ./subgraphs/accounts:/app
+    #   - ../shared/subgraphs/accounts:/app
     environment:
       # Increase error rate for chaos testing
       # - ACCOUNTS_SUBGRAPH_ERROR_RATE=10

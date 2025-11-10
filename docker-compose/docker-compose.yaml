@@ -1,18 +1,16 @@
-# Apollo Router Dash0 Demo - Docker Compose Configuration
+# Apollo Router Dash0 Demo - Docker Compose
 #
-# 📚 Documentation: See docs/ folder for complete guides
-#    - docs/START_HERE.md         - Quick start guide
-#    - docs/WILLFUL_WASTE_SETUP.md - Complete setup instructions
-#    - docs/QUICK_REFERENCE.md     - Common commands
-#    - docs/INDEX.md              - Full documentation index
+# Local development environment with core services:
+# - PostgreSQL (inventory database)
+# - Apollo Router
+# - 4 Subgraphs (Accounts, Products, Reviews, Inventory)
 #
-# 🚀 Quick Start:
-#    docker-compose up -d          # Start all services
-#    docker-compose --profile bot up -d  # Include traffic bot
+# Usage:
+#   docker-compose up -d     # Start all services
+#   docker-compose down      # Stop all services
+#   docker-compose logs -f   # View logs
 #
-# 📖 Documentation: docs/WILLFUL_WASTE_SETUP.md
-# 🤖 Bot Documentation: website-bot/README.md
-# 🌐 Website Documentation: website/README.md
+# For Kubernetes deployment, see: ../kubernetes/README.md
 
 name: apollo-dash0-demo
 
@@ -28,7 +26,7 @@ services:
       - POSTGRES_DB=inventory_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./subgraphs/inventory/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../shared/subgraphs/inventory/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U inventory_user -d inventory_db"]
       interval: 10s
@@ -38,7 +36,6 @@ services:
     labels:
       - "com.dash0.demo=postgres-db"
 
-
   # Apollo Router v2 - The supergraph gateway
   router:
     image: ghcr.io/apollographql/router:v2.8.0
@@ -46,7 +43,7 @@ services:
       - "4000:4000"
       - "8088:8088"  # Health check endpoint
     env_file:
-      - .env
+      - ../.env
     environment:
       - DASH0_AUTH_TOKEN=${DASH0_AUTH_TOKEN}
       - DASH0_METRICS_ENDPOINT=${DASH0_METRICS_ENDPOINT}
@@ -56,8 +53,8 @@ services:
       - ENVIRONMENT=${ENVIRONMENT:-demo}
       - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
     volumes:
-      - ./router/router.yaml:/dist/config/router.yaml
-      - ./router/supergraph.graphql:/dist/schema/supergraph.graphql
+      - ../shared/router/router.yaml:/dist/config/router.yaml
+      - ../shared/router/supergraph.graphql:/dist/schema/supergraph.graphql
     command:
       - --config
       - /dist/config/router.yaml
@@ -81,12 +78,12 @@ services:
   # Accounts Subgraph
   accounts:
     build:
-      context: ./subgraphs/accounts
+      context: ../shared/subgraphs/accounts
       dockerfile: Dockerfile
     ports:
       - "4001:4001"
     env_file:
-      - .env
+      - ../.env
     environment:
       - PORT=4001
       - DASH0_AUTH_TOKEN=${DASH0_AUTH_TOKEN}
@@ -105,45 +102,15 @@ services:
     labels:
       - "com.dash0.demo=accounts-subgraph"
 
-  # Products Subgraph (Node.js) - DISABLED
-  # Using Python version (products-py) instead
-  # To switch back to Node.js: uncomment this service and change router's depends_on to 'products'
-  # products:
-  #   build:
-  #     context: ./subgraphs/products
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "4003:4003"
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     - PORT=4003
-  #     - DASH0_AUTH_TOKEN=${DASH0_AUTH_TOKEN}
-  #     - DASH0_METRICS_ENDPOINT=${DASH0_METRICS_ENDPOINT}
-  #     - DASH0_TRACES_ENDPOINT=${DASH0_TRACES_ENDPOINT}
-  #     - SERVICE_VERSION=${SERVICE_VERSION:-1.0.0}
-  #     - ENVIRONMENT=${ENVIRONMENT:-demo}
-  #   healthcheck:
-  #     test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "--header=apollo-require-preflight: true", "http://localhost:4003/graphql?query={__typename}"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 3
-  #     start_period: 10s
-  #   restart: unless-stopped
-  #   labels:
-  #     - "com.dash0.demo=products-subgraph-nodejs"
-
-  # Products Subgraph (Python) - NOW ACTIVE
-  # This is the primary products subgraph with enhanced schema and OTel instrumentation
-  # To switch back to Node.js: uncomment the 'products' service above and change router's depends_on
+  # Products Subgraph (Python)
   products-py:
     build:
-      context: ./subgraphs/products-py
+      context: ../shared/subgraphs/products-py
       dockerfile: Dockerfile
     ports:
       - "4003:4003"
     env_file:
-      - .env
+      - ../.env
     environment:
       - PORT=4003
       - DASH0_AUTH_TOKEN=${DASH0_AUTH_TOKEN}
@@ -159,12 +126,12 @@ services:
   # Reviews Subgraph
   reviews:
     build:
-      context: ./subgraphs/reviews
+      context: ../shared/subgraphs/reviews
       dockerfile: Dockerfile
     ports:
       - "4002:4002"
     env_file:
-      - .env
+      - ../.env
     environment:
       - PORT=4002
       - DASH0_AUTH_TOKEN=${DASH0_AUTH_TOKEN}
@@ -186,12 +153,12 @@ services:
   # Inventory Subgraph
   inventory:
     build:
-      context: ./subgraphs/inventory
+      context: ../shared/subgraphs/inventory
       dockerfile: Dockerfile
     ports:
       - "4004:4004"
     env_file:
-      - .env
+      - ../.env
     environment:
       - PORT=4004
       - DASH0_AUTH_TOKEN=${DASH0_AUTH_TOKEN}
@@ -219,73 +186,12 @@ services:
     labels:
       - "com.dash0.demo=inventory-subgraph"
 
-  # Willful Waste Retail Website
-  willful-waste-website:
-    build:
-      context: ./website
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - VITE_GRAPHQL_URL=http://router:4000/graphql
-      - VITE_ENVIRONMENT=demo
-      - NODE_ENV=production
-    depends_on:
-      - router
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
-    restart: unless-stopped
-    labels:
-      - "com.dash0.demo=willful-waste-website"
-
-  # Willful Waste Bot - Traffic Generator
-  willful-waste-bot:
-    build:
-      context: ./website-bot
-      dockerfile: Dockerfile
-    environment:
-      - WEBSITE_URL=http://willful-waste-website:3000
-      - GRAPHQL_URL=http://router:4000/graphql
-      - BOT_INTERVAL=10000
-      - SESSION_DURATION=300000
-      - CONCURRENT_BOTS=2
-      - HEADLESS=true
-      - NODE_ENV=production
-    depends_on:
-      - router
-      - willful-waste-website
-    restart: unless-stopped
-    labels:
-      - "com.dash0.demo=willful-waste-bot"
-    profiles:
-      - bot
-
-  # Vegeta Load Generator (optional - use with --profile load-testing)
-  vegeta:
-    image: jauderho/vegeta
-    depends_on:
-      - router
-    volumes:
-      - ./vegeta:/etc/vegeta
-    # 2 req/s
-    # command: attack -targets=/etc/vegeta/targets.http -rate=0.8 -timeout=10s -duration=0 -output=/dev/null
-    command: attack -targets=/etc/vegeta/targets.http -rate=10 -timeout=10s -duration=0 -output=/dev/null
-    restart: unless-stopped
-    labels:
-      - "com.dash0.demo=load-generator"
-    profiles:
-      - load-testing
-
 # Volumes for persistent state
 volumes:
   postgres_data:
     driver: local
 
-# Optional: Networks configuration for better isolation
+# Networks
 networks:
   default:
     name: apollo-dash0-network

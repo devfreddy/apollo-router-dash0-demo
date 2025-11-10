@@ -118,7 +118,7 @@ open http://localhost:3000
 ### Option 3: Kubernetes
 ```bash
 # Full deployment
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 
 # Port forward
 kubectl port-forward -n apollo-dash0-demo svc/willful-waste-website 3000:80
@@ -272,7 +272,7 @@ See the troubleshooting sections in:
 
 - **Bot Documentation**: [../website-bot/README.md](../website-bot/README.md)
 - **Project Root**: [../](../)
-- **Kubernetes Configs**: [../k8s/](../k8s/)
+- **Kubernetes Configs**: [../kubernetes/](../kubernetes/)
 
 ## 🎉 Next Steps
 

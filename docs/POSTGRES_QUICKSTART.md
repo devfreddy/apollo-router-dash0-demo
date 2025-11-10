@@ -76,7 +76,7 @@ helm install cnpg cnpg/cloudnative-pg \
 
 ### 3. Deploy PostgreSQL Cluster
 ```bash
-kubectl apply -f k8s/base/postgres-cluster.yaml
+kubectl apply -f kubernetes/base/postgres-cluster.yaml
 ```
 
 Wait for cluster to be ready:
@@ -87,7 +87,7 @@ kubectl get cluster -n apollo-dash0-demo
 
 ### 4. Deploy Inventory Subgraph
 ```bash
-kubectl apply -f k8s/base/subgraphs/inventory.yaml
+kubectl apply -f kubernetes/base/subgraphs/inventory.yaml
 ```
 
 Check deployment:
@@ -167,7 +167,7 @@ docker-compose up -d
 
 # Kubernetes - delete and recreate
 kubectl delete cluster inventory-db -n apollo-dash0-demo
-kubectl apply -f k8s/base/postgres-cluster.yaml
+kubectl apply -f kubernetes/base/postgres-cluster.yaml
 ```
 
 ## Performance Testing
@@ -230,7 +230,7 @@ Credentials in `docker-compose.yaml`:
 - Database: `inventory_db`
 
 **Kubernetes:**
-Credentials in `k8s/base/postgres-cluster.yaml`:
+Credentials in `kubernetes/base/postgres-cluster.yaml`:
 - User: `inventory_user`
 - Password: `inventory_password` (from secret)
 - Database: `inventory_db`

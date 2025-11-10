@@ -109,5 +109,5 @@ If deployment fails:
 
 - `./status.sh` - Check deployment status
 - `./stop.sh` - Stop deployments
-- `./k8s/scripts/k3d-down.sh` - Destroy k3d cluster completely
+- `./kubernetes/scripts/k3d-down.sh` - Destroy k3d cluster completely
 

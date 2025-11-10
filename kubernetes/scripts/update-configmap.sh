@@ -17,7 +17,7 @@ echo -e "${BLUE}║  Update ConfigMap                                          �
 echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
 
 # Check if we're in the right directory
-if [ ! -f "k8s/scripts/k3d-up.sh" ]; then
+if [ ! -f "kubernetes/scripts/k3d-up.sh" ]; then
     echo -e "${RED}Error: Please run this script from the project root directory${NC}"
     exit 1
 fi
@@ -78,9 +78,9 @@ echo -e "  • ENVIRONMENT"
 echo ""
 echo -e "${GREEN}Next steps:${NC}"
 echo -e "  1. Redeploy applications to use new config:"
-echo -e "     ${BLUE}./k8s/scripts/redeploy-apps.sh${NC}"
+echo -e "     ${BLUE}./kubernetes/scripts/redeploy-apps.sh${NC}"
 echo -e "  2. Or redeploy just the router:"
-echo -e "     ${BLUE}./k8s/scripts/redeploy-router.sh${NC}"
+echo -e "     ${BLUE}./kubernetes/scripts/redeploy-router.sh${NC}"
 echo -e "  3. Or view the ConfigMap:"
 echo -e "     ${BLUE}kubectl get configmap apollo-config -n apollo-dash0-demo -o yaml${NC}"
 echo ""

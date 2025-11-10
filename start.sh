@@ -1,77 +1,44 @@
 #!/bin/bash
 
-set -e
+# Apollo Router Demo - Deployment Guide
+#
+# This project has been reorganized into two clear deployment paths.
+# Please use one of the following instead:
+#
+# For Docker Compose (recommended for local development):
+#   cd docker-compose && ./start.sh
+#
+# For Kubernetes (k3d):
+#   cd kubernetes && ./start.sh
+#
+# See README.md for more details.
 
-# Apollo Router + Dash0 Demo - Unified Start Script
-# Usage: ./start.sh [compose|k8s]
-# Default: k8s (Kubernetes)
-
-# Color output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Default to k8s if no argument provided
-DEPLOYMENT_MODE="${1:-k8s}"
+echo -e "${BLUE}╔═══════════════════════════════════════════════════════════╗${NC}"
+echo -e "${BLUE}║  Apollo Router Demo - Deployment Paths                   ║${NC}"
+echo -e "${BLUE}╚═══════════════════════════════════════════════════════════╝${NC}"
+echo ""
 
-# Validate argument
-if [[ ! "$DEPLOYMENT_MODE" =~ ^(compose|k8s)$ ]]; then
-    echo -e "${RED}Invalid deployment mode: $DEPLOYMENT_MODE${NC}"
-    echo ""
-    echo "Usage: ./start.sh [compose|k8s]"
-    echo ""
-    echo "  compose  - Start Docker Compose deployment"
-    echo "  k8s      - Start Kubernetes (k3d) deployment [DEFAULT]"
-    echo ""
-    exit 1
-fi
+echo -e "${YELLOW}This project now has two clear deployment paths:${NC}"
+echo ""
 
-if [[ "$DEPLOYMENT_MODE" == "compose" ]]; then
-    echo -e "${BLUE}=== Starting Docker Compose Deployment ===${NC}"
-    echo ""
+echo -e "${GREEN}1. Docker Compose (Local Development)${NC}"
+echo -e "   Time: ~1-2 minutes | Complexity: Low"
+echo -e "   ${BLUE}cd docker-compose && ./start.sh${NC}"
+echo ""
 
-    # Check if k3d is running and optionally stop it
-    if command -v k3d &> /dev/null && k3d cluster list 2>/dev/null | grep -q "apollo-dash0-demo"; then
-        echo -e "${YELLOW}k3d cluster detected. Stopping it...${NC}"
-        read -p "Stop k3d cluster? (y/n) " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            ./k8s/scripts/k3d-down.sh
-        fi
-    fi
+echo -e "${GREEN}2. Kubernetes k3d (Production-like)${NC}"
+echo -e "   Time: ~5-10 minutes | Complexity: Medium"
+echo -e "   ${BLUE}cd kubernetes && ./start.sh${NC}"
+echo ""
 
-    # Start Docker Compose
-    echo -e "${GREEN}Starting Docker Compose services...${NC}"
-    docker compose up -d
-
-    echo ""
-    echo -e "${GREEN}✓ Docker Compose deployment started!${NC}"
-    echo ""
-    echo -e "Services:"
-    docker compose ps --format "table {{.Service}}\t{{.Status}}\t{{.Ports}}"
-    echo ""
-    echo -e "GraphQL API: ${YELLOW}http://localhost:4000${NC}"
-    echo ""
-
-else
-    # k8s mode (default)
-    echo -e "${BLUE}=== Starting Kubernetes (k3d) Deployment ===${NC}"
-    echo ""
-
-    # Check if Docker Compose is running and stop it
-    if docker compose ps 2>/dev/null | grep -q "apollo-dash0-demo"; then
-        echo -e "${YELLOW}Docker Compose services detected. Stopping them...${NC}"
-        docker compose down
-        echo ""
-    fi
-
-    # Start k3d deployment
-    echo -e "${GREEN}Starting k3d cluster...${NC}"
-    ./k8s/scripts/start-cluster.sh
-
-    echo ""
-    echo -e "${GREEN}✓ Kubernetes deployment started!${NC}"
-    echo ""
-fi
+echo -e "${YELLOW}Documentation:${NC}"
+echo -e "  - Compose: ${BLUE}docker-compose/README.md${NC}"
+echo -e "  - Kubernetes: ${BLUE}kubernetes/README-DEPLOYMENT.md${NC}"
+echo -e "  - Main: ${BLUE}README.md${NC}"
+echo ""

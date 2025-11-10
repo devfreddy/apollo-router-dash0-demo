@@ -16,7 +16,7 @@ echo -e "${BLUE}║  Restart Dash0 Operator                                    �
 echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
 
 # Check if we're in the right directory
-if [ ! -f "k8s/scripts/k3d-up.sh" ]; then
+if [ ! -f "kubernetes/scripts/k3d-up.sh" ]; then
     echo -e "${RED}Error: Please run this script from the project root directory${NC}"
     exit 1
 fi
@@ -60,9 +60,9 @@ echo ""
 
 # Step 1: Update Dash0 operator configuration (must be done before monitoring resource)
 echo -e "${GREEN}[1/3] Updating Dash0 operator configuration...${NC}"
-envsubst < k8s/base/dash0-operator-config.yaml | kubectl apply -f - > /dev/null
+envsubst < kubernetes/base/dash0-operator-config.yaml | kubectl apply -f - > /dev/null
 sleep 1  # Wait for operator config webhook to process
-envsubst < <(kubectl kustomize k8s/base) | kubectl apply -f - > /dev/null
+envsubst < <(kubectl kustomize kubernetes/base) | kubectl apply -f - > /dev/null
 echo -e "${GREEN}      ✓ Dash0 configuration updated${NC}"
 
 # Step 2: Restart Dash0 Operator
@@ -97,12 +97,12 @@ echo -e "  • Dash0 monitoring resources (via kustomize)"
 echo -e "  • Dash0 operator deployment (restarted)"
 echo ""
 echo -e "${YELLOW}Note:${NC} Application deployments were NOT restarted"
-echo -e "  To redeploy applications, use: ${BLUE}./k8s/scripts/redeploy-apps.sh${NC}"
+echo -e "  To redeploy applications, use: ${BLUE}./kubernetes/scripts/redeploy-apps.sh${NC}"
 echo ""
 echo -e "${GREEN}Next steps:${NC}"
 echo -e "  1. Wait 1-2 minutes for operator to be ready"
 echo -e "  2. If you changed application code, redeploy apps:"
-echo -e "     ${BLUE}./k8s/scripts/redeploy-apps.sh${NC}"
+echo -e "     ${BLUE}./kubernetes/scripts/redeploy-apps.sh${NC}"
 echo -e "  3. Send some GraphQL queries to trigger instrumentation"
 echo -e "  4. Check Dash0 UI for new telemetry data"
 echo ""

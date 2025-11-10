@@ -6,7 +6,7 @@ This document explains how PostgreSQL has been integrated into the Kubernetes de
 
 ### 1. Automatic Setup in k3d-up.sh
 
-The main Kubernetes setup script (`k8s/scripts/k3d-up.sh`) has been updated to:
+The main Kubernetes setup script (`kubernetes/scripts/k3d-up.sh`) has been updated to:
 
 1. **Install CloudNativePG Operator** (lines 158-175)
    - Adds CloudNativePG Helm repository
@@ -14,18 +14,18 @@ The main Kubernetes setup script (`k8s/scripts/k3d-up.sh`) has been updated to:
    - Waits for operator to be ready
 
 2. **Deploy PostgreSQL Cluster via Kustomize** (lines 221-228)
-   - PostgreSQL cluster defined in `k8s/base/postgres-cluster.yaml`
+   - PostgreSQL cluster defined in `kubernetes/base/postgres-cluster.yaml`
    - Deployed through existing Kustomize workflow
    - Waits for cluster to be healthy before deploying subgraphs
 
 3. **Inventory Subgraph Configuration** (lines 245-250)
    - Automatically receives database environment variables
    - Services depend on database being healthy
-   - Configured through `k8s/base/subgraphs/inventory.yaml`
+   - Configured through `kubernetes/base/subgraphs/inventory.yaml`
 
 ### 2. Kustomization Integration
 
-**File: `k8s/base/kustomization.yaml`**
+**File: `kubernetes/base/kustomization.yaml`**
 
 PostgreSQL cluster is included as the first resource:
 ```yaml
@@ -40,7 +40,7 @@ This ensures the database is created before the inventory subgraph tries to conn
 
 ### 3. Inventory Subgraph Deployment
 
-**File: `k8s/base/subgraphs/inventory.yaml`**
+**File: `kubernetes/base/subgraphs/inventory.yaml`**
 
 Updated with:
 - Database connection environment variables
@@ -50,7 +50,7 @@ Updated with:
 
 ### 4. PostgreSQL Cluster Definition
 
-**File: `k8s/base/postgres-cluster.yaml`**
+**File: `kubernetes/base/postgres-cluster.yaml`**
 
 Complete CloudNativePG cluster definition including:
 - Initial database creation with schema
@@ -81,12 +81,12 @@ k3d-up.sh execution flow:
 
 ## Management Scripts
 
-### k8s/scripts/manage-postgres.sh
+### kubernetes/scripts/manage-postgres.sh
 
 New utility script for PostgreSQL management:
 
 ```bash
-./k8s/scripts/manage-postgres.sh [command]
+./kubernetes/scripts/manage-postgres.sh [command]
 
 Commands:
   status          - Show cluster status
@@ -97,12 +97,12 @@ Commands:
   reset-data      - Delete and reinitialize database
 ```
 
-### k8s/scripts/verify-postgres-integration.sh
+### kubernetes/scripts/verify-postgres-integration.sh
 
 Verification script to check integration is working:
 
 ```bash
-./k8s/scripts/verify-postgres-integration.sh
+./kubernetes/scripts/verify-postgres-integration.sh
 
 Checks:
   1. PostgreSQL cluster exists and is healthy
@@ -186,7 +186,7 @@ CloudNativePG provides:
 
 ```bash
 # Update the cluster
-kubectl apply -f k8s/base/postgres-cluster.yaml
+kubectl apply -f kubernetes/base/postgres-cluster.yaml
 
 # Monitor the update
 kubectl describe cluster inventory-db -n apollo-dash0-demo
@@ -197,7 +197,7 @@ kubectl logs -f pod/inventory-db-1 -n apollo-dash0-demo
 
 ```bash
 # Update deployment
-kubectl apply -f k8s/base/subgraphs/inventory.yaml
+kubectl apply -f kubernetes/base/subgraphs/inventory.yaml
 
 # Restart inventory pods
 kubectl rollout restart deployment/inventory -n apollo-dash0-demo
@@ -246,7 +246,7 @@ kubectl exec deployment/inventory -n apollo-dash0-demo -- env | grep DATABASE
 
 To enable HA with multiple replicas:
 
-Edit `k8s/base/postgres-cluster.yaml`:
+Edit `kubernetes/base/postgres-cluster.yaml`:
 ```yaml
 spec:
   instances: 3  # Change from 1 to 3
@@ -254,7 +254,7 @@ spec:
 
 Then:
 ```bash
-kubectl apply -f k8s/base/postgres-cluster.yaml
+kubectl apply -f kubernetes/base/postgres-cluster.yaml
 
 # Monitor scaling
 kubectl get pods -n apollo-dash0-demo -l cnpg.io/cluster=inventory-db
@@ -268,7 +268,7 @@ kubectl get pods -n apollo-dash0-demo -l cnpg.io/cluster=inventory-db
 
 ### Enable S3 Backups
 
-Edit `k8s/base/postgres-cluster.yaml` and uncomment the `backup.barmanObjectStore` section:
+Edit `kubernetes/base/postgres-cluster.yaml` and uncomment the `backup.barmanObjectStore` section:
 
 ```yaml
 backup:
@@ -351,9 +351,9 @@ View in Dash0:
 
 ## Next Steps
 
-1. **Deploy**: Run `./k8s/scripts/k3d-up.sh`
-2. **Verify**: Run `./k8s/scripts/verify-postgres-integration.sh`
-3. **Manage**: Use `./k8s/scripts/manage-postgres.sh`
+1. **Deploy**: Run `./kubernetes/scripts/k3d-up.sh`
+2. **Verify**: Run `./kubernetes/scripts/verify-postgres-integration.sh`
+3. **Manage**: Use `./kubernetes/scripts/manage-postgres.sh`
 4. **Monitor**: Watch Dash0 for database telemetry
 5. **Scale**: Increase replicas for HA in production
 

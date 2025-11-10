@@ -17,7 +17,7 @@ echo -e "${BLUE}║  Upgrade Apollo Router Helm Chart (30-40 seconds)         �
 echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
 
 # Check if we're in the right directory
-if [ ! -f "k8s/scripts/k3d-up.sh" ]; then
+if [ ! -f "kubernetes/scripts/k3d-up.sh" ]; then
     echo -e "${RED}Error: Please run this script from the project root directory${NC}"
     exit 1
 fi
@@ -50,7 +50,7 @@ helm upgrade apollo-router \
     oci://ghcr.io/apollographql/helm-charts/router \
     --version 2.8.0 \
     --namespace apollo-dash0-demo \
-    --values k8s/helm-values/router-values.yaml
+    --values kubernetes/helm-values/router-values.yaml
 
 # Force pod restart to ensure new values are picked up
 echo -e "${GREEN}Restarting apollo-router pods to apply new values...${NC}"
@@ -75,6 +75,6 @@ echo -e "  • Telemetry configuration updates"
 echo -e "  • Resource limits and probes"
 echo ""
 echo -e "${YELLOW}Note:${NC} Subgraphs and Dash0 operator were NOT restarted"
-echo -e "  To redeploy all apps, use: ${BLUE}./k8s/scripts/redeploy-apps.sh${NC}"
-echo -e "  To restart operator, use: ${BLUE}./k8s/scripts/restart-dash0.sh${NC}"
+echo -e "  To redeploy all apps, use: ${BLUE}./kubernetes/scripts/redeploy-apps.sh${NC}"
+echo -e "  To restart operator, use: ${BLUE}./kubernetes/scripts/restart-dash0.sh${NC}"
 echo ""

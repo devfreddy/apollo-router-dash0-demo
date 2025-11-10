@@ -103,7 +103,7 @@ Responsibilities:
 
 The operator is configured using a `Dash0OperatorConfiguration` resource with **HTTP export** (recommended):
 
-**File**: `k8s/base/dash0-operator-config.yaml`
+**File**: `kubernetes/base/dash0-operator-config.yaml`
 
 ```yaml
 apiVersion: operator.dash0.com/v1alpha1
@@ -163,7 +163,7 @@ The `Dash0OperatorConfiguration` resource is created separately via the k3d-up.s
 
 Each namespace that needs monitoring requires a Dash0Monitoring resource:
 
-**File**: `k8s/base/dash0-monitoring.yaml`
+**File**: `kubernetes/base/dash0-monitoring.yaml`
 
 ```yaml
 apiVersion: operator.dash0.com/v1beta1

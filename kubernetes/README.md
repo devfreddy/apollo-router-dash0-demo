@@ -75,7 +75,7 @@ DASH0_REGION=us-west-2
 ### 2. Deploy to k3d
 
 ```bash
-./k8s/scripts/k3d-up.sh
+./kubernetes/scripts/k3d-up.sh
 ```
 
 This script will:
@@ -103,13 +103,13 @@ curl -X POST http://localhost:4000/ \
 ### 4. Tear down
 
 ```bash
-./k8s/scripts/k3d-down.sh
+./kubernetes/scripts/k3d-down.sh
 ```
 
 ## Directory Structure
 
 ```
-k8s/
+kubernetes/
 ├── README.md                    # This file
 ├── base/
 │   └── subgraphs/              # Kubernetes manifests for subgraphs
@@ -207,7 +207,7 @@ helm list -n apollo-dash0-demo
 helm upgrade apollo-router \
   oci://ghcr.io/apollographql/helm-charts/router \
   --namespace apollo-dash0-demo \
-  --values k8s/helm-values/router-values.yaml
+  --values kubernetes/helm-values/router-values.yaml
 ```
 
 ## Troubleshooting
