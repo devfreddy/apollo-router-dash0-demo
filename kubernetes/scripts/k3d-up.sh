@@ -228,7 +228,7 @@ kubectl wait --for=condition=available --timeout=120s deployment/dash0-operator 
 
 # Deploy monitoring, database, and subgraph resources using kustomize
 echo -e "${YELLOW}Deploying PostgreSQL cluster, monitoring, and subgraph resources with kustomize...${NC}"
-kubectl kustomize ../base | kubectl apply -f -
+kubectl kustomize "$ROOT_DIR/kubernetes/base" | kubectl apply -f -
 echo -e "${GREEN}Resources deployed!${NC}"
 
 # Wait for PostgreSQL cluster to be ready before deploying subgraphs
