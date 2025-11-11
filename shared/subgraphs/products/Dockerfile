@@ -1,22 +1,27 @@
-FROM node:20-alpine
+FROM python:3.12-slim
 
 WORKDIR /app
 
-# Copy package files
-COPY products/package*.json ./products/
+# Install dependencies (including curl for health checks)
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install dependencies
-RUN cd products && npm install --omit=dev
+# Copy application code
+COPY main.py .
+COPY otel.py .
+COPY error_injection.py .
 
-# Copy application files
-COPY products/ ./products/
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PORT=4003
 
-# Copy shared utilities
-COPY shared ./shared
+# Health check using curl with POST
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
+    CMD curl -X POST http://localhost:4003/graphql \
+      -H "Content-Type: application/json" \
+      -d '{"query":"{ __typename }"}' \
+      --silent --fail -o /dev/null
 
-# Expose port
-EXPOSE 4003
-
-# Start the service
-WORKDIR /app/products
-CMD ["npm", "start"]
+# Run the application
+CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "4003"]

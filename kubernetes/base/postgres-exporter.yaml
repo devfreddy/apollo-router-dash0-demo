@@ -157,32 +157,10 @@ spec:
           protocol: TCP
 
         env:
-        # PostgreSQL connection via environment variable
+        # PostgreSQL connection string for postgres_exporter
+        # Format: postgres://user:password@host:port/database?sslmode=disable
         - name: DATA_SOURCE_NAME
-          valueFrom:
-            secretKeyRef:
-              name: postgres-exporter-credentials
-              key: username
-          # Format: postgres://user:password@host:port/database?sslmode=disable
-          # This will be constructed as: postgresql://dash0_monitor:password@inventory-db-rw:5432/inventory_db?sslmode=disable
-
-        # PostgreSQL connection details
-        - name: PGUSER
-          valueFrom:
-            secretKeyRef:
-              name: postgres-exporter-credentials
-              key: username
-        - name: PGPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: postgres-exporter-credentials
-              key: password
-        - name: PGHOST
-          value: "inventory-db-rw.apollo-dash0-demo.svc.cluster.local"
-        - name: PGPORT
-          value: "5432"
-        - name: PGDATABASE
-          value: "inventory_db"
+          value: "postgresql://dash0_monitor:dash0_secure_monitor_password@inventory-db-rw.apollo-dash0-demo.svc.cluster.local:5432/inventory_db?sslmode=disable"
 
         # Exporter configuration
         - name: PG_EXPORTER_EXCLUDE_DATABASES
