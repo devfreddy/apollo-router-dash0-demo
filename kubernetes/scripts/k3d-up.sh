@@ -121,7 +121,10 @@ if ! k3d cluster list | grep -q "$CLUSTER_NAME"; then
         --servers-memory 3G \
         --agents-memory 4G \
         --volume "/tmp/k3d-apollo-storage:/var/lib/rancher/k3s/storage" \
+        --port "80:80@loadbalancer" \
+        --port "443:443@loadbalancer" \
         --port "4000:4000@loadbalancer" \
+        --port "8080:8080@loadbalancer" \
         --port "8088:8088@loadbalancer" \
         --wait
 
@@ -136,6 +139,71 @@ kubectl wait --for=condition=ready node --all --timeout=60s
 echo -e "${GREEN}Creating namespaces...${NC}"
 kubectl create namespace apollo-dash0-demo --dry-run=client -o yaml | kubectl apply -f -
 kubectl create namespace dash0-system --dry-run=client -o yaml | kubectl apply -f -
+
+# START BUILDING DOCKER IMAGES IN BACKGROUND (while we set up operators)
+# This saves significant time since Docker builds can happen in parallel with operator setup
+echo -e "${GREEN}Starting Docker image builds in background...${NC}"
+
+# Function to build subgraph image
+build_subgraph() {
+    local subgraph=$1
+    local root_dir=$2
+
+    if [ "$subgraph" = "products" ]; then
+        IMAGE_NAME="apollo-dash0-demo-products:latest"
+        SUBGRAPH_DIR="products"
+        CONTEXT_DIR="$root_dir/shared/subgraphs/$SUBGRAPH_DIR"
+    else
+        IMAGE_NAME="apollo-dash0-demo-$subgraph:latest"
+        SUBGRAPH_DIR="$subgraph"
+        CONTEXT_DIR="$root_dir/shared/subgraphs"
+    fi
+
+    echo -e "${YELLOW}[BG] Building $subgraph subgraph...${NC}"
+    docker build -t "$IMAGE_NAME" -f "$root_dir/shared/subgraphs/$SUBGRAPH_DIR/Dockerfile" "$CONTEXT_DIR" || return 1
+    echo -e "${GREEN}[BG] ✓ $subgraph built successfully${NC}"
+}
+
+# Function to build website/bot image
+build_website_service() {
+    local service=$1
+    local root_dir=$2
+
+    if [ "$service" = "website" ]; then
+        IMAGE_NAME="apollo-dash0-demo-willful-waste-website:latest"
+        SERVICE_DIR="website"
+    else
+        IMAGE_NAME="apollo-dash0-demo-willful-waste-bot:latest"
+        SERVICE_DIR="website-bot"
+    fi
+
+    echo -e "${YELLOW}[BG] Building willful-waste-$service...${NC}"
+    if [ "$service" = "website" ]; then
+        # Pass Dash0 RUM token as build arg for the website
+        docker build \
+            --build-arg VITE_DASH0_API_TOKEN="$VITE_DASH0_API_TOKEN" \
+            --build-arg VITE_ENVIRONMENT="$ENVIRONMENT" \
+            --build-arg VITE_GRAPHQL_URL="http://apollo-router:4000/" \
+            -t "$IMAGE_NAME" \
+            -f "$root_dir/shared/$SERVICE_DIR/Dockerfile" \
+            "$root_dir/shared/$SERVICE_DIR" || return 1
+    else
+        docker build -t "$IMAGE_NAME" -f "$root_dir/shared/$SERVICE_DIR/Dockerfile" "$root_dir/shared/$SERVICE_DIR" || return 1
+    fi
+    echo -e "${GREEN}[BG] ✓ $service built successfully${NC}"
+}
+
+# Start all builds in background
+for subgraph in accounts products reviews inventory; do
+    build_subgraph "$subgraph" "$ROOT_DIR" &
+done
+
+for service in website bot; do
+    build_website_service "$service" "$ROOT_DIR" &
+done
+
+# Store background job PIDs for later
+BUILD_PIDS=$!
 
 # Create Kubernetes secrets
 echo -e "${GREEN}Creating Kubernetes secrets...${NC}"
@@ -163,10 +231,9 @@ kubectl create configmap apollo-config \
     --from-literal=REVIEWS_SUBGRAPH_ERROR_RATE="${REVIEWS_SUBGRAPH_ERROR_RATE:-0}" \
     --from-literal=PRODUCTS_SUBGRAPH_PY_ERROR_RATE="${PRODUCTS_SUBGRAPH_PY_ERROR_RATE:-0}" \
     --from-literal=INVENTORY_SUBGRAPH_ERROR_RATE="${INVENTORY_SUBGRAPH_ERROR_RATE:-0}" \
-    --from-literal=BOT_CONCURRENT_BOTS="${BOT_CONCURRENT_BOTS:-2}" \
-    --from-literal=BOT_INTERVAL="${BOT_INTERVAL:-10000}" \
-    --from-literal=BOT_SESSION_DURATION="${BOT_SESSION_DURATION:-300000}" \
-    --from-literal=BOT_HEADLESS="${BOT_HEADLESS:-true}" \
+    --from-literal=LOCUST_USERS="${LOCUST_USERS:-5}" \
+    --from-literal=LOCUST_SPAWN_RATE="${LOCUST_SPAWN_RATE:-1}" \
+    --from-literal=LOCUST_RUN_TIME="${LOCUST_RUN_TIME:-}" \
     --namespace=apollo-dash0-demo \
     --dry-run=client -o yaml | kubectl apply -f -
 
@@ -243,46 +310,19 @@ if ! kubectl wait --for=condition=available --timeout=90s deployment/dash0-opera
 fi
 
 # Build subgraph images BEFORE deploying (k3d needs images available before scheduling pods)
-# Building images in parallel to reduce total build time
-echo -e "${GREEN}Building subgraph Docker images (in parallel)...${NC}"
 
-# Function to build subgraph image
-build_subgraph() {
-    local subgraph=$1
-    local root_dir=$2
-    local cluster_name=$3
-
-    if [ "$subgraph" = "products-py" ]; then
-        IMAGE_NAME="apollo-dash0-demo-products-py:latest"
-        SUBGRAPH_DIR="products-py"
-        CONTEXT_DIR="$root_dir/shared/subgraphs/$SUBGRAPH_DIR"
-    else
-        IMAGE_NAME="apollo-dash0-demo-$subgraph:latest"
-        SUBGRAPH_DIR="$subgraph"
-        CONTEXT_DIR="$root_dir/shared/subgraphs"
-    fi
-
-    echo -e "${YELLOW}Building $subgraph subgraph...${NC}"
-    docker build -t "$IMAGE_NAME" -f "$root_dir/shared/subgraphs/$SUBGRAPH_DIR/Dockerfile" "$CONTEXT_DIR" || return 1
-    echo -e "${GREEN}✓ $subgraph built successfully${NC}"
-}
-
-# Start all subgraph builds in parallel
-for subgraph in accounts products-py reviews inventory; do
-    build_subgraph "$subgraph" "$ROOT_DIR" "$CLUSTER_NAME" &
-done
-
-# Wait for all subgraph builds to complete
+# Wait for background Docker builds to complete (started earlier to run in parallel)
+echo -e "${YELLOW}Waiting for background Docker image builds to complete...${NC}"
 if ! wait; then
-    echo -e "${RED}Error: One or more subgraph builds failed${NC}"
+    echo -e "${RED}Error: One or more Docker builds failed${NC}"
     exit 1
 fi
 
 # Import all subgraph images to k3d (sequential to ensure completion)
 echo -e "${YELLOW}Importing subgraph images to k3d...${NC}"
-for subgraph in accounts products-py reviews inventory; do
-    if [ "$subgraph" = "products-py" ]; then
-        IMAGE_NAME="apollo-dash0-demo-products-py:latest"
+for subgraph in accounts products reviews inventory; do
+    if [ "$subgraph" = "products" ]; then
+        IMAGE_NAME="apollo-dash0-demo-products:latest"
     else
         IMAGE_NAME="apollo-dash0-demo-$subgraph:latest"
     fi
@@ -292,49 +332,6 @@ for subgraph in accounts products-py reviews inventory; do
         exit 1
     fi
 done
-
-# Build website and bot images in parallel
-echo -e "${GREEN}Building website service Docker images (in parallel)...${NC}"
-
-# Function to build website/bot image
-build_website_service() {
-    local service=$1
-    local root_dir=$2
-
-    if [ "$service" = "website" ]; then
-        IMAGE_NAME="apollo-dash0-demo-willful-waste-website:latest"
-        SERVICE_DIR="website"
-    else
-        IMAGE_NAME="apollo-dash0-demo-willful-waste-bot:latest"
-        SERVICE_DIR="website-bot"
-    fi
-
-    echo -e "${YELLOW}Building willful-waste-$service...${NC}"
-    if [ "$service" = "website" ]; then
-        # Pass Dash0 RUM token as build arg for the website
-        docker build \
-            --build-arg VITE_DASH0_API_TOKEN="$VITE_DASH0_API_TOKEN" \
-            --build-arg VITE_ENVIRONMENT="$ENVIRONMENT" \
-            --build-arg VITE_GRAPHQL_URL="http://apollo-router:4000/graphql" \
-            -t "$IMAGE_NAME" \
-            -f "$root_dir/shared/$SERVICE_DIR/Dockerfile" \
-            "$root_dir/shared/$SERVICE_DIR" || return 1
-    else
-        docker build -t "$IMAGE_NAME" -f "$root_dir/shared/$SERVICE_DIR/Dockerfile" "$root_dir/shared/$SERVICE_DIR" || return 1
-    fi
-    echo -e "${GREEN}✓ $service built successfully${NC}"
-}
-
-# Start both website service builds in parallel
-for service in website bot; do
-    build_website_service "$service" "$ROOT_DIR" &
-done
-
-# Wait for all website service builds to complete
-if ! wait; then
-    echo -e "${RED}Error: One or more website service builds failed${NC}"
-    exit 1
-fi
 
 # Import all website service images to k3d (sequential to ensure completion)
 echo -e "${YELLOW}Importing website service images to k3d...${NC}"
@@ -351,35 +348,19 @@ for service in website bot; do
     fi
 done
 
-# Deploy monitoring, database, and subgraph resources using kustomize (now that images are available)
-echo -e "${YELLOW}Deploying PostgreSQL cluster, monitoring, and subgraph resources with kustomize...${NC}"
+# Deploy all resources via kustomize
+echo -e "${YELLOW}Deploying all resources with kustomize...${NC}"
 cd "$ROOT_DIR" && kubectl kustomize kubernetes/base | kubectl apply -f -
 echo -e "${GREEN}Resources deployed!${NC}"
 
-# Wait for PostgreSQL cluster to be ready before subgraphs come up
-echo -e "${YELLOW}Waiting for PostgreSQL cluster to be ready (this may take 1-2 minutes)...${NC}"
-if ! kubectl wait --for=condition=ready cluster/inventory-db -n apollo-dash0-demo --timeout=180s; then
-    echo -e "${RED}Error: PostgreSQL cluster failed to become ready${NC}"
-    exit 1
-fi
-
-# Wait for subgraphs to be ready (already deployed via kustomize)
-echo -e "${YELLOW}Waiting for subgraphs to be ready...${NC}"
-for subgraph in accounts products reviews inventory; do
-    if ! kubectl wait --for=condition=available --timeout=120s deployment/$subgraph -n apollo-dash0-demo; then
-        echo -e "${RED}Error: Subgraph '$subgraph' failed to become ready${NC}"
-        exit 1
-    fi
-done
-
-# Get subgraph service endpoints for supergraph composition
+# Get subgraph service endpoints for supergraph composition (can do this while services start)
 echo -e "${GREEN}Getting subgraph endpoints...${NC}"
 ACCOUNTS_URL="http://accounts-service.apollo-dash0-demo.svc.cluster.local:4001/graphql"
 PRODUCTS_URL="http://products-service.apollo-dash0-demo.svc.cluster.local:4003/graphql"
 REVIEWS_URL="http://reviews-service.apollo-dash0-demo.svc.cluster.local:4002/graphql"
 INVENTORY_URL="http://inventory-service.apollo-dash0-demo.svc.cluster.local:4004/graphql"
 
-# Check if supergraph.graphql exists, if not compose it
+# Check if supergraph.graphql exists, if not compose it (can happen in parallel with service startup)
 SUPERGRAPH_FILE="$ROOT_DIR/shared/router/supergraph.graphql"
 if [ ! -f "$SUPERGRAPH_FILE" ]; then
     echo -e "${YELLOW}Supergraph schema not found at $SUPERGRAPH_FILE${NC}"
@@ -409,14 +390,32 @@ kubectl create configmap router-config \
     --namespace=apollo-dash0-demo \
     --dry-run=client -o yaml | kubectl apply -f -
 
-# Install Apollo Router via Helm
-echo -e "${GREEN}Installing Apollo Router via Helm...${NC}"
+# Install Apollo Router via Helm (without --wait, let it start in parallel)
+echo -e "${GREEN}Installing Apollo Router via Helm (starting in parallel with DB/subgraphs)...${NC}"
 helm upgrade --install apollo-router \
     oci://ghcr.io/apollographql/helm-charts/router \
     --version 2.8.0 \
     --namespace apollo-dash0-demo \
-    --values "$ROOT_DIR/kubernetes/helm-values/router-values.yaml" \
-    --wait
+    --values "$ROOT_DIR/kubernetes/helm-values/router-values.yaml"
+
+# Now all components start in parallel: router, subgraphs, DB initialization
+# Wait for critical components in order of dependency
+
+# First, wait for PostgreSQL (needed by inventory subgraph)
+echo -e "${YELLOW}Waiting for PostgreSQL cluster to be ready (background initialization continues)...${NC}"
+if ! kubectl wait --for=condition=ready cluster/inventory-db -n apollo-dash0-demo --timeout=180s; then
+    echo -e "${RED}Error: PostgreSQL cluster failed to become ready${NC}"
+    exit 1
+fi
+
+# Now wait for all subgraphs (inventory can start now that DB is ready)
+echo -e "${YELLOW}Waiting for all subgraphs to be ready...${NC}"
+for subgraph in accounts products reviews inventory; do
+    if ! kubectl wait --for=condition=available --timeout=120s deployment/$subgraph -n apollo-dash0-demo; then
+        echo -e "${RED}Error: Subgraph '$subgraph' failed to become ready${NC}"
+        exit 1
+    fi
+done
 
 # Wait for router to be ready
 echo -e "${YELLOW}Waiting for Apollo Router to be ready...${NC}"

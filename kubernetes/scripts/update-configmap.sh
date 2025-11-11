@@ -64,10 +64,9 @@ kubectl create configmap apollo-config \
     --from-literal=SERVICE_NAME="${SERVICE_NAME:-apollo-router-demo}" \
     --from-literal=SERVICE_VERSION="${SERVICE_VERSION:-2.0}" \
     --from-literal=ENVIRONMENT="${ENVIRONMENT:-demo}" \
-    --from-literal=BOT_INTERVAL="${BOT_INTERVAL:-15000}" \
-    --from-literal=BOT_SESSION_DURATION="${BOT_SESSION_DURATION:-300000}" \
-    --from-literal=BOT_CONCURRENT_BOTS="${BOT_CONCURRENT_BOTS:-2}" \
-    --from-literal=BOT_HEADLESS="${BOT_HEADLESS:-true}" \
+    --from-literal=LOCUST_USERS="${LOCUST_USERS:-5}" \
+    --from-literal=LOCUST_SPAWN_RATE="${LOCUST_SPAWN_RATE:-1}" \
+    --from-literal=LOCUST_RUN_TIME="${LOCUST_RUN_TIME:-}" \
     --from-literal=ACCOUNTS_SUBGRAPH_ERROR_RATE="${ACCOUNTS_SUBGRAPH_ERROR_RATE:-1}" \
     --from-literal=REVIEWS_SUBGRAPH_ERROR_RATE="${REVIEWS_SUBGRAPH_ERROR_RATE:-1}" \
     --from-literal=PRODUCTS_SUBGRAPH_ERROR_RATE="${PRODUCTS_SUBGRAPH_ERROR_RATE:-1}" \
@@ -90,10 +89,9 @@ echo -e "  • DASH0_TRACES_ENDPOINT"
 echo -e "  • SERVICE_NAME"
 echo -e "  • SERVICE_VERSION"
 echo -e "  • ENVIRONMENT"
-echo -e "  • BOT_INTERVAL"
-echo -e "  • BOT_SESSION_DURATION"
-echo -e "  • BOT_CONCURRENT_BOTS"
-echo -e "  • BOT_HEADLESS"
+echo -e "  • LOCUST_USERS"
+echo -e "  • LOCUST_SPAWN_RATE"
+echo -e "  • LOCUST_RUN_TIME"
 echo -e "  • ACCOUNTS_SUBGRAPH_ERROR_RATE"
 echo -e "  • REVIEWS_SUBGRAPH_ERROR_RATE"
 echo -e "  • PRODUCTS_SUBGRAPH_ERROR_RATE"

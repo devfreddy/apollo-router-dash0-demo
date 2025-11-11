@@ -28,6 +28,7 @@ router:
     supergraph:
       introspection: true
       listen: 0.0.0.0:4000
+      path: /graphql
       query_planning:
         cache:
           in_memory:
@@ -71,7 +72,7 @@ router:
                     - true
                     - on_graphql_error: true
               error.message:
-                response_errors: $[0].message
+                response_errors: $.[0].message
           subgraph:
             attributes:
               otel.name: subgraph
@@ -136,63 +137,12 @@ router:
 
         events:
           router:
+            request: info
+            response: info
             error: error
           supergraph:
-            # Log all GraphQL errors with detailed context
-            graphql.error.detected:
-              message: "GraphQL error in request"
-              "on": "event_response"
-              level: error
-              condition:
-                eq:
-                  - on_graphql_error: true
-                  - true
-              attributes:
-                operation.name: "supergraph"
-                resource.name:
-                  operation_name: string
-                error.full.error:
-                  response_errors: "$.[0]"
-                error.message:
-                  response_errors: "$.[0].message"
-                error.code:
-                  response_errors: "$.[0].extensions.code"
-                error.path:
-                  response_errors: "$.[0].path"
-                error.locations:
-                  response_errors: "$.[0].locations"
-                http.status_code: "http_response_status"
-                graphql.operation.type: "operation_type"
+            error: error
 
-            # Log query validation errors
-            graphql.validation.error:
-              message: "GraphQL validation error"
-              "on": "event_response"
-              level: error
-              condition:
-                eq:
-                  - on_graphql_error: true
-                  - true
-              attributes:
-                operation.name: "supergraph"
-                resource.name:
-                  operation_name: string
-                error.count:
-                  response_errors: "$|length"
-                error.message:
-                  response_errors: "$.[0].message"
-
-            # Log request parsing errors
-            request.parsing.error:
-              message: "Request parsing error"
-              "on": "event_request"
-              level: error
-              condition:
-                eq:
-                  - static: true
-              attributes:
-                operation.name: "supergraph"
-            
       exporters:
         logging:
           common:
@@ -200,6 +150,10 @@ router:
               service.name: "${env.SERVICE_NAME:-apollo-router}"
           stdout:
             enabled: true
+            rate_limit:
+              # number of allowed messages during the rate limiting interval
+              capacity: 1
+              interval: 10s
             format:
               # Switch from JSON to unstructured text format to see Dash0 parsing
               text:
@@ -219,6 +173,7 @@ router:
           common:
             resource:
               service.name: "${env.SERVICE_NAME:-apollo-router}"
+              service.namespace: "retail-services"
               service.version: "${env.SERVICE_VERSION:-2.0}"
               deployment.environment: "${env.ENVIRONMENT:-demo}"
             views:
@@ -263,6 +218,7 @@ router:
             parent_based_sampler: true
             resource:
               service.name: "${env.SERVICE_NAME:-apollo-router}"
+              service.namespace: "retail-services"
               service.version: "${env.SERVICE_VERSION:-2.0}"
               deployment.environment: "${env.ENVIRONMENT:-demo}"
           otlp:
@@ -281,11 +237,13 @@ router:
               max_queue_size: 2048
 
     cors:
+      allow_credentials: true
       policies:
         - origins:
             - http://localhost:3000
             - http://localhost:4000
-          allow_credentials: true
+            - http://website.localhost
+            - http://router.localhost
 
     traffic_shaping:
       router:
