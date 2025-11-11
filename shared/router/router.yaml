@@ -7,6 +7,8 @@ supergraph:
   introspection: true
   # Listen on all interfaces
   listen: 0.0.0.0:4000
+  # Serve GraphQL endpoint at /graphql path
+  path: /graphql
   # Query planning cache for performance
   query_planning:
     cache:
@@ -65,7 +67,7 @@ telemetry:
                 - true
                 - on_graphql_error: true
           error.message:
-            response_errors: $[0].message
+            response_errors: $.[0].message
 
       # Subgraph-level spans
       subgraph:
@@ -126,18 +128,23 @@ telemetry:
       # Router-level events
       router:
         error: error
+        # Custom event for HTTP error responses (4xx and 5xx)
+        http.error:
+          message: "HTTP error response"
+          on: response
+          level: info
+          condition:
+            range:
+              - response_status: Code
+              - min: 400
+              - max: 599
+          attributes:
+            http.response.status_code: true
+            http.request.method: true
+            http.url.path: true
       # Supergraph-level events
       supergraph:
         error: error
-        # Custom event to log responses with GraphQL errors
-        graphql.error.detected:
-          message: "GraphQL error in request"
-          "on": "response"
-          level: info
-          condition:
-            eq:
-              - on_graphql_error: true
-              - true
 
   exporters:
     # Configure metrics export to Dash0
@@ -146,6 +153,7 @@ telemetry:
         # Resource attributes for identifying this service
         resource:
           service.name: "${env.SERVICE_NAME:-apollo-router}"
+          service.namespace: "${env.SERVICE_NAMESPACE:-retail-services}"
           service.version: "${env.SERVICE_VERSION:-2.0}"
           deployment.environment: "${env.ENVIRONMENT:-demo}"
 
@@ -199,6 +207,7 @@ telemetry:
         # Resource attributes
         resource:
           service.name: "${env.SERVICE_NAME:-apollo-router}"
+          service.namespace: "${env.SERVICE_NAMESPACE:-retail-services}"
           service.version: "${env.SERVICE_VERSION:-2.0}"
           deployment.environment: "${env.ENVIRONMENT:-demo}"
 
@@ -241,15 +250,16 @@ headers:
       - propagate:
           named: "baggage"
 
-# CORS configuration for browser access (v2.7+ format)
-# Port 4000: Required for Apollo Sandbox UI (served from the router itself)
-# Port 3000: Pre-configured for potential frontend applications (React, Next.js, etc.)
+# CORS configuration for browser access
+# Includes localhost variants and domain-based routing for local development
 cors:
+  allow_credentials: true
   policies:
     - origins:
         - http://localhost:3000
         - http://localhost:4000
-      allow_credentials: true
+        - http://website.localhost
+        - http://router.localhost
 
 # Limits to prevent abuse (requires Apollo GraphOS Enterprise license)
 # NOTE: These features require an Enterprise plan and proper GraphOS connection
