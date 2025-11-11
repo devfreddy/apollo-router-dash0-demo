@@ -17,13 +17,17 @@ echo -e "${BLUE}║  Update ConfigMap                                          �
 echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
 
 # Check if we're in the right directory
-if [ ! -f "kubernetes/scripts/k3d-up.sh" ]; then
-    echo -e "${RED}Error: Please run this script from the project root directory${NC}"
+if [ ! -f "scripts/k3d-up.sh" ]; then
+    echo -e "${RED}Error: Please run this script from the kubernetes/ directory${NC}"
+    echo "Example: cd kubernetes && ./scripts/update-configmap.sh"
     exit 1
 fi
 
+# Get the root directory (one level up from kubernetes/)
+ROOT_DIR="$(cd ".." && pwd)"
+
 # Check if .env exists
-if [ ! -f .env ]; then
+if [ ! -f "$ROOT_DIR/.env" ]; then
     echo -e "${RED}Error: .env file not found!${NC}"
     echo "Please copy .env.sample to .env and configure your settings"
     exit 1
@@ -31,7 +35,7 @@ fi
 
 # Load environment variables and export them for envsubst
 set -a
-source .env
+source "$ROOT_DIR/.env"
 set +a
 
 # Check kubectl is available
@@ -54,11 +58,21 @@ echo ""
 # Update ConfigMap
 echo -e "${GREEN}Updating apollo-config ConfigMap...${NC}"
 kubectl create configmap apollo-config \
+    --from-literal=DASH0_DATASET="$DASH0_DATASET" \
     --from-literal=DASH0_METRICS_ENDPOINT="$DASH0_METRICS_ENDPOINT" \
     --from-literal=DASH0_TRACES_ENDPOINT="$DASH0_TRACES_ENDPOINT" \
     --from-literal=SERVICE_NAME="${SERVICE_NAME:-apollo-router-demo}" \
     --from-literal=SERVICE_VERSION="${SERVICE_VERSION:-2.0}" \
     --from-literal=ENVIRONMENT="${ENVIRONMENT:-demo}" \
+    --from-literal=BOT_INTERVAL="${BOT_INTERVAL:-15000}" \
+    --from-literal=BOT_SESSION_DURATION="${BOT_SESSION_DURATION:-300000}" \
+    --from-literal=BOT_CONCURRENT_BOTS="${BOT_CONCURRENT_BOTS:-2}" \
+    --from-literal=BOT_HEADLESS="${BOT_HEADLESS:-true}" \
+    --from-literal=ACCOUNTS_SUBGRAPH_ERROR_RATE="${ACCOUNTS_SUBGRAPH_ERROR_RATE:-1}" \
+    --from-literal=REVIEWS_SUBGRAPH_ERROR_RATE="${REVIEWS_SUBGRAPH_ERROR_RATE:-1}" \
+    --from-literal=PRODUCTS_SUBGRAPH_ERROR_RATE="${PRODUCTS_SUBGRAPH_ERROR_RATE:-1}" \
+    --from-literal=PRODUCTS_SUBGRAPH_PY_ERROR_RATE="${PRODUCTS_SUBGRAPH_PY_ERROR_RATE:-1}" \
+    --from-literal=INVENTORY_SUBGRAPH_ERROR_RATE="${INVENTORY_SUBGRAPH_ERROR_RATE:-1}" \
     --namespace=apollo-dash0-demo \
     --dry-run=client -o yaml | kubectl apply -f - > /dev/null
 echo -e "${GREEN}      ✓ ConfigMap updated${NC}"
@@ -70,17 +84,27 @@ echo -e "${BLUE}║  ✅ CONFIGMAP UPDATE COMPLETE                             �
 echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 echo -e "${GREEN}Updated ConfigMap keys:${NC}"
+echo -e "  • DASH0_DATASET"
 echo -e "  • DASH0_METRICS_ENDPOINT"
 echo -e "  • DASH0_TRACES_ENDPOINT"
 echo -e "  • SERVICE_NAME"
 echo -e "  • SERVICE_VERSION"
 echo -e "  • ENVIRONMENT"
+echo -e "  • BOT_INTERVAL"
+echo -e "  • BOT_SESSION_DURATION"
+echo -e "  • BOT_CONCURRENT_BOTS"
+echo -e "  • BOT_HEADLESS"
+echo -e "  • ACCOUNTS_SUBGRAPH_ERROR_RATE"
+echo -e "  • REVIEWS_SUBGRAPH_ERROR_RATE"
+echo -e "  • PRODUCTS_SUBGRAPH_ERROR_RATE"
+echo -e "  • PRODUCTS_SUBGRAPH_PY_ERROR_RATE"
+echo -e "  • INVENTORY_SUBGRAPH_ERROR_RATE"
 echo ""
 echo -e "${GREEN}Next steps:${NC}"
-echo -e "  1. Redeploy applications to use new config:"
-echo -e "     ${BLUE}./kubernetes/scripts/redeploy-apps.sh${NC}"
-echo -e "  2. Or redeploy just the router:"
-echo -e "     ${BLUE}./kubernetes/scripts/redeploy-router.sh${NC}"
+echo -e "  1. Rebuild applications to use new config:"
+echo -e "     ${BLUE}./kubernetes/scripts/rebuild-apps.sh${NC}"
+echo -e "  2. Or rebuild just the router:"
+echo -e "     ${BLUE}./kubernetes/scripts/rebuild-router.sh${NC}"
 echo -e "  3. Or view the ConfigMap:"
 echo -e "     ${BLUE}kubectl get configmap apollo-config -n apollo-dash0-demo -o yaml${NC}"
 echo ""
