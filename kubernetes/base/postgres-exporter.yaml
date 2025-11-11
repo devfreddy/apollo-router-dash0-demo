@@ -148,7 +148,7 @@ spec:
 
       containers:
       - name: postgres-exporter
-        image: prometheuscommunity/postgres-exporter:v0.15.0
+        image: prometheuscommunity/postgres-exporter:v0.18.1
         imagePullPolicy: IfNotPresent
 
         ports:

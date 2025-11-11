@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: products
-        image: apollo-dash0-demo-products-py:latest
+        image: apollo-dash0-demo-products:latest
         imagePullPolicy: Never  # Use local image imported to k3d
         ports:
         - containerPort: 4003
@@ -99,7 +99,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: products-py
+  name: products
   labels:
     app: products
     component: subgraph

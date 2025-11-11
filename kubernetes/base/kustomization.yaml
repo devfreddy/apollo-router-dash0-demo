@@ -9,6 +9,7 @@ resources:
   - dash0-monitoring.yaml
   - website.yaml
   - website-bot.yaml
+  - ingress.yaml
   - subgraphs/accounts.yaml
   - subgraphs/inventory.yaml
   - subgraphs/products.yaml
