@@ -29,6 +29,7 @@ function initializeOpenTelemetry(serviceName) {
   // Configure resource with service information
   const resource = new Resource({
     [ATTR_SERVICE_NAME]: serviceName,
+    'service.namespace': process.env.SERVICE_NAMESPACE || 'retail-services',
     [ATTR_SERVICE_VERSION]: serviceVersion,
     'deployment.environment': environment,
   });

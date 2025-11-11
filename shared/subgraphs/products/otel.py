@@ -43,6 +43,7 @@ def initialize_opentelemetry(service_name: str):
     # Configure resource with service information
     resource = Resource.create({
         "service.name": service_name,
+        "service.namespace": os.getenv('SERVICE_NAMESPACE', 'retail-services'),
         "service.version": service_version,
         "deployment.environment": environment,
     })
