@@ -33,8 +33,8 @@
 | Delete Kubernetes cluster | `./kubernetes/scripts/k3d-down.sh` | ~5 sec |
 | Start Docker Compose | `cd docker-compose && docker-compose up -d` | ~30 sec |
 | Stop Docker Compose | `cd docker-compose && docker-compose down` | ~5 sec |
-| Restart router only | `./kubernetes/scripts/redeploy-router.sh` | ~20-30 sec |
-| Restart all apps | `./kubernetes/scripts/redeploy-apps.sh` | ~30-60 sec |
+| Rebuild router only | `./kubernetes/scripts/rebuild-router.sh` | ~20-30 sec |
+| Rebuild all apps | `./kubernetes/scripts/rebuild-apps.sh` | ~30-60 sec |
 | Check Kubernetes status | `./kubernetes/status.sh` | ~5 sec |
 | Check Compose status | `cd docker-compose && docker-compose ps` | ~2 sec |
 | View router logs | `kubectl logs -f deployment/apollo-router -n apollo-dash0-demo` | - |
@@ -50,12 +50,12 @@
 **Modifying router configuration:**
 1. Edit `shared/router/router.yaml`
 2. Run `./kubernetes/scripts/update-configmap.sh` (if using Kubernetes)
-3. Run `./kubernetes/scripts/redeploy-router.sh` to apply
+3. Run `./kubernetes/scripts/rebuild-router.sh` to apply
 
 **Modifying supergraph schema:**
 1. Edit `shared/router/supergraph.graphql`
 2. Run `./kubernetes/scripts/update-configmap.sh` (if using Kubernetes)
-3. Run `./kubernetes/scripts/redeploy-router.sh` to apply
+3. Run `./kubernetes/scripts/rebuild-router.sh` to apply
 
 **Modifying subgraph code:**
 1. Edit subgraph code (e.g., `shared/subgraphs/accounts/`)
@@ -74,3 +74,18 @@
 - Database setup: `docs/POSTGRES_SETUP.md`
 - Troubleshooting: `docs/LOGS.md`
 - Dash0 operator details: `kubernetes/DASH0-OPERATOR.md`
+
+## AI Assistant Guidelines
+
+### Documentation
+- **Only create docs in `/docs/` folder** - Never at project root
+- **Keep docs concise** - Max 1-2 pages per doc
+- **Link to existing docs** rather than duplicating information
+- **Use diagnostic scripts** instead of creating lengthy troubleshooting guides
+- **Ask before creating new docs** - Most information should fit in existing docs or brief comments
+- **Consolidate related info** - Don't create multiple docs on the same topic
+
+### Web Searches
+- **Limit to 5 per session** - Conserve output context
+- Prioritize checking existing project documentation and code first
+- Use web searches strategically for external APIs, version-specific info, or latest best practices only
