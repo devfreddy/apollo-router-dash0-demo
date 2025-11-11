@@ -135,10 +135,10 @@ router:
                   subgraph_on_graphql_error: true
 
         events:
-          # router:
-          #   error: error
+          router:
+            error: error
           supergraph:
-            # error: error
+            # Log all GraphQL errors with detailed context
             graphql.error.detected:
               message: "GraphQL error in request"
               "on": "event_response"
@@ -155,8 +155,43 @@ router:
                   response_errors: "$.[0]"
                 error.message:
                   response_errors: "$.[0].message"
-                error.extensions: 
+                error.code:
                   response_errors: "$.[0].extensions.code"
+                error.path:
+                  response_errors: "$.[0].path"
+                error.locations:
+                  response_errors: "$.[0].locations"
+                http.status_code: "http_response_status"
+                graphql.operation.type: "operation_type"
+
+            # Log query validation errors
+            graphql.validation.error:
+              message: "GraphQL validation error"
+              "on": "event_response"
+              level: error
+              condition:
+                eq:
+                  - on_graphql_error: true
+                  - true
+              attributes:
+                operation.name: "supergraph"
+                resource.name:
+                  operation_name: string
+                error.count:
+                  response_errors: "$|length"
+                error.message:
+                  response_errors: "$.[0].message"
+
+            # Log request parsing errors
+            request.parsing.error:
+              message: "Request parsing error"
+              "on": "event_request"
+              level: error
+              condition:
+                eq:
+                  - static: true
+              attributes:
+                operation.name: "supergraph"
             
       exporters:
         logging:
@@ -166,16 +201,17 @@ router:
           stdout:
             enabled: true
             format:
-              json:
-                display_filename: false
+              # Switch from JSON to unstructured text format to see Dash0 parsing
+              text:
+                display_filename: true
                 display_level: true
-                display_line_number: false
-                display_target: false
+                display_line_number: true
+                display_target: true
                 display_thread_id: false
-                display_thread_name: false
+                display_thread_name: true
                 display_timestamp: true
                 display_current_span: true
-                display_span_list: true
+                display_span_list: false
                 display_resource: true
                 display_trace_id: true
                 display_span_id: true

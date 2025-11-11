@@ -8,7 +8,7 @@ import os
 from opentelemetry import trace, metrics
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.sdk.trace.sampling import TraceIdRatioBased
+from opentelemetry.sdk.trace.sampling import ParentBased, TraceIdRatioBased
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
 from opentelemetry.sdk.metrics import MeterProvider
@@ -64,10 +64,12 @@ def initialize_opentelemetry(service_name: str):
         headers=headers,
     )
 
-    # Configure tracer provider with trace exporter and 25% sampler
+    # Configure tracer provider with parent-based sampler to respect the router's sampling decision
+    # If a parent span exists, use its sampling decision
+    # If no parent, use TraceIdRatioBased sampler with 25% probability
     tracer_provider = TracerProvider(
         resource=resource,
-        sampler=TraceIdRatioBased(0.25)
+        sampler=ParentBased(root=TraceIdRatioBased(0.25))
     )
     tracer_provider.add_span_processor(BatchSpanProcessor(trace_exporter))
     trace.set_tracer_provider(tracer_provider)

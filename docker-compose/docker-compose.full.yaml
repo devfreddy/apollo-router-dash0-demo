@@ -228,12 +228,15 @@ services:
     build:
       context: ../shared/website
       dockerfile: Dockerfile
+      args:
+        - VITE_DASH0_API_TOKEN=${VITE_DASH0_API_TOKEN}
+        - VITE_ENVIRONMENT=demo
+        - VITE_GRAPHQL_URL=http://router:4000/graphql
     ports:
       - "3000:3000"
     environment:
-      - VITE_GRAPHQL_URL=http://router:4000/graphql
-      - VITE_ENVIRONMENT=demo
       - NODE_ENV=production
+      # Note: VITE_* variables are baked in at build time via docker build args
     depends_on:
       - router
     healthcheck:
@@ -254,10 +257,10 @@ services:
     environment:
       - WEBSITE_URL=http://willful-waste-website:3000
       - GRAPHQL_URL=http://router:4000/graphql
-      - BOT_INTERVAL=10000
-      - SESSION_DURATION=300000
-      - CONCURRENT_BOTS=2
-      - HEADLESS=true
+      - BOT_INTERVAL=${BOT_INTERVAL:-10000}
+      - SESSION_DURATION=${BOT_SESSION_DURATION:-300000}
+      - CONCURRENT_BOTS=${BOT_CONCURRENT_BOTS:-2}
+      - HEADLESS=${BOT_HEADLESS:-true}
       - NODE_ENV=production
     depends_on:
       - router

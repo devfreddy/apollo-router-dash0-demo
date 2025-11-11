@@ -27,15 +27,10 @@ spec:
         - containerPort: 3000
           name: http
         env:
-        - name: VITE_GRAPHQL_URL
-          value: "http://apollo-router:4000/graphql"
-        - name: VITE_ENVIRONMENT
-          valueFrom:
-            configMapKeyRef:
-              name: apollo-config
-              key: ENVIRONMENT
         - name: NODE_ENV
           value: "production"
+        # Note: VITE_* variables are baked in at build time, not runtime
+        # They are passed via Docker build args when building the image
         resources:
           requests:
             memory: "128Mi"

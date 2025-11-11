@@ -6,6 +6,7 @@ const { PeriodicExportingMetricReader } = require('@opentelemetry/sdk-metrics');
 const { Resource } = require('@opentelemetry/resources');
 const { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } = require('@opentelemetry/semantic-conventions');
 const { W3CTraceContextPropagator } = require('@opentelemetry/core');
+const { ParentBasedSampler, TraceIdRatioBasedSampler } = require('@opentelemetry/sdk-trace-base');
 
 /**
  * Initialize OpenTelemetry instrumentation for a subgraph service
@@ -55,6 +56,12 @@ function initializeOpenTelemetry(serviceName) {
   const sdk = new NodeSDK({
     resource: resource,
     traceExporter: traceExporter,
+    // Use parent-based sampler to respect the router's sampling decision
+    // If a parent span exists, use its sampling decision
+    // If no parent, use TraceIdRatioBased sampler with 25% probability
+    sampler: new ParentBasedSampler({
+      root: new TraceIdRatioBasedSampler(0.25),
+    }),
     metricReader: new PeriodicExportingMetricReader({
       exporter: metricExporter,
       exportIntervalMillis: 60000, // Export metrics every 60 seconds

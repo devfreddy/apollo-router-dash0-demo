@@ -186,6 +186,76 @@ services:
     labels:
       - "com.dash0.demo=inventory-subgraph"
 
+  # PostgreSQL Prometheus Exporter
+  # Exposes PostgreSQL metrics as Prometheus endpoints
+  # Metrics are scraped by Dash0 operator (via prometheus.io annotations)
+  # Includes custom queries for pg_stat_statements query-level analytics
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://dash0_monitor:dash0_secure_monitor_password@postgres:5432/inventory_db?sslmode=disable"
+      PG_EXPORTER_EXCLUDE_DATABASES: "postgres,template0,template1"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9187/metrics"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    labels:
+      - "com.dash0.demo=postgres-exporter"
+
+  # Willful Waste Website - React frontend with Dash0 RUM instrumentation
+  website:
+    build:
+      context: ../shared/website
+      dockerfile: Dockerfile
+      args:
+        - VITE_DASH0_API_TOKEN=${VITE_DASH0_API_TOKEN}
+        - VITE_ENVIRONMENT=${VITE_ENVIRONMENT}
+        - VITE_GRAPHQL_URL=http://localhost:4000/graphql
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - router
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    labels:
+      - "com.dash0.demo=willful-waste-website"
+
+  # Willful Waste Bot - Traffic generator for load testing
+  website-bot:
+    build:
+      context: ../shared/website-bot
+      dockerfile: Dockerfile
+    env_file:
+      - ../.env
+    environment:
+      - WEBSITE_URL=http://website:3000
+      - GRAPHQL_URL=http://router:4000/graphql
+      - BOT_INTERVAL=${BOT_INTERVAL:-10000}
+      - SESSION_DURATION=${BOT_SESSION_DURATION:-300000}
+      - CONCURRENT_BOTS=${BOT_CONCURRENT_BOTS:-2}
+      - HEADLESS=${BOT_HEADLESS:-true}
+    depends_on:
+      - website
+      - router
+    restart: unless-stopped
+    labels:
+      - "com.dash0.demo=website-bot"
+
 # Volumes for persistent state
 volumes:
   postgres_data:

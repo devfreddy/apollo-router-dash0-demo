@@ -5,6 +5,7 @@ namespace: apollo-dash0-demo
 
 resources:
   - postgres-cluster.yaml
+  - postgres-exporter.yaml
   - dash0-monitoring.yaml
   - website.yaml
   - website-bot.yaml

@@ -7,7 +7,7 @@ metadata:
     app: willful-waste-bot
     tier: bot
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: willful-waste-bot
@@ -30,13 +30,25 @@ spec:
         - name: GRAPHQL_URL
           value: "http://apollo-router:4000/graphql"
         - name: BOT_INTERVAL
-          value: "5000"
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: BOT_INTERVAL
         - name: SESSION_DURATION
-          value: "300000"
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: BOT_SESSION_DURATION
         - name: CONCURRENT_BOTS
-          value: "2"
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: BOT_CONCURRENT_BOTS
         - name: HEADLESS
-          value: "true"
+          valueFrom:
+            configMapKeyRef:
+              name: apollo-config
+              key: BOT_HEADLESS
         - name: NODE_ENV
           value: "production"
         resources:

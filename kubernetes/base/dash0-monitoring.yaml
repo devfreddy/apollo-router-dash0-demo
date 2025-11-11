@@ -23,8 +23,10 @@ spec:
     enabled: true
 
   # Prometheus scraping settings
+  # Enabled to scrape metrics from postgres-exporter and other Prometheus-annotated pods
+  # The exporter pod is annotated with prometheus.io/scrape: "true" and prometheus.io/port: "9187"
   prometheusScraping:
-    enabled: false
+    enabled: true
 
   # Synchronize Perses dashboards with Dash0
   synchronizePersesDashboards: true

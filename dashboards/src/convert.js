@@ -3,7 +3,12 @@
 /**
  * Converts Apollo Router Datadog dashboard to Dash0 Perses format
  *
- * Usage: node convert.js
+ * Usage: node convert.js [--skip-markdown]
+ *
+ * Options:
+ *   --skip-markdown   Generate dashboard without markdown/documentation panels
+ *                     Output: apollo-router-no-docs.json
+ *                     Default (no flag): apollo-router.json (with all panels)
  *
  * This script converts the Datadog dashboard while preserving the original
  * group structure from the source dashboard. The conversion process:
@@ -36,6 +41,9 @@ const path = require('path');
 const { loadConfigs } = require('./config-loader');
 const { convertWidget } = require('./widget-converter');
 
+// Parse command-line arguments
+const skipMarkdown = process.argv.includes('--skip-markdown');
+
 // Load all configurations and source data
 const { metricTypeRules, attributeMappings, datadogDashboard } = loadConfigs();
 
@@ -47,8 +55,10 @@ const { metricTypeRules, attributeMappings, datadogDashboard } = loadConfigs();
  * 2. For each group, converts all nested widgets to panels
  * 3. Builds layout groups that match the original structure
  * 4. Returns a complete dashboard with all panels and layouts
+ *
+ * @param {boolean} skipMarkdown - If true, skip markdown/documentation panels
  */
-function convertDashboard() {
+function convertDashboard(skipMarkdown = false) {
   const allPanels = {};
   const layouts = [];
   let panelIndex = 0;
@@ -80,6 +90,11 @@ function convertDashboard() {
       const isMarkdownPanel = panel._isMarkdownPanel;
       delete panel._isMarkdownPanel;
       delete panel._datadogLayout;
+
+      // Skip markdown panels if requested
+      if (skipMarkdown && isMarkdownPanel) {
+        continue;
+      }
 
       // Add panel to panels collection
       allPanels[panelId] = panel;
@@ -133,6 +148,13 @@ function convertDashboard() {
   }
 
   // Create the final dashboard in Dash0 Perses format
+  const dashboardName = skipMarkdown
+    ? 'Apollo Router - Dashboard (No Docs)'
+    : 'Apollo Router - Complete Dashboard';
+  const dashboardDescription = skipMarkdown
+    ? 'GraphOS Runtime Dashboard - All metrics organized by functional area (documentation panels removed)'
+    : 'GraphOS Runtime Dashboard - All metrics organized by functional area';
+
   return {
     apiVersion: 'perses.dev/v1alpha1',
     kind: 'PersesDashboard',
@@ -144,8 +166,8 @@ function convertDashboard() {
     },
     spec: {
       display: {
-        name: 'Apollo Router - Complete Dashboard',
-        description: 'GraphOS Runtime Dashboard - All metrics organized by functional area'
+        name: dashboardName,
+        description: dashboardDescription
       },
       duration: '1h',
       layouts: layouts,
@@ -159,10 +181,11 @@ function convertDashboard() {
 // ============================================================================
 
 // Run conversion
-const dashboard = convertDashboard();
+const dashboard = convertDashboard(skipMarkdown);
 
-// Write dashboard to output file
-const outputPath = path.join(__dirname, '..', 'dash0', 'apollo-router', 'apollo-router.json');
+// Determine output filename based on skip-markdown flag
+const outputFilename = skipMarkdown ? 'apollo-router-no-docs.json' : 'apollo-router.json';
+const outputPath = path.join(__dirname, '..', 'dash0', 'apollo-router', outputFilename);
 fs.writeFileSync(outputPath, JSON.stringify(dashboard, null, 2));
 
 console.log(`✅ Dashboard converted successfully!`);
@@ -170,9 +193,13 @@ console.log(`📊 Panels created: ${Object.keys(dashboard.spec.panels).length}`)
 console.log(`📊 Groups created: ${dashboard.spec.layouts.length}`);
 console.log(`📁 Output: ${outputPath}`);
 
+if (skipMarkdown) {
+  console.log(`⏭️  Markdown panels skipped`);
+}
+
 console.log(`\n✨ All done!`);
 console.log(`\nGenerated dashboard:`);
-console.log(`  📊 apollo-router.json - All panels organized in ${dashboard.spec.layouts.length} collapsible groups`);
+console.log(`  📊 ${outputFilename} - ${dashboard.spec.layouts.length} collapsible groups`);
 console.log(`\nNext steps:`);
-console.log(`1. Deploy to Dash0: ./dashboards/deploy.sh`);
+console.log(`1. Deploy to Dash0: ./dashboards/deploy.sh ${outputFilename}`);
 console.log(`2. View in Dash0: https://app.dash0.com/dashboards/apollo-router`);

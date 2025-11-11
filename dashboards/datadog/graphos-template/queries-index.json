@@ -1,0 +1,2113 @@
+{
+  "type": "Datadog",
+  "generatedAt": "2025-11-11T03:06:41.661Z",
+  "sections": [
+    {
+      "name": "Request Traffic & Health: Client → Router",
+      "panelCount": 4,
+      "panels": [
+        {
+          "id": 1224218507683046,
+          "panelIndex": 0,
+          "name": "Volume of Requests Per Status Code",
+          "queryCount": 1,
+          "metrics": [
+            "http.server.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:http.server.request.duration{$service,$env,$version} by {http.response.status_code}.as_count()",
+              "dataSource": "metrics",
+              "metric": "http.server.request.duration"
+            }
+          ]
+        },
+        {
+          "id": 5890661141790956,
+          "panelIndex": 1,
+          "name": "Throughput: Requests Per Second",
+          "queryCount": 1,
+          "metrics": [
+            "http.server.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:http.server.request.duration{$service,$env,$version}.as_count()",
+              "dataSource": "metrics",
+              "metric": "http.server.request.duration"
+            }
+          ]
+        },
+        {
+          "id": 5348236615021926,
+          "panelIndex": 2,
+          "name": "Error Rate Percent",
+          "queryCount": 3,
+          "metrics": [
+            "http.server.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:http.server.request.duration{$service,$env,$version,graphql.errors:true}.as_count()",
+              "dataSource": "metrics",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "count:http.server.request.duration{$service,$env,$version,!http.response.status_code:2*,!http.response.status_code:4*}.as_count()",
+              "dataSource": "metrics",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 2,
+              "displayName": "query3",
+              "query": "count:http.server.request.duration{$service,$env,$version}.as_count()",
+              "dataSource": "metrics",
+              "metric": "http.server.request.duration"
+            }
+          ]
+        },
+        {
+          "id": 8599343953934762,
+          "panelIndex": 3,
+          "name": "GraphQL Errors by Operation",
+          "queryCount": 1,
+          "metrics": [
+            "unknown"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "dataSource": "spans",
+              "metric": "unknown"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": " Request Characteristics: Client → Router",
+      "panelCount": 1,
+      "panels": [
+        {
+          "id": 989162476390562,
+          "panelIndex": 4,
+          "name": "Request Body Size (p99 / Max)",
+          "queryCount": 2,
+          "metrics": [
+            "http.server.request.body.size"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "max:http.server.request.body.size{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "http.server.request.body.size"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "p99:http.server.request.body.size{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "http.server.request.body.size"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Request Performance & Latency: Client → Router",
+      "panelCount": 2,
+      "panels": [
+        {
+          "id": 5087230123283744,
+          "panelIndex": 5,
+          "name": "Request Duration Distribution",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": 73435209590847,
+          "panelIndex": 6,
+          "name": "Request Duration Percentiles",
+          "queryCount": 5,
+          "metrics": [
+            "http.server.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query2",
+              "query": "p99:http.server.request.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "query3",
+              "query": "p95:http.server.request.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 2,
+              "displayName": "query4",
+              "query": "p90:http.server.request.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 3,
+              "displayName": "query5",
+              "query": "min:http.server.request.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 4,
+              "displayName": "query6",
+              "query": "max:http.server.request.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "http.server.request.duration"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Request Traffic & Health: Router → Backend",
+      "panelCount": 3,
+      "panels": [
+        {
+          "id": 2856260301798283,
+          "panelIndex": 7,
+          "name": "Http Requests by Status Code",
+          "queryCount": 2,
+          "metrics": [
+            "http.client.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {http.response.status_code,subgraph.name}.as_count()",
+              "dataSource": "metrics",
+              "metric": "http.client.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "count:http.client.request.duration{$service,$env,$version,connector.source.name:*} by {http.response.status_code,subgraph.name,connector.source.name}.as_count()",
+              "dataSource": "metrics",
+              "metric": "http.client.request.duration"
+            }
+          ]
+        },
+        {
+          "id": 596214799597916,
+          "panelIndex": 8,
+          "name": "Throughput (Requests per Second)",
+          "queryCount": 2,
+          "metrics": [
+            "http.client.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {subgraph.name}.as_rate()",
+              "dataSource": "metrics",
+              "metric": "http.client.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "count:http.client.request.duration{$service,$env,$version,connector.source.name:*} by {subgraph.name,connector.source.name}.as_rate()",
+              "dataSource": "metrics",
+              "metric": "http.client.request.duration"
+            }
+          ]
+        },
+        {
+          "id": 7352033193843851,
+          "panelIndex": 9,
+          "name": "Non-2xx Responses",
+          "queryCount": 2,
+          "metrics": [
+            "http.client.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:http.client.request.duration{subgraph.name:*,!http.response.status_code:2*,$service,$env,$version,!connector.source.name:*} by {subgraph.name,http.response.status_code}.as_count()",
+              "dataSource": "metrics",
+              "metric": "http.client.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "count:http.client.request.duration{subgraph.name:*,!http.response.status_code:2*,$service,$env,$version,connector.source.name:*} by {subgraph.name,http.response.status_code,connector.source.name}.as_count()",
+              "dataSource": "metrics",
+              "metric": "http.client.request.duration"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": " Request Characteristics: Router → Backend",
+      "panelCount": 1,
+      "panels": [
+        {
+          "id": 5598171919490974,
+          "panelIndex": 10,
+          "name": "Response Body Size",
+          "queryCount": 2,
+          "metrics": [
+            "http.client.response.body.size"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query4",
+              "query": "avg:http.client.response.body.size{$service,$env,$version,!connector.source.name:*} by {subgraph.name}.as_count()",
+              "dataSource": "metrics",
+              "metric": "http.client.response.body.size"
+            },
+            {
+              "index": 1,
+              "displayName": "query1",
+              "query": "avg:http.client.response.body.size{$service,$env,$version,connector.source.name:*} by {subgraph.name,connector.source.name}.as_count()",
+              "dataSource": "metrics",
+              "metric": "http.client.response.body.size"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Request Performance & Latency: Router → Backend",
+      "panelCount": 3,
+      "panels": [
+        {
+          "id": 8695944198127783,
+          "panelIndex": 11,
+          "name": "P95 Latency by Subgraph",
+          "queryCount": 2,
+          "metrics": [
+            "http.client.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "p95:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {subgraph.name}",
+              "dataSource": "metrics",
+              "metric": "http.client.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "p95:http.client.request.duration{$service,$env,$version,connector.source.name:*} by {subgraph.name,connector.source.name}",
+              "dataSource": "metrics",
+              "metric": "http.client.request.duration"
+            }
+          ]
+        },
+        {
+          "id": 2531855480044862,
+          "panelIndex": 12,
+          "name": "GraphQL Errors by Subgraph",
+          "queryCount": 1,
+          "metrics": [
+            "sum"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "sum:http.client.request.duration{$service,$env,$version,!connector.source.name:*, graphql.errors:true} by {subgraph.name}.as_count()",
+              "dataSource": "metrics",
+              "metric": "sum"
+            }
+          ]
+        },
+        {
+          "id": 7867354547639656,
+          "panelIndex": 13,
+          "name": "Request Duration Distribution",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": "Query Planning",
+      "panelCount": 2,
+      "panels": [
+        {
+          "id": 7301212877184944,
+          "panelIndex": 14,
+          "name": "Duration and Wait Time",
+          "queryCount": 7,
+          "metrics": [
+            "apollo.router.compute_jobs.execution.duration",
+            "apollo.router.compute_jobs.queue.wait.duration",
+            "apollo.router.schema.load.duration",
+            "apollo.router.query_planning.warmup.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query2",
+              "query": "avg:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "query1",
+              "query": "p95:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 2,
+              "displayName": "query3",
+              "query": "max:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 3,
+              "displayName": "query4",
+              "query": "avg:apollo.router.compute_jobs.queue.wait.duration{$service,$env,$version,job.type:query_planning}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.queue.wait.duration"
+            },
+            {
+              "index": 4,
+              "displayName": "query5",
+              "query": "max:apollo.router.compute_jobs.queue.wait.duration{$service,$env,$version,job.type:query_planning}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.queue.wait.duration"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.schema.load.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.schema.load.duration"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.query_planning.warmup.duration"
+            }
+          ]
+        },
+        {
+          "id": 3371314754887370,
+          "panelIndex": 15,
+          "name": "Evaluated Plans",
+          "queryCount": 4,
+          "metrics": [
+            "apollo.router.query_planning.plan.evaluated_plans",
+            "apollo.router.schema.load.duration",
+            "apollo.router.query_planning.warmup.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query2",
+              "query": "avg:apollo.router.query_planning.plan.evaluated_plans{$service,$env, $version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.query_planning.plan.evaluated_plans"
+            },
+            {
+              "index": 1,
+              "displayName": "query1",
+              "query": "max:apollo.router.query_planning.plan.evaluated_plans{$service,$env, $version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.query_planning.plan.evaluated_plans"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.schema.load.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.schema.load.duration"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.query_planning.warmup.duration"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cache",
+      "panelCount": 5,
+      "panels": [
+        {
+          "id": 280811115102223,
+          "panelIndex": 16,
+          "name": "Misses vs. Record Count",
+          "queryCount": 6,
+          "metrics": [
+            "apollo.router.cache.miss.time",
+            "apollo.router.cache.size",
+            "apollo.router.cache.hit.time",
+            "apollo.router.query_planning.warmup.duration",
+            "apollo.router.schema.load.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.cache.miss.time{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.cache.miss.time"
+            },
+            {
+              "index": 0,
+              "displayName": "query0",
+              "query": "avg:apollo.router.cache.size{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.cache.size"
+            },
+            {
+              "index": 0,
+              "displayName": "query0",
+              "query": "count:apollo.router.cache.hit.time{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.cache.hit.time"
+            },
+            {
+              "index": 1,
+              "displayName": "query1",
+              "query": "count:apollo.router.cache.miss.time{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.cache.miss.time"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.query_planning.warmup.duration"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.schema.load.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.schema.load.duration"
+            }
+          ]
+        },
+        {
+          "id": 5973444432338869,
+          "panelIndex": 17,
+          "name": "Record Counts by Instance",
+          "queryCount": 3,
+          "metrics": [
+            "apollo.router.cache.size",
+            "apollo.router.query_planning.warmup.duration",
+            "apollo.router.schema.load.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "avg:apollo.router.cache.size{$service,$env,$version} by {host,pod_name,container_id}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.cache.size"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.query_planning.warmup.duration"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.schema.load.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.schema.load.duration"
+            }
+          ]
+        },
+        {
+          "id": 8120174499044240,
+          "panelIndex": 18,
+          "name": "Record Counts by Type",
+          "queryCount": 1,
+          "metrics": [
+            "sum"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "sum:apollo.router.cache.size{$service,$env,$version} by {kind,version}",
+              "dataSource": "metrics",
+              "metric": "sum"
+            }
+          ]
+        },
+        {
+          "id": 8691777953686757,
+          "panelIndex": 19,
+          "name": "Misses by Type",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.cache.miss.time"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.cache.miss.time{$service,$env,$version} by {kind,version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.cache.miss.time"
+            }
+          ]
+        },
+        {
+          "id": 7905054550039923,
+          "panelIndex": 20,
+          "name": "Hit % by Instance",
+          "queryCount": 2,
+          "metrics": [
+            "apollo.router.cache.hit.time",
+            "apollo.router.cache.miss.time"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query0",
+              "query": "count:apollo.router.cache.hit.time{$service,$env,$version} by {host,pod_name,container_id}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.cache.hit.time"
+            },
+            {
+              "index": 1,
+              "displayName": "query1",
+              "query": "count:apollo.router.cache.miss.time{$service,$env,$version} by {host,pod_name,container_id}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.cache.miss.time"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Compute Jobs",
+      "panelCount": 4,
+      "panels": [
+        {
+          "id": 2242335784104899,
+          "panelIndex": 21,
+          "name": "Query Planning Duration Percentiles and Wait Time",
+          "queryCount": 6,
+          "metrics": [
+            "apollo.router.compute_jobs.execution.duration",
+            "apollo.router.compute_jobs.queue.wait.duration",
+            "apollo.router.schema.load.duration",
+            "apollo.router.query_planning.warmup.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "p50:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "query3",
+              "query": "p95:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 2,
+              "displayName": "query2",
+              "query": "p99:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 3,
+              "displayName": "query4",
+              "query": "avg:apollo.router.compute_jobs.queue.wait.duration{$service,$env,$version,job.type:query_planning}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.queue.wait.duration"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.schema.load.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.schema.load.duration"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.query_planning.warmup.duration"
+            }
+          ]
+        },
+        {
+          "id": 6504562094582051,
+          "panelIndex": 22,
+          "name": "Query Parsing Duration Percentiles and Wait Time",
+          "queryCount": 6,
+          "metrics": [
+            "apollo.router.compute_jobs.execution.duration",
+            "apollo.router.compute_jobs.queue.wait.duration",
+            "apollo.router.schema.load.duration",
+            "apollo.router.query_planning.warmup.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "p50:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_parsing}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "query3",
+              "query": "p95:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_parsing}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 2,
+              "displayName": "query2",
+              "query": "p99:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_parsing}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 3,
+              "displayName": "query4",
+              "query": "avg:apollo.router.compute_jobs.queue.wait.duration{$service,$env,$version,job.type:query_parsing}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.queue.wait.duration"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.schema.load.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.schema.load.duration"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.query_planning.warmup.duration"
+            }
+          ]
+        },
+        {
+          "id": 2646683015980845,
+          "panelIndex": 23,
+          "name": "Queued Jobs",
+          "queryCount": 2,
+          "metrics": [
+            "sum",
+            "apollo.router.schema.load.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "sum:apollo.router.compute_jobs.queued{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "sum"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.schema.load.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.schema.load.duration"
+            }
+          ]
+        },
+        {
+          "id": 3496774608895013,
+          "panelIndex": 24,
+          "name": "Job Counts by Outcome",
+          "queryCount": 2,
+          "metrics": [
+            "apollo.router.compute_jobs.duration",
+            "apollo.router.schema.load.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.compute_jobs.duration{$service,$env,$version} by {job.outcome}.as_count()",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.duration"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "count:apollo.router.schema.load.duration{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.schema.load.duration"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Container/Host",
+      "panelCount": 8,
+      "panels": [
+        {
+          "id": 7198505991257678,
+          "panelIndex": 25,
+          "name": "Kubernetes CPU Usage",
+          "queryCount": 4,
+          "metrics": [
+            "kubernetes.cpu.usage.total",
+            "kubernetes.cpu.limits"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "avg:kubernetes.cpu.usage.total{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "kubernetes.cpu.usage.total"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "max:kubernetes.cpu.usage.total{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "kubernetes.cpu.usage.total"
+            },
+            {
+              "index": 0,
+              "displayName": "query0",
+              "query": "max:kubernetes.cpu.limits{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "kubernetes.cpu.limits"
+            },
+            {
+              "index": 1,
+              "displayName": "query1",
+              "query": "min:kubernetes.cpu.limits{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "kubernetes.cpu.limits"
+            }
+          ]
+        },
+        {
+          "id": 4808663335885167,
+          "panelIndex": 26,
+          "name": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+          "queryCount": 5,
+          "metrics": [
+            "system.cpu.stolen",
+            "system.cpu.iowait",
+            "system.cpu.system",
+            "system.cpu.user",
+            "system.cpu.idle"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query2",
+              "query": "avg:system.cpu.stolen{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "system.cpu.stolen"
+            },
+            {
+              "index": 1,
+              "displayName": "query1",
+              "query": "avg:system.cpu.iowait{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "system.cpu.iowait"
+            },
+            {
+              "index": 2,
+              "displayName": "query3",
+              "query": "avg:system.cpu.system{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "system.cpu.system"
+            },
+            {
+              "index": 3,
+              "displayName": "query4",
+              "query": "avg:system.cpu.user{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "system.cpu.user"
+            },
+            {
+              "index": 4,
+              "displayName": "query5",
+              "query": "avg:system.cpu.idle{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "system.cpu.idle"
+            }
+          ]
+        },
+        {
+          "id": 3871424817397328,
+          "panelIndex": 27,
+          "name": "Docker CPU Usage (Datadog Docker Agent)",
+          "queryCount": 3,
+          "metrics": [
+            "docker.cpu.usage",
+            "docker.cpu.limit"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query3",
+              "query": "avg:docker.cpu.usage{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "docker.cpu.usage"
+            },
+            {
+              "index": 1,
+              "displayName": "query1",
+              "query": "max:docker.cpu.usage{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "docker.cpu.usage"
+            },
+            {
+              "index": 0,
+              "displayName": "query0",
+              "query": "avg:docker.cpu.limit{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "docker.cpu.limit"
+            }
+          ]
+        },
+        {
+          "id": 7178237105285863,
+          "panelIndex": 28,
+          "name": "Docker CPU Usage (OTEL Collector  - Docker/stats)",
+          "queryCount": 4,
+          "metrics": [
+            "container.cpu.usage.total",
+            "container.cpu.limit"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "avg:container.cpu.usage.total{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "container.cpu.usage.total"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "max:container.cpu.usage.total{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "container.cpu.usage.total"
+            },
+            {
+              "index": 0,
+              "displayName": "query0",
+              "query": "min:container.cpu.limit{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "container.cpu.limit"
+            },
+            {
+              "index": 1,
+              "displayName": "query1",
+              "query": "max:container.cpu.limit{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "container.cpu.limit"
+            }
+          ]
+        },
+        {
+          "id": 1123646347411335,
+          "panelIndex": 29,
+          "name": "Kubernetes Memory Usage",
+          "queryCount": 4,
+          "metrics": [
+            "kubernetes.memory.usage",
+            "kubernetes.memory.limits"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "avg:kubernetes.memory.usage{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "kubernetes.memory.usage"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "max:kubernetes.memory.usage{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "kubernetes.memory.usage"
+            },
+            {
+              "index": 0,
+              "displayName": "query0",
+              "query": "min:kubernetes.memory.limits{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "kubernetes.memory.limits"
+            },
+            {
+              "index": 1,
+              "displayName": "query1",
+              "query": "max:kubernetes.memory.limits{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "kubernetes.memory.limits"
+            }
+          ]
+        },
+        {
+          "id": 7061503711231094,
+          "panelIndex": 30,
+          "name": "Host Memory Usage (OTEL Collector - Hostmetrics)",
+          "queryCount": 4,
+          "metrics": [
+            "system.mem.used",
+            "system.mem.total"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "avg:system.mem.used{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "system.mem.used"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "max:system.mem.used{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "system.mem.used"
+            },
+            {
+              "index": 0,
+              "displayName": "query0",
+              "query": "min:system.mem.total{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "system.mem.total"
+            },
+            {
+              "index": 1,
+              "displayName": "query1",
+              "query": "max:system.mem.total{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "system.mem.total"
+            }
+          ]
+        },
+        {
+          "id": 3525357882872541,
+          "panelIndex": 31,
+          "name": "Docker Memory Usage (Datadog Docker Agent)",
+          "queryCount": 3,
+          "metrics": [
+            "docker.mem.in_use",
+            "docker.mem.limit"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "avg:docker.mem.in_use{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "docker.mem.in_use"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "max:docker.mem.in_use{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "docker.mem.in_use"
+            },
+            {
+              "index": 0,
+              "displayName": "query0",
+              "query": "avg:docker.mem.limit{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "docker.mem.limit"
+            }
+          ]
+        },
+        {
+          "id": 6913818230766855,
+          "panelIndex": 32,
+          "name": "Docker Memory Usage (OTEL Collector  - Docker/stats)",
+          "queryCount": 3,
+          "metrics": [
+            "container.memory.usage.total",
+            "container.memory.usage.limit"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "avg:container.memory.usage.total{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "container.memory.usage.total"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "max:container.memory.usage.total{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "container.memory.usage.total"
+            },
+            {
+              "index": 0,
+              "displayName": "query0",
+              "query": "avg:container.memory.usage.limit{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "container.memory.usage.limit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Coprocessors",
+      "panelCount": 3,
+      "panels": [
+        {
+          "id": 7202644430123243,
+          "panelIndex": 33,
+          "name": "Request Duration",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.operations.coprocessor.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "avg:apollo.router.operations.coprocessor.duration{$service,$env,$version} by {coprocessor.stage}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.operations.coprocessor.duration"
+            }
+          ]
+        },
+        {
+          "id": 8422381032516479,
+          "panelIndex": 34,
+          "name": "Request Count",
+          "queryCount": 1,
+          "metrics": [
+            "sum"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query0",
+              "query": "sum:apollo.router.operations.coprocessor{$service,$env,$version} by {coprocessor.stage}.as_count()",
+              "dataSource": "metrics",
+              "metric": "sum"
+            }
+          ]
+        },
+        {
+          "id": 1752147216961256,
+          "panelIndex": 35,
+          "name": "Success Rate",
+          "queryCount": 2,
+          "metrics": [
+            "sum"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query0",
+              "query": "sum:apollo.router.operations.coprocessor{$service,$env,$version,coprocessor.succeeded:true} by {coprocessor.stage}.as_count()",
+              "dataSource": "metrics",
+              "metric": "sum"
+            },
+            {
+              "index": 1,
+              "displayName": "query1",
+              "query": "sum:apollo.router.operations.coprocessor{$service,$env,$version} by {coprocessor.stage}.as_count()",
+              "dataSource": "metrics",
+              "metric": "sum"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Sentinel Metrics",
+      "panelCount": 3,
+      "panels": [
+        {
+          "id": 6734123939129048,
+          "panelIndex": 36,
+          "name": "Uplink and Licensing",
+          "queryCount": 3,
+          "metrics": [
+            "apollo.router.uplink.fetch.duration.seconds",
+            "sum"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "avg:apollo.router.uplink.fetch.duration.seconds{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.uplink.fetch.duration.seconds"
+            },
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "sum:apollo.router.lifecycle.license{$service,$env,$version,license.state:licensed}",
+              "dataSource": "metrics",
+              "metric": "sum"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "sum:apollo.router.lifecycle.license{$service,$env,$version}",
+              "dataSource": "metrics",
+              "metric": "sum"
+            }
+          ]
+        },
+        {
+          "id": 850320612557659,
+          "panelIndex": 37,
+          "name": "Open Connections by Schema and Launch ID",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.open_connections"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query1",
+              "query": "avg:apollo.router.open_connections{$service,$env,$version} by {schema.id,launch.id}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.open_connections"
+            }
+          ]
+        },
+        {
+          "id": 1270431771452126,
+          "panelIndex": 38,
+          "name": "Router Relative Overhead",
+          "queryCount": 5,
+          "metrics": [
+            "http.server.request.duration",
+            "apollo.router.compute_jobs.duration",
+            "apollo.router.operations.coprocessor.duration",
+            "http.client.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "query6",
+              "query": "avg:http.server.request.duration{$service,$env}",
+              "dataSource": "metrics",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "query2",
+              "query": "avg:apollo.router.compute_jobs.duration{$service,$env}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.compute_jobs.duration"
+            },
+            {
+              "index": 2,
+              "displayName": "query5",
+              "query": "avg:apollo.router.operations.coprocessor.duration{$service,$env}",
+              "dataSource": "metrics",
+              "metric": "apollo.router.operations.coprocessor.duration"
+            },
+            {
+              "index": 3,
+              "displayName": "query4",
+              "query": "avg:http.client.request.duration{$service,$env}",
+              "dataSource": "metrics",
+              "metric": "http.client.request.duration"
+            },
+            {
+              "index": 4,
+              "displayName": "query3",
+              "query": "count:http.server.request.duration{$service,$env}.as_rate()",
+              "dataSource": "metrics",
+              "metric": "http.server.request.duration"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Resource Estimator",
+      "panelCount": 0,
+      "panels": []
+    }
+  ],
+  "metricsIndex": {
+    "http.server.request.duration": [
+      {
+        "section": "Request Traffic & Health: Client → Router",
+        "panel": "Volume of Requests Per Status Code",
+        "panelIndex": 0,
+        "displayName": "query1",
+        "query": "count:http.server.request.duration{$service,$env,$version} by {http.response.status_code}.as_count()"
+      },
+      {
+        "section": "Request Traffic & Health: Client → Router",
+        "panel": "Throughput: Requests Per Second",
+        "panelIndex": 1,
+        "displayName": "query1",
+        "query": "count:http.server.request.duration{$service,$env,$version}.as_count()"
+      },
+      {
+        "section": "Request Traffic & Health: Client → Router",
+        "panel": "Error Rate Percent",
+        "panelIndex": 2,
+        "displayName": "query1",
+        "query": "count:http.server.request.duration{$service,$env,$version,graphql.errors:true}.as_count()"
+      },
+      {
+        "section": "Request Traffic & Health: Client → Router",
+        "panel": "Error Rate Percent",
+        "panelIndex": 2,
+        "displayName": "query2",
+        "query": "count:http.server.request.duration{$service,$env,$version,!http.response.status_code:2*,!http.response.status_code:4*}.as_count()"
+      },
+      {
+        "section": "Request Traffic & Health: Client → Router",
+        "panel": "Error Rate Percent",
+        "panelIndex": 2,
+        "displayName": "query3",
+        "query": "count:http.server.request.duration{$service,$env,$version}.as_count()"
+      },
+      {
+        "section": "Request Performance & Latency: Client → Router",
+        "panel": "Request Duration Percentiles",
+        "panelIndex": 6,
+        "displayName": "query2",
+        "query": "p99:http.server.request.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Request Performance & Latency: Client → Router",
+        "panel": "Request Duration Percentiles",
+        "panelIndex": 6,
+        "displayName": "query3",
+        "query": "p95:http.server.request.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Request Performance & Latency: Client → Router",
+        "panel": "Request Duration Percentiles",
+        "panelIndex": 6,
+        "displayName": "query4",
+        "query": "p90:http.server.request.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Request Performance & Latency: Client → Router",
+        "panel": "Request Duration Percentiles",
+        "panelIndex": 6,
+        "displayName": "query5",
+        "query": "min:http.server.request.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Request Performance & Latency: Client → Router",
+        "panel": "Request Duration Percentiles",
+        "panelIndex": 6,
+        "displayName": "query6",
+        "query": "max:http.server.request.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Router Relative Overhead",
+        "panelIndex": 38,
+        "displayName": "query6",
+        "query": "avg:http.server.request.duration{$service,$env}"
+      },
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Router Relative Overhead",
+        "panelIndex": 38,
+        "displayName": "query3",
+        "query": "count:http.server.request.duration{$service,$env}.as_rate()"
+      }
+    ],
+    "unknown": [
+      {
+        "section": "Request Traffic & Health: Client → Router",
+        "panel": "GraphQL Errors by Operation",
+        "panelIndex": 3,
+        "displayName": "query1"
+      }
+    ],
+    "http.server.request.body.size": [
+      {
+        "section": " Request Characteristics: Client → Router",
+        "panel": "Request Body Size (p99 / Max)",
+        "panelIndex": 4,
+        "displayName": "query1",
+        "query": "max:http.server.request.body.size{$service,$env,$version}"
+      },
+      {
+        "section": " Request Characteristics: Client → Router",
+        "panel": "Request Body Size (p99 / Max)",
+        "panelIndex": 4,
+        "displayName": "query2",
+        "query": "p99:http.server.request.body.size{$service,$env,$version}"
+      }
+    ],
+    "http.client.request.duration": [
+      {
+        "section": "Request Traffic & Health: Router → Backend",
+        "panel": "Http Requests by Status Code",
+        "panelIndex": 7,
+        "displayName": "query1",
+        "query": "count:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {http.response.status_code,subgraph.name}.as_count()"
+      },
+      {
+        "section": "Request Traffic & Health: Router → Backend",
+        "panel": "Http Requests by Status Code",
+        "panelIndex": 7,
+        "displayName": "query2",
+        "query": "count:http.client.request.duration{$service,$env,$version,connector.source.name:*} by {http.response.status_code,subgraph.name,connector.source.name}.as_count()"
+      },
+      {
+        "section": "Request Traffic & Health: Router → Backend",
+        "panel": "Throughput (Requests per Second)",
+        "panelIndex": 8,
+        "displayName": "query1",
+        "query": "count:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {subgraph.name}.as_rate()"
+      },
+      {
+        "section": "Request Traffic & Health: Router → Backend",
+        "panel": "Throughput (Requests per Second)",
+        "panelIndex": 8,
+        "displayName": "query2",
+        "query": "count:http.client.request.duration{$service,$env,$version,connector.source.name:*} by {subgraph.name,connector.source.name}.as_rate()"
+      },
+      {
+        "section": "Request Traffic & Health: Router → Backend",
+        "panel": "Non-2xx Responses",
+        "panelIndex": 9,
+        "displayName": "query1",
+        "query": "count:http.client.request.duration{subgraph.name:*,!http.response.status_code:2*,$service,$env,$version,!connector.source.name:*} by {subgraph.name,http.response.status_code}.as_count()"
+      },
+      {
+        "section": "Request Traffic & Health: Router → Backend",
+        "panel": "Non-2xx Responses",
+        "panelIndex": 9,
+        "displayName": "query2",
+        "query": "count:http.client.request.duration{subgraph.name:*,!http.response.status_code:2*,$service,$env,$version,connector.source.name:*} by {subgraph.name,http.response.status_code,connector.source.name}.as_count()"
+      },
+      {
+        "section": "Request Performance & Latency: Router → Backend",
+        "panel": "P95 Latency by Subgraph",
+        "panelIndex": 11,
+        "displayName": "query1",
+        "query": "p95:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {subgraph.name}"
+      },
+      {
+        "section": "Request Performance & Latency: Router → Backend",
+        "panel": "P95 Latency by Subgraph",
+        "panelIndex": 11,
+        "displayName": "query2",
+        "query": "p95:http.client.request.duration{$service,$env,$version,connector.source.name:*} by {subgraph.name,connector.source.name}"
+      },
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Router Relative Overhead",
+        "panelIndex": 38,
+        "displayName": "query4",
+        "query": "avg:http.client.request.duration{$service,$env}"
+      }
+    ],
+    "http.client.response.body.size": [
+      {
+        "section": " Request Characteristics: Router → Backend",
+        "panel": "Response Body Size",
+        "panelIndex": 10,
+        "displayName": "query4",
+        "query": "avg:http.client.response.body.size{$service,$env,$version,!connector.source.name:*} by {subgraph.name}.as_count()"
+      },
+      {
+        "section": " Request Characteristics: Router → Backend",
+        "panel": "Response Body Size",
+        "panelIndex": 10,
+        "displayName": "query1",
+        "query": "avg:http.client.response.body.size{$service,$env,$version,connector.source.name:*} by {subgraph.name,connector.source.name}.as_count()"
+      }
+    ],
+    "sum": [
+      {
+        "section": "Request Performance & Latency: Router → Backend",
+        "panel": "GraphQL Errors by Subgraph",
+        "panelIndex": 12,
+        "displayName": "query1",
+        "query": "sum:http.client.request.duration{$service,$env,$version,!connector.source.name:*, graphql.errors:true} by {subgraph.name}.as_count()"
+      },
+      {
+        "section": "Cache",
+        "panel": "Record Counts by Type",
+        "panelIndex": 18,
+        "displayName": "query1",
+        "query": "sum:apollo.router.cache.size{$service,$env,$version} by {kind,version}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Queued Jobs",
+        "panelIndex": 23,
+        "displayName": "query1",
+        "query": "sum:apollo.router.compute_jobs.queued{$service,$env,$version}"
+      },
+      {
+        "section": "Coprocessors",
+        "panel": "Request Count",
+        "panelIndex": 34,
+        "displayName": "query0",
+        "query": "sum:apollo.router.operations.coprocessor{$service,$env,$version} by {coprocessor.stage}.as_count()"
+      },
+      {
+        "section": "Coprocessors",
+        "panel": "Success Rate",
+        "panelIndex": 35,
+        "displayName": "query0",
+        "query": "sum:apollo.router.operations.coprocessor{$service,$env,$version,coprocessor.succeeded:true} by {coprocessor.stage}.as_count()"
+      },
+      {
+        "section": "Coprocessors",
+        "panel": "Success Rate",
+        "panelIndex": 35,
+        "displayName": "query1",
+        "query": "sum:apollo.router.operations.coprocessor{$service,$env,$version} by {coprocessor.stage}.as_count()"
+      },
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Uplink and Licensing",
+        "panelIndex": 36,
+        "displayName": "query1",
+        "query": "sum:apollo.router.lifecycle.license{$service,$env,$version,license.state:licensed}"
+      },
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Uplink and Licensing",
+        "panelIndex": 36,
+        "displayName": "query2",
+        "query": "sum:apollo.router.lifecycle.license{$service,$env,$version}"
+      }
+    ],
+    "apollo.router.compute_jobs.execution.duration": [
+      {
+        "section": "Query Planning",
+        "panel": "Duration and Wait Time",
+        "panelIndex": 14,
+        "displayName": "query2",
+        "query": "avg:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}"
+      },
+      {
+        "section": "Query Planning",
+        "panel": "Duration and Wait Time",
+        "panelIndex": 14,
+        "displayName": "query1",
+        "query": "p95:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}"
+      },
+      {
+        "section": "Query Planning",
+        "panel": "Duration and Wait Time",
+        "panelIndex": 14,
+        "displayName": "query3",
+        "query": "max:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Planning Duration Percentiles and Wait Time",
+        "panelIndex": 21,
+        "displayName": "query1",
+        "query": "p50:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Planning Duration Percentiles and Wait Time",
+        "panelIndex": 21,
+        "displayName": "query3",
+        "query": "p95:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Planning Duration Percentiles and Wait Time",
+        "panelIndex": 21,
+        "displayName": "query2",
+        "query": "p99:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Parsing Duration Percentiles and Wait Time",
+        "panelIndex": 22,
+        "displayName": "query1",
+        "query": "p50:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_parsing}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Parsing Duration Percentiles and Wait Time",
+        "panelIndex": 22,
+        "displayName": "query3",
+        "query": "p95:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_parsing}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Parsing Duration Percentiles and Wait Time",
+        "panelIndex": 22,
+        "displayName": "query2",
+        "query": "p99:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_parsing}"
+      }
+    ],
+    "apollo.router.compute_jobs.queue.wait.duration": [
+      {
+        "section": "Query Planning",
+        "panel": "Duration and Wait Time",
+        "panelIndex": 14,
+        "displayName": "query4",
+        "query": "avg:apollo.router.compute_jobs.queue.wait.duration{$service,$env,$version,job.type:query_planning}"
+      },
+      {
+        "section": "Query Planning",
+        "panel": "Duration and Wait Time",
+        "panelIndex": 14,
+        "displayName": "query5",
+        "query": "max:apollo.router.compute_jobs.queue.wait.duration{$service,$env,$version,job.type:query_planning}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Planning Duration Percentiles and Wait Time",
+        "panelIndex": 21,
+        "displayName": "query4",
+        "query": "avg:apollo.router.compute_jobs.queue.wait.duration{$service,$env,$version,job.type:query_planning}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Parsing Duration Percentiles and Wait Time",
+        "panelIndex": 22,
+        "displayName": "query4",
+        "query": "avg:apollo.router.compute_jobs.queue.wait.duration{$service,$env,$version,job.type:query_parsing}"
+      }
+    ],
+    "apollo.router.schema.load.duration": [
+      {
+        "section": "Query Planning",
+        "panel": "Duration and Wait Time",
+        "panelIndex": 14,
+        "displayName": "query1",
+        "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Query Planning",
+        "panel": "Evaluated Plans",
+        "panelIndex": 15,
+        "displayName": "query1",
+        "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Cache",
+        "panel": "Misses vs. Record Count",
+        "panelIndex": 16,
+        "displayName": "query1",
+        "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Cache",
+        "panel": "Record Counts by Instance",
+        "panelIndex": 17,
+        "displayName": "query1",
+        "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Planning Duration Percentiles and Wait Time",
+        "panelIndex": 21,
+        "displayName": "query1",
+        "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Parsing Duration Percentiles and Wait Time",
+        "panelIndex": 22,
+        "displayName": "query1",
+        "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Queued Jobs",
+        "panelIndex": 23,
+        "displayName": "query1",
+        "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Job Counts by Outcome",
+        "panelIndex": 24,
+        "displayName": "query1",
+        "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
+      }
+    ],
+    "apollo.router.query_planning.warmup.duration": [
+      {
+        "section": "Query Planning",
+        "panel": "Duration and Wait Time",
+        "panelIndex": 14,
+        "displayName": "query1",
+        "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Query Planning",
+        "panel": "Evaluated Plans",
+        "panelIndex": 15,
+        "displayName": "query1",
+        "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Cache",
+        "panel": "Misses vs. Record Count",
+        "panelIndex": 16,
+        "displayName": "query1",
+        "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Cache",
+        "panel": "Record Counts by Instance",
+        "panelIndex": 17,
+        "displayName": "query1",
+        "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Planning Duration Percentiles and Wait Time",
+        "panelIndex": 21,
+        "displayName": "query1",
+        "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Parsing Duration Percentiles and Wait Time",
+        "panelIndex": 22,
+        "displayName": "query1",
+        "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}"
+      }
+    ],
+    "apollo.router.query_planning.plan.evaluated_plans": [
+      {
+        "section": "Query Planning",
+        "panel": "Evaluated Plans",
+        "panelIndex": 15,
+        "displayName": "query2",
+        "query": "avg:apollo.router.query_planning.plan.evaluated_plans{$service,$env, $version}"
+      },
+      {
+        "section": "Query Planning",
+        "panel": "Evaluated Plans",
+        "panelIndex": 15,
+        "displayName": "query1",
+        "query": "max:apollo.router.query_planning.plan.evaluated_plans{$service,$env, $version}"
+      }
+    ],
+    "apollo.router.cache.miss.time": [
+      {
+        "section": "Cache",
+        "panel": "Misses vs. Record Count",
+        "panelIndex": 16,
+        "displayName": "query1",
+        "query": "count:apollo.router.cache.miss.time{$service,$env,$version}"
+      },
+      {
+        "section": "Cache",
+        "panel": "Misses vs. Record Count",
+        "panelIndex": 16,
+        "displayName": "query1",
+        "query": "count:apollo.router.cache.miss.time{$service,$env,$version}"
+      },
+      {
+        "section": "Cache",
+        "panel": "Misses by Type",
+        "panelIndex": 19,
+        "displayName": "query1",
+        "query": "count:apollo.router.cache.miss.time{$service,$env,$version} by {kind,version}"
+      },
+      {
+        "section": "Cache",
+        "panel": "Hit % by Instance",
+        "panelIndex": 20,
+        "displayName": "query1",
+        "query": "count:apollo.router.cache.miss.time{$service,$env,$version} by {host,pod_name,container_id}"
+      }
+    ],
+    "apollo.router.cache.size": [
+      {
+        "section": "Cache",
+        "panel": "Misses vs. Record Count",
+        "panelIndex": 16,
+        "displayName": "query0",
+        "query": "avg:apollo.router.cache.size{$service,$env,$version}"
+      },
+      {
+        "section": "Cache",
+        "panel": "Record Counts by Instance",
+        "panelIndex": 17,
+        "displayName": "query1",
+        "query": "avg:apollo.router.cache.size{$service,$env,$version} by {host,pod_name,container_id}"
+      }
+    ],
+    "apollo.router.cache.hit.time": [
+      {
+        "section": "Cache",
+        "panel": "Misses vs. Record Count",
+        "panelIndex": 16,
+        "displayName": "query0",
+        "query": "count:apollo.router.cache.hit.time{$service,$env,$version}"
+      },
+      {
+        "section": "Cache",
+        "panel": "Hit % by Instance",
+        "panelIndex": 20,
+        "displayName": "query0",
+        "query": "count:apollo.router.cache.hit.time{$service,$env,$version} by {host,pod_name,container_id}"
+      }
+    ],
+    "apollo.router.compute_jobs.duration": [
+      {
+        "section": "Compute Jobs",
+        "panel": "Job Counts by Outcome",
+        "panelIndex": 24,
+        "displayName": "query1",
+        "query": "count:apollo.router.compute_jobs.duration{$service,$env,$version} by {job.outcome}.as_count()"
+      },
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Router Relative Overhead",
+        "panelIndex": 38,
+        "displayName": "query2",
+        "query": "avg:apollo.router.compute_jobs.duration{$service,$env}"
+      }
+    ],
+    "kubernetes.cpu.usage.total": [
+      {
+        "section": "Container/Host",
+        "panel": "Kubernetes CPU Usage",
+        "panelIndex": 25,
+        "displayName": "query1",
+        "query": "avg:kubernetes.cpu.usage.total{$service,$env,$version}"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Kubernetes CPU Usage",
+        "panelIndex": 25,
+        "displayName": "query2",
+        "query": "max:kubernetes.cpu.usage.total{$service,$env,$version}"
+      }
+    ],
+    "kubernetes.cpu.limits": [
+      {
+        "section": "Container/Host",
+        "panel": "Kubernetes CPU Usage",
+        "panelIndex": 25,
+        "displayName": "query0",
+        "query": "max:kubernetes.cpu.limits{$service,$env,$version}"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Kubernetes CPU Usage",
+        "panelIndex": 25,
+        "displayName": "query1",
+        "query": "min:kubernetes.cpu.limits{$service,$env,$version}"
+      }
+    ],
+    "system.cpu.stolen": [
+      {
+        "section": "Container/Host",
+        "panel": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 26,
+        "displayName": "query2",
+        "query": "avg:system.cpu.stolen{$service,$env,$version}"
+      }
+    ],
+    "system.cpu.iowait": [
+      {
+        "section": "Container/Host",
+        "panel": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 26,
+        "displayName": "query1",
+        "query": "avg:system.cpu.iowait{$service,$env,$version}"
+      }
+    ],
+    "system.cpu.system": [
+      {
+        "section": "Container/Host",
+        "panel": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 26,
+        "displayName": "query3",
+        "query": "avg:system.cpu.system{$service,$env,$version}"
+      }
+    ],
+    "system.cpu.user": [
+      {
+        "section": "Container/Host",
+        "panel": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 26,
+        "displayName": "query4",
+        "query": "avg:system.cpu.user{$service,$env,$version}"
+      }
+    ],
+    "system.cpu.idle": [
+      {
+        "section": "Container/Host",
+        "panel": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 26,
+        "displayName": "query5",
+        "query": "avg:system.cpu.idle{$service,$env,$version}"
+      }
+    ],
+    "docker.cpu.usage": [
+      {
+        "section": "Container/Host",
+        "panel": "Docker CPU Usage (Datadog Docker Agent)",
+        "panelIndex": 27,
+        "displayName": "query3",
+        "query": "avg:docker.cpu.usage{$service,$env,$version}"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Docker CPU Usage (Datadog Docker Agent)",
+        "panelIndex": 27,
+        "displayName": "query1",
+        "query": "max:docker.cpu.usage{$service,$env,$version}"
+      }
+    ],
+    "docker.cpu.limit": [
+      {
+        "section": "Container/Host",
+        "panel": "Docker CPU Usage (Datadog Docker Agent)",
+        "panelIndex": 27,
+        "displayName": "query0",
+        "query": "avg:docker.cpu.limit{$service,$env,$version}"
+      }
+    ],
+    "container.cpu.usage.total": [
+      {
+        "section": "Container/Host",
+        "panel": "Docker CPU Usage (OTEL Collector  - Docker/stats)",
+        "panelIndex": 28,
+        "displayName": "query1",
+        "query": "avg:container.cpu.usage.total{$service,$env,$version}"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Docker CPU Usage (OTEL Collector  - Docker/stats)",
+        "panelIndex": 28,
+        "displayName": "query2",
+        "query": "max:container.cpu.usage.total{$service,$env,$version}"
+      }
+    ],
+    "container.cpu.limit": [
+      {
+        "section": "Container/Host",
+        "panel": "Docker CPU Usage (OTEL Collector  - Docker/stats)",
+        "panelIndex": 28,
+        "displayName": "query0",
+        "query": "min:container.cpu.limit{$service,$env,$version}"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Docker CPU Usage (OTEL Collector  - Docker/stats)",
+        "panelIndex": 28,
+        "displayName": "query1",
+        "query": "max:container.cpu.limit{$service,$env,$version}"
+      }
+    ],
+    "kubernetes.memory.usage": [
+      {
+        "section": "Container/Host",
+        "panel": "Kubernetes Memory Usage",
+        "panelIndex": 29,
+        "displayName": "query1",
+        "query": "avg:kubernetes.memory.usage{$service,$env,$version}"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Kubernetes Memory Usage",
+        "panelIndex": 29,
+        "displayName": "query2",
+        "query": "max:kubernetes.memory.usage{$service,$env,$version}"
+      }
+    ],
+    "kubernetes.memory.limits": [
+      {
+        "section": "Container/Host",
+        "panel": "Kubernetes Memory Usage",
+        "panelIndex": 29,
+        "displayName": "query0",
+        "query": "min:kubernetes.memory.limits{$service,$env,$version}"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Kubernetes Memory Usage",
+        "panelIndex": 29,
+        "displayName": "query1",
+        "query": "max:kubernetes.memory.limits{$service,$env,$version}"
+      }
+    ],
+    "system.mem.used": [
+      {
+        "section": "Container/Host",
+        "panel": "Host Memory Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 30,
+        "displayName": "query1",
+        "query": "avg:system.mem.used{$service,$env,$version}"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Host Memory Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 30,
+        "displayName": "query2",
+        "query": "max:system.mem.used{$service,$env,$version}"
+      }
+    ],
+    "system.mem.total": [
+      {
+        "section": "Container/Host",
+        "panel": "Host Memory Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 30,
+        "displayName": "query0",
+        "query": "min:system.mem.total{$service,$env,$version}"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Host Memory Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 30,
+        "displayName": "query1",
+        "query": "max:system.mem.total{$service,$env,$version}"
+      }
+    ],
+    "docker.mem.in_use": [
+      {
+        "section": "Container/Host",
+        "panel": "Docker Memory Usage (Datadog Docker Agent)",
+        "panelIndex": 31,
+        "displayName": "query1",
+        "query": "avg:docker.mem.in_use{$service,$env,$version}"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Docker Memory Usage (Datadog Docker Agent)",
+        "panelIndex": 31,
+        "displayName": "query2",
+        "query": "max:docker.mem.in_use{$service,$env,$version}"
+      }
+    ],
+    "docker.mem.limit": [
+      {
+        "section": "Container/Host",
+        "panel": "Docker Memory Usage (Datadog Docker Agent)",
+        "panelIndex": 31,
+        "displayName": "query0",
+        "query": "avg:docker.mem.limit{$service,$env,$version}"
+      }
+    ],
+    "container.memory.usage.total": [
+      {
+        "section": "Container/Host",
+        "panel": "Docker Memory Usage (OTEL Collector  - Docker/stats)",
+        "panelIndex": 32,
+        "displayName": "query1",
+        "query": "avg:container.memory.usage.total{$service,$env,$version}"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Docker Memory Usage (OTEL Collector  - Docker/stats)",
+        "panelIndex": 32,
+        "displayName": "query2",
+        "query": "max:container.memory.usage.total{$service,$env,$version}"
+      }
+    ],
+    "container.memory.usage.limit": [
+      {
+        "section": "Container/Host",
+        "panel": "Docker Memory Usage (OTEL Collector  - Docker/stats)",
+        "panelIndex": 32,
+        "displayName": "query0",
+        "query": "avg:container.memory.usage.limit{$service,$env,$version}"
+      }
+    ],
+    "apollo.router.operations.coprocessor.duration": [
+      {
+        "section": "Coprocessors",
+        "panel": "Request Duration",
+        "panelIndex": 33,
+        "displayName": "query1",
+        "query": "avg:apollo.router.operations.coprocessor.duration{$service,$env,$version} by {coprocessor.stage}"
+      },
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Router Relative Overhead",
+        "panelIndex": 38,
+        "displayName": "query5",
+        "query": "avg:apollo.router.operations.coprocessor.duration{$service,$env}"
+      }
+    ],
+    "apollo.router.uplink.fetch.duration.seconds": [
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Uplink and Licensing",
+        "panelIndex": 36,
+        "displayName": "query1",
+        "query": "avg:apollo.router.uplink.fetch.duration.seconds{$service,$env,$version}"
+      }
+    ],
+    "apollo.router.open_connections": [
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Open Connections by Schema and Launch ID",
+        "panelIndex": 37,
+        "displayName": "query1",
+        "query": "avg:apollo.router.open_connections{$service,$env,$version} by {schema.id,launch.id}"
+      }
+    ]
+  }
+}

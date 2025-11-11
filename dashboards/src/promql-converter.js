@@ -27,7 +27,107 @@
  */
 
 const { getMetricType } = require('./metric-type');
-const { extractGroupBy } = require('./attribute-mapper');
+const { extractGroupBy, mapAttributeName } = require('./attribute-mapper');
+
+/**
+ * Extract filter conditions from Datadog query selector
+ * Datadog syntax: metric{label1:value1, label2:value2, !label3:value3}
+ * Returns: array of filter objects with key, value, and negate flag
+ *
+ * Examples:
+ *   $service → { key: 'service', value: '$service', negate: false }  (variable reference)
+ *   graphql.errors:true → { key: 'graphql.errors', value: 'true', negate: false }
+ *   !http.response.status_code:2* → { key: 'http.response.status_code', value: '2*', negate: true }
+ */
+function extractFilters(datadogQuery) {
+  // Match the selector part: {label1:value1, label2:value2}
+  const selectorMatch = datadogQuery.match(/\{([^}]+)\}/);
+  if (!selectorMatch) {
+    return [];
+  }
+
+  const selectorContent = selectorMatch[1];
+  const filters = [];
+
+  // Split by comma, but be careful of commas inside variable references
+  // For now, simple split - can be improved if needed
+  const parts = selectorContent.split(',').map(p => p.trim());
+
+  for (const part of parts) {
+    if (!part) continue;
+
+    // Check for negation
+    let negate = false;
+    let filterPart = part;
+    if (part.startsWith('!')) {
+      negate = true;
+      filterPart = part.substring(1);
+    }
+
+    // Check if it's a variable reference (starts with $) - skip these
+    if (filterPart.startsWith('$')) {
+      continue;
+    }
+
+    // Parse label:value format
+    const colonIndex = filterPart.indexOf(':');
+    if (colonIndex === -1) {
+      // No colon, might be a wildcard like label:* which means "group by"
+      // Skip these as they're handled by extractGroupBy
+      continue;
+    }
+
+    const key = filterPart.substring(0, colonIndex);
+    const value = filterPart.substring(colonIndex + 1);
+
+    filters.push({
+      key,
+      value,
+      negate
+    });
+  }
+
+  return filters;
+}
+
+/**
+ * Convert Datadog filters to PromQL label matchers
+ * Handles wildcards and boolean values
+ *
+ * Examples:
+ *   { key: 'graphql.errors', value: 'true' } → graphql_errors="true"
+ *   { key: 'http.response.status_code', value: '2*' } → http_response_status_code=~"2.*"
+ *   { key: 'service', value: 'api', negate: true } → service!="api"
+ */
+function filtersToPromQL(filters, attributeMappings) {
+  if (!filters || filters.length === 0) {
+    return '';
+  }
+
+  const matchers = filters.map(filter => {
+    const mappedKey = mapAttributeName(filter.key, attributeMappings);
+
+    // Handle wildcard patterns
+    let matcher;
+    if (filter.value.includes('*') || filter.value.includes('?')) {
+      // Convert Datadog wildcard to regex
+      // 2* → 2.* (regex pattern)
+      const regexValue = filter.value
+        .replace(/\*/g, '.*')
+        .replace(/\?/g, '.');
+      const op = filter.negate ? '!~' : '=~';
+      matcher = `${mappedKey}${op}"${regexValue}"`;
+    } else {
+      // Exact match
+      const op = filter.negate ? '!=' : '=';
+      matcher = `${mappedKey}${op}"${filter.value}"`;
+    }
+
+    return matcher;
+  });
+
+  return matchers.join(', ');
+}
 
 /**
  * Convert Datadog metric query to PromQL for Dash0
@@ -57,11 +157,19 @@ function convertToPromQL(datadogQuery, widgetType, metricTypeRules, attributeMap
   // Also map label names from Datadog to Dash0 format
   const groupBy = extractGroupBy(datadogQuery, attributeMappings);
 
+  // STEP 3.5: Extract filter conditions (if present)
+  // Datadog: metric{label1:value1, !label2:value2, label3:wildcard*}
+  // PromQL: {label1="value1", label2!="value2", label3=~"wildcard.*"}
+  const filters = extractFilters(datadogQuery);
+  const filterMatchers = filtersToPromQL(filters, attributeMappings);
+
   // STEP 4: Build metric selector for Dash0
   // Dash0 requires identifying metrics by name and type
   // This helps distinguish between similar metrics that might be different types
-  // Format: {otel_metric_name="...", otel_metric_type="..."}
-  const baseSelector = `{otel_metric_name = "${cleanMetricName}", otel_metric_type = "${metricType}"}`;
+  // Format: {otel_metric_name="...", otel_metric_type="...", filter1="value1", filter2="value2"}
+  const baseSelector = filterMatchers
+    ? `{otel_metric_name = "${cleanMetricName}", otel_metric_type = "${metricType}", ${filterMatchers}}`
+    : `{otel_metric_name = "${cleanMetricName}", otel_metric_type = "${metricType}"}`;
 
   // STEP 5: Build PromQL expression
   // This is where the metric type and aggregation function determine the PromQL syntax

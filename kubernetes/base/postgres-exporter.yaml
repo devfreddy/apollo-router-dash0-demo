@@ -1,0 +1,262 @@
+---
+# PostgreSQL Prometheus Exporter
+# Exposes PostgreSQL metrics as Prometheus endpoints for Dash0 to scrape
+# Includes custom queries for pg_stat_statements to provide query-level analytics
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-exporter-queries
+  namespace: apollo-dash0-demo
+  labels:
+    app: postgres-exporter
+data:
+  # Custom queries to expose pg_stat_statements data
+  # These provide detailed per-query metrics similar to OTel PostgreSQL receiver
+  queries.yaml: |
+    pg_stat_statements:
+      query: |
+        SELECT
+          current_database() as datname,
+          schemaname,
+          funcname,
+          calls,
+          total_time,
+          mean_time,
+          min_time,
+          max_time,
+          rows
+        FROM pg_stat_user_functions
+      metrics:
+        - datname:
+            usage: "LABEL"
+            description: "Database name"
+        - schemaname:
+            usage: "LABEL"
+            description: "Schema name"
+        - funcname:
+            usage: "LABEL"
+            description: "Function name"
+        - calls:
+            usage: "COUNTER"
+            description: "Number of times this function has been called"
+        - total_time:
+            usage: "GAUGE"
+            description: "Total time spent in this function (milliseconds)"
+        - mean_time:
+            usage: "GAUGE"
+            description: "Average time spent in this function (milliseconds)"
+        - min_time:
+            usage: "GAUGE"
+            description: "Minimum time spent in this function (milliseconds)"
+        - max_time:
+            usage: "GAUGE"
+            description: "Maximum time spent in this function (milliseconds)"
+        - rows:
+            usage: "GAUGE"
+            description: "Total number of rows returned by this function"
+
+    # Query execution statistics from pg_stat_statements
+    pg_stat_statements_timing:
+      query: |
+        SELECT
+          current_database() as datname,
+          calls,
+          total_time,
+          mean_time,
+          min_time,
+          max_time,
+          stddev_time,
+          rows
+        FROM pg_stat_statements
+        WHERE query NOT LIKE '%pg_stat_statements%'
+        ORDER BY total_time DESC
+      metrics:
+        - datname:
+            usage: "LABEL"
+            description: "Database name"
+        - calls:
+            usage: "COUNTER"
+            description: "Total times query has been executed"
+        - total_time:
+            usage: "GAUGE"
+            description: "Total time spent in query (milliseconds)"
+        - mean_time:
+            usage: "GAUGE"
+            description: "Mean time per query execution (milliseconds)"
+        - min_time:
+            usage: "GAUGE"
+            description: "Minimum query execution time (milliseconds)"
+        - max_time:
+            usage: "GAUGE"
+            description: "Maximum query execution time (milliseconds)"
+        - stddev_time:
+            usage: "GAUGE"
+            description: "Standard deviation of query execution time"
+        - rows:
+            usage: "GAUGE"
+            description: "Total rows returned by query"
+
+---
+# Secret for PostgreSQL monitoring user credentials
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-exporter-credentials
+  namespace: apollo-dash0-demo
+  labels:
+    app: postgres-exporter
+type: Opaque
+stringData:
+  username: "dash0_monitor"
+  password: "dash0_secure_monitor_password"
+
+---
+# Deployment for PostgreSQL Prometheus Exporter
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-exporter
+  namespace: apollo-dash0-demo
+  labels:
+    app: postgres-exporter
+    component: observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-exporter
+  template:
+    metadata:
+      labels:
+        app: postgres-exporter
+        component: observability
+      annotations:
+        # Prometheus scraping configuration for Dash0 operator
+        # The Dash0 operator will automatically scrape this pod
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9187"
+        prometheus.io/path: "/metrics"
+        # Use slow scraping interval for PostgreSQL (5 minutes)
+        prometheus.io/scrape-slow: "true"
+    spec:
+      serviceAccountName: postgres-exporter
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        fsGroup: 999
+
+      containers:
+      - name: postgres-exporter
+        image: prometheuscommunity/postgres-exporter:v0.15.0
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - name: metrics
+          containerPort: 9187
+          protocol: TCP
+
+        env:
+        # PostgreSQL connection via environment variable
+        - name: DATA_SOURCE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: postgres-exporter-credentials
+              key: username
+          # Format: postgres://user:password@host:port/database?sslmode=disable
+          # This will be constructed as: postgresql://dash0_monitor:password@inventory-db-rw:5432/inventory_db?sslmode=disable
+
+        # PostgreSQL connection details
+        - name: PGUSER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-exporter-credentials
+              key: username
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-exporter-credentials
+              key: password
+        - name: PGHOST
+          value: "inventory-db-rw.apollo-dash0-demo.svc.cluster.local"
+        - name: PGPORT
+          value: "5432"
+        - name: PGDATABASE
+          value: "inventory_db"
+
+        # Exporter configuration
+        - name: PG_EXPORTER_EXCLUDE_DATABASES
+          value: "postgres,template0,template1"
+
+        volumeMounts:
+        - name: queries
+          mountPath: /etc/postgres_exporter
+          readOnly: true
+
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+
+        # Health checks
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 9187
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: 9187
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 2
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
+
+      volumes:
+      - name: queries
+        configMap:
+          name: postgres-exporter-queries
+
+---
+# Service to expose the exporter metrics endpoint
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-exporter
+  namespace: apollo-dash0-demo
+  labels:
+    app: postgres-exporter
+spec:
+  type: ClusterIP
+  selector:
+    app: postgres-exporter
+  ports:
+  - name: metrics
+    port: 9187
+    targetPort: metrics
+    protocol: TCP
+
+---
+# ServiceAccount for the exporter
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: postgres-exporter
+  namespace: apollo-dash0-demo
+  labels:
+    app: postgres-exporter

@@ -152,6 +152,11 @@ The project is organized into **two clear deployment paths** - choose the one th
 - Complete index: [docs/INDEX.md](./docs/INDEX.md)
 - Implementation details: [docs/IMPLEMENTATION_DETAILS.md](./docs/IMPLEMENTATION_DETAILS.md)
 
+**Database Observability**
+- **PostgreSQL Metrics** (New!): [docs/POSTGRESQL_METRICS_QUICKSTART.md](./docs/POSTGRESQL_METRICS_QUICKSTART.md) - Get database metrics flowing in 5 minutes
+- PostgreSQL detailed guide: [docs/POSTGRESQL_METRICS.md](./docs/POSTGRESQL_METRICS.md) - Comprehensive setup and configuration
+- PostgreSQL setup: [docs/POSTGRES_SETUP.md](./docs/POSTGRES_SETUP.md) - Database initialization guide
+
 ## Getting Started
 
 ### Prerequisites

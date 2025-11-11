@@ -1,0 +1,104 @@
+---
+# CoreDNS Monitoring Configuration
+# Enables Prometheus metrics exposure from k3d's CoreDNS instance
+# Metrics are scraped by the Dash0 operator and sent to Dash0
+
+# Note: k3d's CoreDNS runs in the kube-system namespace
+# We create a service to expose its metrics on port 9153
+# k3d comes with the Prometheus plugin pre-enabled on port 9153
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: coredns-metrics
+  namespace: kube-system
+  labels:
+    app: coredns
+    component: observability
+spec:
+  type: ClusterIP
+  selector:
+    k8s-app: kube-dns
+  ports:
+  - name: metrics
+    port: 9153
+    targetPort: 9153
+    protocol: TCP
+
+# Note: ServiceMonitor is optional and only works if Prometheus Operator is installed
+# For k3d with Dash0 operator, the Service-based scraping is sufficient
+# Uncomment below only if you have prometheus-operator installed
+#
+# ---
+# apiVersion: monitoring.coreos.com/v1
+# kind: ServiceMonitor
+# metadata:
+#   name: coredns-monitor
+#   namespace: kube-system
+#   labels:
+#     app: coredns
+#     component: observability
+# spec:
+#   selector:
+#     matchLabels:
+#       app: coredns
+#       component: observability
+#   endpoints:
+#   - port: metrics
+#     interval: 30s
+#     path: /metrics
+
+---
+# ConfigMap with CoreDNS configuration patching instructions
+# This documents how to enable Prometheus metrics in k3d's CoreDNS
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-metrics-config
+  namespace: kube-system
+  labels:
+    app: coredns
+data:
+  # CoreDNS Corefile with Prometheus plugin enabled
+  # k3d comes with Prometheus plugin pre-enabled on port 9153
+  # This exposes metrics at http://coredns:9153/metrics
+  Corefile: |
+    # k3d's default CoreDNS configuration includes:
+    # prometheus :9153
+    #
+    # This exposes metrics at http://coredns:9153/metrics
+    #
+    # Important CoreDNS metrics:
+    # - coredns_dns_requests_total: Total DNS requests
+    # - coredns_dns_responses_total: Total DNS responses
+    # - coredns_dns_request_duration_seconds: DNS query latency
+    # - coredns_cache_hits_total: DNS cache hits
+    # - coredns_cache_misses_total: DNS cache misses
+    # - coredns_panic_count_total: Panic count (errors)
+
+  metrics-reference: |
+    Important CoreDNS Metrics for Dash0:
+
+    Query Performance:
+    - coredns_dns_requests_total{zone,type}
+      Count of DNS requests by zone and type (A, AAAA, MX, etc.)
+
+    - coredns_dns_request_duration_seconds{zone}
+      DNS query latency distribution
+
+    - coredns_dns_responses_total{zone,rcode}
+      Count of DNS responses by response code (NOERROR, NXDOMAIN, etc.)
+
+    Cache Performance:
+    - coredns_cache_hits_total{type}
+      DNS cache hits by record type
+
+    - coredns_cache_misses_total{type}
+      DNS cache misses by record type
+
+    Error Tracking:
+    - coredns_panic_count_total
+      Error/panic count
+
+    - coredns_dns_request_count_total{rcode}
+      Request counts grouped by DNS response code

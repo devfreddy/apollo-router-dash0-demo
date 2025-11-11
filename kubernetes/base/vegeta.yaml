@@ -160,6 +160,27 @@ data:
     {
         "query": "query Reviews9 { me { name username reviews { product { name } body author { name username } } } }"
     }
+  # Bad queries to generate error events and logs
+  bad-invalid-field.json: |
+    {
+        "query": "query BadInvalidField { me { name username invalidField } }"
+    }
+  bad-syntax-error.json: |
+    {
+        "query": "query BadSyntax { me name username }"
+    }
+  bad-missing-field.json: |
+    {
+        "query": "query BadMissing { nonExistentQuery { name } }"
+    }
+  bad-null-argument.json: |
+    {
+        "query": "query BadArgument { topProducts(first: null) { name price } }"
+    }
+  bad-deeply-nested.json: |
+    {
+        "query": "query BadDeeplyNested { me { reviews { product { reviews { product { reviews { product { reviews { product { reviews { product { name } } } } } } } } } } } }"
+    }
   targets.http: |
     POST http://apollo-router:4000/
     Accept: application/json
@@ -355,6 +376,32 @@ data:
     Accept: application/json
     Content-type: application/json
     @/etc/vegeta/recommended9.json
+
+    # Bad queries to trigger error event logs (occasional errors for observability testing)
+    POST http://apollo-router:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/bad-invalid-field.json
+
+    POST http://apollo-router:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/bad-syntax-error.json
+
+    POST http://apollo-router:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/bad-missing-field.json
+
+    POST http://apollo-router:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/bad-null-argument.json
+
+    POST http://apollo-router:4000/
+    Accept: application/json
+    Content-type: application/json
+    @/etc/vegeta/bad-deeply-nested.json
 
 ---
 apiVersion: apps/v1

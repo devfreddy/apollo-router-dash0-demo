@@ -3,11 +3,23 @@
   "version": "1.0.0",
   "description": "Dashboard management tools for Apollo Router Dash0 and Datadog dashboards",
   "scripts": {
+    "convert": "node src/convert.js",
+    "convert:no-docs": "node src/convert.js --skip-markdown",
+    "convert:all": "npm run convert && npm run convert:no-docs",
+    "deploy": "bash ./deploy.sh",
+    "deploy:no-docs": "bash ./deploy.sh apollo-router-no-docs.json",
+    "deploy:both": "bash ./deploy.sh both",
+    "convert:deploy": "npm run convert && npm run deploy",
+    "convert:deploy:all": "npm run convert:all && npm run deploy:both",
     "generate:references": "node src/dashboard-query-reference.js",
     "watch:dashboards": "node src/watch-dashboards.js",
     "lookup": "node src/dashboard-query-lookup.js",
     "lookup:help": "node src/dashboard-query-lookup.js help",
-    "validate": "percli lint -f dash0/apollo-router/apollo-router.json"
+    "validate": "percli lint -f dash0/apollo-router/apollo-router.json",
+    "validate:all": "percli lint -f dash0/apollo-router/apollo-router.json && percli lint -f dash0/apollo-router/apollo-router-no-docs.json",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [
     "apollo",
@@ -18,5 +30,8 @@
     "datadog"
   ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }

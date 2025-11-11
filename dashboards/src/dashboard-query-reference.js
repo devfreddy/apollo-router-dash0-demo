@@ -33,18 +33,20 @@ function extractDash0Queries() {
         queries: [],
       };
 
-      // Extract all queries from this panel
-      panelData.spec.queries.forEach((queryWrapper, queryIndex) => {
-        const query = queryWrapper.spec.plugin.spec.query;
-        const displayName = queryWrapper.spec.display.name;
+      // Extract all queries from this panel (skip if no queries, e.g., markdown panels)
+      if (panelData.spec.queries) {
+        panelData.spec.queries.forEach((queryWrapper, queryIndex) => {
+          const query = queryWrapper.spec.plugin.spec.query;
+          const displayName = queryWrapper.spec.display.name;
 
-        panelInfo.queries.push({
-          index: queryIndex,
-          displayName,
-          query,
-          metric: extractMetricName(query),
+          panelInfo.queries.push({
+            index: queryIndex,
+            displayName,
+            query,
+            metric: extractMetricName(query),
+          });
         });
-      });
+      }
 
       section.panels.push(panelInfo);
     });

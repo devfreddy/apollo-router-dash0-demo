@@ -1,0 +1,2043 @@
+{
+  "type": "Dash0",
+  "generatedAt": "2025-11-11T03:06:41.660Z",
+  "sections": [
+    {
+      "name": "Request Traffic & Health: Client → Router",
+      "panelCount": 8,
+      "panels": [
+        {
+          "id": "panel_0",
+          "panelIndex": 0,
+          "name": "**Set Up Recommended SLOs & Alerts:**",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_1",
+          "panelIndex": 1,
+          "name": "Volume of Requests Per Status Code",
+          "queryCount": 1,
+          "metrics": [
+            "http.server.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By Http response status_code",
+              "query": "histogram_sum(sum by (http_status_code) (increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "http.server.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_2",
+          "panelIndex": 2,
+          "name": "Throughput: Requests Per Second",
+          "queryCount": 1,
+          "metrics": [
+            "http.server.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Total",
+              "query": "histogram_sum(sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "http.server.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_3",
+          "panelIndex": 3,
+          "name": "This chart shows the volume of requests Apollo Router is han...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_4",
+          "panelIndex": 4,
+          "name": "This chart shows requests per second (RPS) hitting the Apoll...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_5",
+          "panelIndex": 5,
+          "name": "Error Rate Percent",
+          "queryCount": 3,
+          "metrics": [
+            "http.server.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Total",
+              "query": "histogram_sum(sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\", graphql_errors=\"true\"}[2m])))",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "Total",
+              "query": "histogram_sum(sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\", http_status_code!~\"2.*\", http_status_code!~\"4.*\"}[2m])))",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 2,
+              "displayName": "Total",
+              "query": "histogram_sum(sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "http.server.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_6",
+          "panelIndex": 6,
+          "name": "This chart shows the total error rate percentage of requests...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_7",
+          "panelIndex": 7,
+          "name": "This chart focuses specifically on GraphQL errors from subgr...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": " Request Characteristics: Client → Router",
+      "panelCount": 2,
+      "panels": [
+        {
+          "id": "panel_8",
+          "panelIndex": 8,
+          "name": "Request Body Size (p99 / Max)",
+          "queryCount": 2,
+          "metrics": [
+            "http.server.request.body.size"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Max",
+              "query": "histogram_avg(sum(rate({otel_metric_name = \"http.server.request.body.size\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "http.server.request.body.size"
+            },
+            {
+              "index": 1,
+              "displayName": "P99",
+              "query": "histogram_quantile(0.99, sum(rate({otel_metric_name = \"http.server.request.body.size\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "http.server.request.body.size"
+            }
+          ]
+        },
+        {
+          "id": "panel_9",
+          "panelIndex": 9,
+          "name": "This chart shows the size of incoming HTTP request bodies, h...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": "Request Performance & Latency: Client → Router",
+      "panelCount": 4,
+      "panels": [
+        {
+          "id": "panel_10",
+          "panelIndex": 10,
+          "name": "**Apollo Router Latency Overview**",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_11",
+          "panelIndex": 11,
+          "name": "Request Duration Percentiles",
+          "queryCount": 5,
+          "metrics": [
+            "http.server.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "P99",
+              "query": "histogram_quantile(0.99, sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "P95",
+              "query": "histogram_quantile(0.95, sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 2,
+              "displayName": "P90",
+              "query": "histogram_quantile(0.9, sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 3,
+              "displayName": "Min",
+              "query": "histogram_avg(sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 4,
+              "displayName": "Max",
+              "query": "histogram_avg(sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "http.server.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_12",
+          "panelIndex": 12,
+          "name": "This chart shows the distribution of request durations for t...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_13",
+          "panelIndex": 13,
+          "name": "**How to interpret percentiles**",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": "Request Traffic & Health: Router → Backend",
+      "panelCount": 7,
+      "panels": [
+        {
+          "id": "panel_14",
+          "panelIndex": 14,
+          "name": "**Set Up Recommended SLOs & Alerts:**",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_15",
+          "panelIndex": 15,
+          "name": "Http Requests by Status Code",
+          "queryCount": 2,
+          "metrics": [
+            "http.client.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By status_code, name",
+              "query": "histogram_sum(sum by (http_status_code, subgraph_name) (increase({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name!~\".*\"}[2m])))",
+              "metric": "http.client.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "By status_code, name, name",
+              "query": "histogram_sum(sum by (http_status_code, subgraph_name, connector_source_name) (increase({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name=~\".*\"}[2m])))",
+              "metric": "http.client.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_16",
+          "panelIndex": 16,
+          "name": "Throughput (Requests per Second)",
+          "queryCount": 2,
+          "metrics": [
+            "http.client.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By Subgraph name",
+              "query": "sum by (subgraph_name) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name!~\".*\"}[2m]))",
+              "metric": "http.client.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "By name, name",
+              "query": "sum by (subgraph_name, connector_source_name) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name=~\".*\"}[2m]))",
+              "metric": "http.client.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_17",
+          "panelIndex": 17,
+          "name": "This chart shows the volume of outgoing HTTP requests from t...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_18",
+          "panelIndex": 18,
+          "name": "This chart shows how many requests per second (RPS) each sub...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_19",
+          "panelIndex": 19,
+          "name": "Non-2xx Responses",
+          "queryCount": 2,
+          "metrics": [
+            "http.client.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By name, status_code",
+              "query": "histogram_sum(sum by (subgraph_name, http_status_code) (increase({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", subgraph_name=~\".*\", http_status_code!~\"2.*\", connector_source_name!~\".*\"}[2m])))",
+              "metric": "http.client.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "By name, status_code, name",
+              "query": "histogram_sum(sum by (subgraph_name, http_status_code, connector_source_name) (increase({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", subgraph_name=~\".*\", http_status_code!~\"2.*\", connector_source_name=~\".*\"}[2m])))",
+              "metric": "http.client.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_20",
+          "panelIndex": 20,
+          "name": "This chart focuses specifically on non-successful (non-2xx) ...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": " Request Characteristics: Router → Backend",
+      "panelCount": 2,
+      "panels": [
+        {
+          "id": "panel_21",
+          "panelIndex": 21,
+          "name": "Response Body Size",
+          "queryCount": 2,
+          "metrics": [
+            "http.client.response.body.size"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By Subgraph name",
+              "query": "histogram_avg(sum by (subgraph_name) (rate({otel_metric_name = \"http.client.response.body.size\", otel_metric_type = \"histogram\", connector_source_name!~\".*\"}[2m])))",
+              "metric": "http.client.response.body.size"
+            },
+            {
+              "index": 1,
+              "displayName": "By name, name",
+              "query": "histogram_avg(sum by (subgraph_name, connector_source_name) (rate({otel_metric_name = \"http.client.response.body.size\", otel_metric_type = \"histogram\", connector_source_name=~\".*\"}[2m])))",
+              "metric": "http.client.response.body.size"
+            }
+          ]
+        },
+        {
+          "id": "panel_22",
+          "panelIndex": 22,
+          "name": "This chart tracks the total volume of response data returned...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": "Request Performance & Latency: Router → Backend",
+      "panelCount": 8,
+      "panels": [
+        {
+          "id": "panel_23",
+          "panelIndex": 23,
+          "name": "**Set Up Recommended SLOs & Alerts:**",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_24",
+          "panelIndex": 24,
+          "name": "P95 Latency by Subgraph",
+          "queryCount": 2,
+          "metrics": [
+            "http.client.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By Subgraph name",
+              "query": "histogram_quantile(0.95, sum by (subgraph_name, le) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name!~\".*\"}[2m])))",
+              "metric": "http.client.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "By name, name",
+              "query": "histogram_quantile(0.95, sum by (subgraph_name, connector_source_name, le) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name=~\".*\"}[2m])))",
+              "metric": "http.client.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_25",
+          "panelIndex": 25,
+          "name": "GraphQL Errors by Subgraph",
+          "queryCount": 1,
+          "metrics": [
+            "http.client.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By Subgraph name",
+              "query": "histogram_sum(sum by (subgraph_name) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name!~\".*\", graphql_errors=\"true\"}[2m])))",
+              "metric": "http.client.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_26",
+          "panelIndex": 26,
+          "name": "This chart tracks the 95th percentile (P95) request duration...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_27",
+          "panelIndex": 27,
+          "name": "This chart shows GraphQL errors by subgraph",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_28",
+          "panelIndex": 28,
+          "name": "These charts aid in assessing the performance of individual ...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_29",
+          "panelIndex": 29,
+          "name": "These charts are a companion to the scatter plots to the lef...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_30",
+          "panelIndex": 30,
+          "name": "This chart shows the distribution of backend request duratio...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": "Query Planning",
+      "panelCount": 5,
+      "panels": [
+        {
+          "id": "panel_31",
+          "panelIndex": 31,
+          "name": "The query planner is the heart of the runtime's computationa...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_32",
+          "panelIndex": 32,
+          "name": "Duration and Wait Time",
+          "queryCount": 5,
+          "metrics": [
+            "apollo.router.compute_jobs.execution.duration",
+            "apollo.router.compute_jobs.queue.wait.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m]))",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "P95",
+              "query": "histogram_quantile(0.95, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m])))",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 2,
+              "displayName": "Max",
+              "query": "histogram_avg(sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m])))",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 3,
+              "displayName": "Avg",
+              "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.compute_jobs.queue.wait.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m]))",
+              "metric": "apollo.router.compute_jobs.queue.wait.duration"
+            },
+            {
+              "index": 4,
+              "displayName": "Max",
+              "query": "histogram_avg(sum(rate({otel_metric_name = \"apollo.router.compute_jobs.queue.wait.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m])))",
+              "metric": "apollo.router.compute_jobs.queue.wait.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_33",
+          "panelIndex": 33,
+          "name": "Evaluated Plans",
+          "queryCount": 2,
+          "metrics": [
+            "apollo.router.query_planning.plan.evaluated_plans"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.query_planning.plan.evaluated_plans\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "apollo.router.query_planning.plan.evaluated_plans"
+            },
+            {
+              "index": 1,
+              "displayName": "Max",
+              "query": "histogram_avg(sum(rate({otel_metric_name = \"apollo.router.query_planning.plan.evaluated_plans\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "apollo.router.query_planning.plan.evaluated_plans"
+            }
+          ]
+        },
+        {
+          "id": "panel_34",
+          "panelIndex": 34,
+          "name": "This chart tracks the wait and execution durations for query...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_35",
+          "panelIndex": 35,
+          "name": "This chart shows how many query plans are evaluated before s...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": "Cache",
+      "panelCount": 11,
+      "panels": [
+        {
+          "id": "panel_36",
+          "panelIndex": 36,
+          "name": "Whenever your router receives an incoming GraphQL operation,...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_37",
+          "panelIndex": 37,
+          "name": "Misses vs. Record Count",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.cache.miss.time"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Total",
+              "query": "sum(rate({otel_metric_name = \"apollo.router.cache.miss.time\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "apollo.router.cache.miss.time"
+            }
+          ]
+        },
+        {
+          "id": "panel_38",
+          "panelIndex": 38,
+          "name": "Record Counts by Instance",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.cache.size"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By host, pod_name, container_id",
+              "query": "avg by (dash0_resource_name, dash0_resource_name, dash0_resource_id) ({otel_metric_name = \"apollo.router.cache.size\", otel_metric_type = \"gauge\"})",
+              "metric": "apollo.router.cache.size"
+            }
+          ]
+        },
+        {
+          "id": "panel_39",
+          "panelIndex": 39,
+          "name": "This chart shows an aggregate view across all cache types of...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_40",
+          "panelIndex": 40,
+          "name": "This chart breaks down the number of records in the cache of...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_41",
+          "panelIndex": 41,
+          "name": "Record Counts by Type",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.cache.size"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By kind, version",
+              "query": "sum by (kind, version) ({otel_metric_name = \"apollo.router.cache.size\", otel_metric_type = \"gauge\"})",
+              "metric": "apollo.router.cache.size"
+            }
+          ]
+        },
+        {
+          "id": "panel_42",
+          "panelIndex": 42,
+          "name": "Misses by Type",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.cache.miss.time"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By kind, version",
+              "query": "sum by (kind, version) (rate({otel_metric_name = \"apollo.router.cache.miss.time\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "apollo.router.cache.miss.time"
+            }
+          ]
+        },
+        {
+          "id": "panel_43",
+          "panelIndex": 43,
+          "name": "This chart shows cache record counts broken down by each cac...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_44",
+          "panelIndex": 44,
+          "name": "This chart shows cache misses broken down by cache type.",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_45",
+          "panelIndex": 45,
+          "name": "Hit % by Instance",
+          "queryCount": 2,
+          "metrics": [
+            "apollo.router.cache.hit.time",
+            "apollo.router.cache.miss.time"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By host, pod_name, container_id",
+              "query": "sum by (dash0_resource_name, dash0_resource_name, dash0_resource_id) (rate({otel_metric_name = \"apollo.router.cache.hit.time\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "apollo.router.cache.hit.time"
+            },
+            {
+              "index": 1,
+              "displayName": "By host, pod_name, container_id",
+              "query": "sum by (dash0_resource_name, dash0_resource_name, dash0_resource_id) (rate({otel_metric_name = \"apollo.router.cache.miss.time\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "apollo.router.cache.miss.time"
+            }
+          ]
+        },
+        {
+          "id": "panel_46",
+          "panelIndex": 46,
+          "name": "This chart shows cache hit rate broken down by each individu...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": "Compute Jobs",
+      "panelCount": 9,
+      "panels": [
+        {
+          "id": "panel_47",
+          "panelIndex": 47,
+          "name": "Compute jobs are CPU-intensive tasks that get managed on a d...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_48",
+          "panelIndex": 48,
+          "name": "Query Planning Duration Percentiles and Wait Time",
+          "queryCount": 4,
+          "metrics": [
+            "apollo.router.compute_jobs.execution.duration",
+            "apollo.router.compute_jobs.queue.wait.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "P50",
+              "query": "histogram_quantile(0.5, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m])))",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "P95",
+              "query": "histogram_quantile(0.95, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m])))",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 2,
+              "displayName": "P99",
+              "query": "histogram_quantile(0.99, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m])))",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 3,
+              "displayName": "Avg",
+              "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.compute_jobs.queue.wait.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m]))",
+              "metric": "apollo.router.compute_jobs.queue.wait.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_49",
+          "panelIndex": 49,
+          "name": "Query Parsing Duration Percentiles and Wait Time",
+          "queryCount": 4,
+          "metrics": [
+            "apollo.router.compute_jobs.execution.duration",
+            "apollo.router.compute_jobs.queue.wait.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "P50",
+              "query": "histogram_quantile(0.5, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_parsing\"}[2m])))",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "P95",
+              "query": "histogram_quantile(0.95, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_parsing\"}[2m])))",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 2,
+              "displayName": "P99",
+              "query": "histogram_quantile(0.99, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_parsing\"}[2m])))",
+              "metric": "apollo.router.compute_jobs.execution.duration"
+            },
+            {
+              "index": 3,
+              "displayName": "Avg",
+              "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.compute_jobs.queue.wait.duration\", otel_metric_type = \"histogram\", job_type=\"query_parsing\"}[2m]))",
+              "metric": "apollo.router.compute_jobs.queue.wait.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_50",
+          "panelIndex": 50,
+          "name": "This chart tracks the wait and execution durations for query...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_51",
+          "panelIndex": 51,
+          "name": "This chart tracks how long query parsing jobs take to execut...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_52",
+          "panelIndex": 52,
+          "name": "Queued Jobs",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.compute_jobs.queued"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Sum",
+              "query": "sum({otel_metric_name = \"apollo.router.compute_jobs.queued\", otel_metric_type = \"gauge\"})",
+              "metric": "apollo.router.compute_jobs.queued"
+            }
+          ]
+        },
+        {
+          "id": "panel_53",
+          "panelIndex": 53,
+          "name": "Job Counts by Outcome",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.compute_jobs.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By Job outcome",
+              "query": "histogram_sum(sum by (job_outcome) (increase({otel_metric_name = \"apollo.router.compute_jobs.duration\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "apollo.router.compute_jobs.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_54",
+          "panelIndex": 54,
+          "name": "This chart tracks the depth of the compute job queue over ti...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_55",
+          "panelIndex": 55,
+          "name": "This chart shows the total number of compute jobs actively r...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": "Container/Host",
+      "panelCount": 13,
+      "panels": [
+        {
+          "id": "panel_56",
+          "panelIndex": 56,
+          "name": "Monitoring the resource consumption of your execution enviro...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_57",
+          "panelIndex": 57,
+          "name": "Kubernetes CPU Usage",
+          "queryCount": 2,
+          "metrics": [
+            "kubernetes.cpu.usage.total"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "avg({otel_metric_name = \"kubernetes.cpu.usage.total\", otel_metric_type = \"sum\"})",
+              "metric": "kubernetes.cpu.usage.total"
+            },
+            {
+              "index": 1,
+              "displayName": "Max",
+              "query": "max(rate({otel_metric_name = \"kubernetes.cpu.usage.total\", otel_metric_type = \"sum\"}[2m]))",
+              "metric": "kubernetes.cpu.usage.total"
+            }
+          ]
+        },
+        {
+          "id": "panel_58",
+          "panelIndex": 58,
+          "name": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+          "queryCount": 5,
+          "metrics": [
+            "system.cpu.stolen",
+            "system.cpu.iowait",
+            "system.cpu.system",
+            "system.cpu.user",
+            "system.cpu.idle"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "avg({otel_metric_name = \"system.cpu.stolen\", otel_metric_type = \"gauge\"})",
+              "metric": "system.cpu.stolen"
+            },
+            {
+              "index": 1,
+              "displayName": "Avg",
+              "query": "avg({otel_metric_name = \"system.cpu.iowait\", otel_metric_type = \"gauge\"})",
+              "metric": "system.cpu.iowait"
+            },
+            {
+              "index": 2,
+              "displayName": "Avg",
+              "query": "avg({otel_metric_name = \"system.cpu.system\", otel_metric_type = \"gauge\"})",
+              "metric": "system.cpu.system"
+            },
+            {
+              "index": 3,
+              "displayName": "Avg",
+              "query": "avg({otel_metric_name = \"system.cpu.user\", otel_metric_type = \"gauge\"})",
+              "metric": "system.cpu.user"
+            },
+            {
+              "index": 4,
+              "displayName": "Avg",
+              "query": "avg({otel_metric_name = \"system.cpu.idle\", otel_metric_type = \"gauge\"})",
+              "metric": "system.cpu.idle"
+            }
+          ]
+        },
+        {
+          "id": "panel_59",
+          "panelIndex": 59,
+          "name": "Docker CPU Usage (Datadog Docker Agent)",
+          "queryCount": 2,
+          "metrics": [
+            "docker.cpu.usage"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "avg({otel_metric_name = \"docker.cpu.usage\", otel_metric_type = \"gauge\"})",
+              "metric": "docker.cpu.usage"
+            },
+            {
+              "index": 1,
+              "displayName": "Max",
+              "query": "max({otel_metric_name = \"docker.cpu.usage\", otel_metric_type = \"gauge\"})",
+              "metric": "docker.cpu.usage"
+            }
+          ]
+        },
+        {
+          "id": "panel_60",
+          "panelIndex": 60,
+          "name": "Docker CPU Usage (OTEL Collector  - Docker/stats)",
+          "queryCount": 2,
+          "metrics": [
+            "container.cpu.usage.total"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "avg({otel_metric_name = \"container.cpu.usage.total\", otel_metric_type = \"sum\"})",
+              "metric": "container.cpu.usage.total"
+            },
+            {
+              "index": 1,
+              "displayName": "Max",
+              "query": "max(rate({otel_metric_name = \"container.cpu.usage.total\", otel_metric_type = \"sum\"}[2m]))",
+              "metric": "container.cpu.usage.total"
+            }
+          ]
+        },
+        {
+          "id": "panel_61",
+          "panelIndex": 61,
+          "name": "Kubernetes Memory Usage",
+          "queryCount": 2,
+          "metrics": [
+            "kubernetes.memory.usage"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "avg({otel_metric_name = \"kubernetes.memory.usage\", otel_metric_type = \"gauge\"})",
+              "metric": "kubernetes.memory.usage"
+            },
+            {
+              "index": 1,
+              "displayName": "Max",
+              "query": "max({otel_metric_name = \"kubernetes.memory.usage\", otel_metric_type = \"gauge\"})",
+              "metric": "kubernetes.memory.usage"
+            }
+          ]
+        },
+        {
+          "id": "panel_62",
+          "panelIndex": 62,
+          "name": "Host Memory Usage (OTEL Collector - Hostmetrics)",
+          "queryCount": 2,
+          "metrics": [
+            "system.mem.used"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "avg({otel_metric_name = \"system.mem.used\", otel_metric_type = \"gauge\"})",
+              "metric": "system.mem.used"
+            },
+            {
+              "index": 1,
+              "displayName": "Max",
+              "query": "max({otel_metric_name = \"system.mem.used\", otel_metric_type = \"gauge\"})",
+              "metric": "system.mem.used"
+            }
+          ]
+        },
+        {
+          "id": "panel_63",
+          "panelIndex": 63,
+          "name": "Docker Memory Usage (Datadog Docker Agent)",
+          "queryCount": 2,
+          "metrics": [
+            "docker.mem.in_use"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "avg({otel_metric_name = \"docker.mem.in_use\", otel_metric_type = \"gauge\"})",
+              "metric": "docker.mem.in_use"
+            },
+            {
+              "index": 1,
+              "displayName": "Max",
+              "query": "max({otel_metric_name = \"docker.mem.in_use\", otel_metric_type = \"gauge\"})",
+              "metric": "docker.mem.in_use"
+            }
+          ]
+        },
+        {
+          "id": "panel_64",
+          "panelIndex": 64,
+          "name": "Docker Memory Usage (OTEL Collector  - Docker/stats)",
+          "queryCount": 2,
+          "metrics": [
+            "container.memory.usage.total"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "avg({otel_metric_name = \"container.memory.usage.total\", otel_metric_type = \"sum\"})",
+              "metric": "container.memory.usage.total"
+            },
+            {
+              "index": 1,
+              "displayName": "Max",
+              "query": "max(rate({otel_metric_name = \"container.memory.usage.total\", otel_metric_type = \"sum\"}[2m]))",
+              "metric": "container.memory.usage.total"
+            }
+          ]
+        },
+        {
+          "id": "panel_65",
+          "panelIndex": 65,
+          "name": "These charts draw their threshold marker dynamically based o...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_66",
+          "panelIndex": 66,
+          "name": "The memory chart draws its threshold marker dynamically base...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_67",
+          "panelIndex": 67,
+          "name": "These charts draw their threshold marker dynamically based o...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_68",
+          "panelIndex": 68,
+          "name": "These charts draw their threshold marker dynamically based o...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": "Coprocessors",
+      "panelCount": 7,
+      "panels": [
+        {
+          "id": "panel_69",
+          "panelIndex": 69,
+          "name": "If you incorporate [coprocessors](https://www.apollographql....",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_70",
+          "panelIndex": 70,
+          "name": "Request Duration",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.operations.coprocessor.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By Coprocessor stage",
+              "query": "histogram_avg(sum by (coprocessor_stage) (rate({otel_metric_name = \"apollo.router.operations.coprocessor.duration\", otel_metric_type = \"histogram\"}[2m])))",
+              "metric": "apollo.router.operations.coprocessor.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_71",
+          "panelIndex": 71,
+          "name": "Request Count",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.operations.coprocessor"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By Coprocessor stage",
+              "query": "sum by (coprocessor_stage) (rate({otel_metric_name = \"apollo.router.operations.coprocessor\", otel_metric_type = \"sum\"}[2m]))",
+              "metric": "apollo.router.operations.coprocessor"
+            }
+          ]
+        },
+        {
+          "id": "panel_72",
+          "panelIndex": 72,
+          "name": "This chart shows the average duration added by coprocessor i...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_73",
+          "panelIndex": 73,
+          "name": "This chart breaks down how often coprocessors are invoked at...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_74",
+          "panelIndex": 74,
+          "name": "Success Rate",
+          "queryCount": 2,
+          "metrics": [
+            "apollo.router.operations.coprocessor"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By Coprocessor stage",
+              "query": "sum by (coprocessor_stage) (rate({otel_metric_name = \"apollo.router.operations.coprocessor\", otel_metric_type = \"sum\", coprocessor_succeeded=\"true\"}[2m]))",
+              "metric": "apollo.router.operations.coprocessor"
+            },
+            {
+              "index": 1,
+              "displayName": "By Coprocessor stage",
+              "query": "sum by (coprocessor_stage) (rate({otel_metric_name = \"apollo.router.operations.coprocessor\", otel_metric_type = \"sum\"}[2m]))",
+              "metric": "apollo.router.operations.coprocessor"
+            }
+          ]
+        },
+        {
+          "id": "panel_75",
+          "panelIndex": 75,
+          "name": "This chart tracks the success rate of coprocessor invocation...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": "Sentinel Metrics",
+      "panelCount": 7,
+      "panels": [
+        {
+          "id": "panel_76",
+          "panelIndex": 76,
+          "name": "This section is a collection of assorted metrics that do not...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_77",
+          "panelIndex": 77,
+          "name": "Uplink and Licensing",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.uplink.fetch.duration.seconds"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.uplink.fetch.duration.seconds\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "apollo.router.uplink.fetch.duration.seconds"
+            }
+          ]
+        },
+        {
+          "id": "panel_78",
+          "panelIndex": 78,
+          "name": "Open Connections by Schema and Launch ID",
+          "queryCount": 1,
+          "metrics": [
+            "apollo.router.open_connections"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "By id, id",
+              "query": "avg by (schema_id, launch_id) ({otel_metric_name = \"apollo.router.open_connections\", otel_metric_type = \"gauge\"})",
+              "metric": "apollo.router.open_connections"
+            }
+          ]
+        },
+        {
+          "id": "panel_79",
+          "panelIndex": 79,
+          "name": "[Uplink is used to retrieve your GraphOS license (where appl...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_80",
+          "panelIndex": 80,
+          "name": "This graph can help you track the rollout of schema changes ...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_81",
+          "panelIndex": 81,
+          "name": "Router Relative Overhead",
+          "queryCount": 5,
+          "metrics": [
+            "http.server.request.duration",
+            "apollo.router.compute_jobs.duration",
+            "apollo.router.operations.coprocessor.duration",
+            "http.client.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "histogram_avg(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "http.server.request.duration"
+            },
+            {
+              "index": 1,
+              "displayName": "Avg",
+              "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.compute_jobs.duration\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "apollo.router.compute_jobs.duration"
+            },
+            {
+              "index": 2,
+              "displayName": "Avg",
+              "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.operations.coprocessor.duration\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "apollo.router.operations.coprocessor.duration"
+            },
+            {
+              "index": 3,
+              "displayName": "Avg",
+              "query": "histogram_avg(rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "http.client.request.duration"
+            },
+            {
+              "index": 4,
+              "displayName": "Total",
+              "query": "sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "http.server.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_82",
+          "panelIndex": 82,
+          "name": "This graph measures the average delta between your runtime's...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        }
+      ]
+    },
+    {
+      "name": "Resource Estimator",
+      "panelCount": 6,
+      "panels": [
+        {
+          "id": "panel_83",
+          "panelIndex": 83,
+          "name": "This section provides all of the metrics necessary to fill o...",
+          "queryCount": 0,
+          "metrics": [],
+          "queries": []
+        },
+        {
+          "id": "panel_84",
+          "panelIndex": 84,
+          "name": "Average Request Rate",
+          "queryCount": 1,
+          "metrics": [
+            "http.server.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Total",
+              "query": "sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "http.server.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_85",
+          "panelIndex": 85,
+          "name": "Peak Request Rate",
+          "queryCount": 1,
+          "metrics": [
+            "http.server.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Total",
+              "query": "sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "http.server.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_86",
+          "panelIndex": 86,
+          "name": "Baseline Subgraph Latency",
+          "queryCount": 1,
+          "metrics": [
+            "http.client.request.duration"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "histogram_avg(sum by (subgraph_name) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", subgraph_name=~\".*\"}[2m])))",
+              "metric": "http.client.request.duration"
+            }
+          ]
+        },
+        {
+          "id": "panel_87",
+          "panelIndex": 87,
+          "name": "Average Client Request Size",
+          "queryCount": 1,
+          "metrics": [
+            "http.client.request.body.size"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "histogram_avg(rate({otel_metric_name = \"http.client.request.body.size\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "http.client.request.body.size"
+            }
+          ]
+        },
+        {
+          "id": "panel_88",
+          "panelIndex": 88,
+          "name": "Average Client Response Size",
+          "queryCount": 1,
+          "metrics": [
+            "http.client.response.body.size"
+          ],
+          "queries": [
+            {
+              "index": 0,
+              "displayName": "Avg",
+              "query": "histogram_avg(rate({otel_metric_name = \"http.client.response.body.size\", otel_metric_type = \"histogram\"}[2m]))",
+              "metric": "http.client.response.body.size"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "metricsIndex": {
+    "http.server.request.duration": [
+      {
+        "section": "Request Traffic & Health: Client → Router",
+        "panel": "Volume of Requests Per Status Code",
+        "panelIndex": 1,
+        "displayName": "By Http response status_code",
+        "query": "histogram_sum(sum by (http_status_code) (increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
+      },
+      {
+        "section": "Request Traffic & Health: Client → Router",
+        "panel": "Throughput: Requests Per Second",
+        "panelIndex": 2,
+        "displayName": "Total",
+        "query": "histogram_sum(sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
+      },
+      {
+        "section": "Request Traffic & Health: Client → Router",
+        "panel": "Error Rate Percent",
+        "panelIndex": 5,
+        "displayName": "Total",
+        "query": "histogram_sum(sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\", graphql_errors=\"true\"}[2m])))"
+      },
+      {
+        "section": "Request Traffic & Health: Client → Router",
+        "panel": "Error Rate Percent",
+        "panelIndex": 5,
+        "displayName": "Total",
+        "query": "histogram_sum(sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\", http_status_code!~\"2.*\", http_status_code!~\"4.*\"}[2m])))"
+      },
+      {
+        "section": "Request Traffic & Health: Client → Router",
+        "panel": "Error Rate Percent",
+        "panelIndex": 5,
+        "displayName": "Total",
+        "query": "histogram_sum(sum(increase({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
+      },
+      {
+        "section": "Request Performance & Latency: Client → Router",
+        "panel": "Request Duration Percentiles",
+        "panelIndex": 11,
+        "displayName": "P99",
+        "query": "histogram_quantile(0.99, sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
+      },
+      {
+        "section": "Request Performance & Latency: Client → Router",
+        "panel": "Request Duration Percentiles",
+        "panelIndex": 11,
+        "displayName": "P95",
+        "query": "histogram_quantile(0.95, sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
+      },
+      {
+        "section": "Request Performance & Latency: Client → Router",
+        "panel": "Request Duration Percentiles",
+        "panelIndex": 11,
+        "displayName": "P90",
+        "query": "histogram_quantile(0.9, sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
+      },
+      {
+        "section": "Request Performance & Latency: Client → Router",
+        "panel": "Request Duration Percentiles",
+        "panelIndex": 11,
+        "displayName": "Min",
+        "query": "histogram_avg(sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
+      },
+      {
+        "section": "Request Performance & Latency: Client → Router",
+        "panel": "Request Duration Percentiles",
+        "panelIndex": 11,
+        "displayName": "Max",
+        "query": "histogram_avg(sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m])))"
+      },
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Router Relative Overhead",
+        "panelIndex": 81,
+        "displayName": "Avg",
+        "query": "histogram_avg(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
+      },
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Router Relative Overhead",
+        "panelIndex": 81,
+        "displayName": "Total",
+        "query": "sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
+      },
+      {
+        "section": "Resource Estimator",
+        "panel": "Average Request Rate",
+        "panelIndex": 84,
+        "displayName": "Total",
+        "query": "sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
+      },
+      {
+        "section": "Resource Estimator",
+        "panel": "Peak Request Rate",
+        "panelIndex": 85,
+        "displayName": "Total",
+        "query": "sum(rate({otel_metric_name = \"http.server.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
+      }
+    ],
+    "http.server.request.body.size": [
+      {
+        "section": " Request Characteristics: Client → Router",
+        "panel": "Request Body Size (p99 / Max)",
+        "panelIndex": 8,
+        "displayName": "Max",
+        "query": "histogram_avg(sum(rate({otel_metric_name = \"http.server.request.body.size\", otel_metric_type = \"histogram\"}[2m])))"
+      },
+      {
+        "section": " Request Characteristics: Client → Router",
+        "panel": "Request Body Size (p99 / Max)",
+        "panelIndex": 8,
+        "displayName": "P99",
+        "query": "histogram_quantile(0.99, sum(rate({otel_metric_name = \"http.server.request.body.size\", otel_metric_type = \"histogram\"}[2m])))"
+      }
+    ],
+    "http.client.request.duration": [
+      {
+        "section": "Request Traffic & Health: Router → Backend",
+        "panel": "Http Requests by Status Code",
+        "panelIndex": 15,
+        "displayName": "By status_code, name",
+        "query": "histogram_sum(sum by (http_status_code, subgraph_name) (increase({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name!~\".*\"}[2m])))"
+      },
+      {
+        "section": "Request Traffic & Health: Router → Backend",
+        "panel": "Http Requests by Status Code",
+        "panelIndex": 15,
+        "displayName": "By status_code, name, name",
+        "query": "histogram_sum(sum by (http_status_code, subgraph_name, connector_source_name) (increase({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name=~\".*\"}[2m])))"
+      },
+      {
+        "section": "Request Traffic & Health: Router → Backend",
+        "panel": "Throughput (Requests per Second)",
+        "panelIndex": 16,
+        "displayName": "By Subgraph name",
+        "query": "sum by (subgraph_name) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name!~\".*\"}[2m]))"
+      },
+      {
+        "section": "Request Traffic & Health: Router → Backend",
+        "panel": "Throughput (Requests per Second)",
+        "panelIndex": 16,
+        "displayName": "By name, name",
+        "query": "sum by (subgraph_name, connector_source_name) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name=~\".*\"}[2m]))"
+      },
+      {
+        "section": "Request Traffic & Health: Router → Backend",
+        "panel": "Non-2xx Responses",
+        "panelIndex": 19,
+        "displayName": "By name, status_code",
+        "query": "histogram_sum(sum by (subgraph_name, http_status_code) (increase({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", subgraph_name=~\".*\", http_status_code!~\"2.*\", connector_source_name!~\".*\"}[2m])))"
+      },
+      {
+        "section": "Request Traffic & Health: Router → Backend",
+        "panel": "Non-2xx Responses",
+        "panelIndex": 19,
+        "displayName": "By name, status_code, name",
+        "query": "histogram_sum(sum by (subgraph_name, http_status_code, connector_source_name) (increase({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", subgraph_name=~\".*\", http_status_code!~\"2.*\", connector_source_name=~\".*\"}[2m])))"
+      },
+      {
+        "section": "Request Performance & Latency: Router → Backend",
+        "panel": "P95 Latency by Subgraph",
+        "panelIndex": 24,
+        "displayName": "By Subgraph name",
+        "query": "histogram_quantile(0.95, sum by (subgraph_name, le) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name!~\".*\"}[2m])))"
+      },
+      {
+        "section": "Request Performance & Latency: Router → Backend",
+        "panel": "P95 Latency by Subgraph",
+        "panelIndex": 24,
+        "displayName": "By name, name",
+        "query": "histogram_quantile(0.95, sum by (subgraph_name, connector_source_name, le) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name=~\".*\"}[2m])))"
+      },
+      {
+        "section": "Request Performance & Latency: Router → Backend",
+        "panel": "GraphQL Errors by Subgraph",
+        "panelIndex": 25,
+        "displayName": "By Subgraph name",
+        "query": "histogram_sum(sum by (subgraph_name) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", connector_source_name!~\".*\", graphql_errors=\"true\"}[2m])))"
+      },
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Router Relative Overhead",
+        "panelIndex": 81,
+        "displayName": "Avg",
+        "query": "histogram_avg(rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\"}[2m]))"
+      },
+      {
+        "section": "Resource Estimator",
+        "panel": "Baseline Subgraph Latency",
+        "panelIndex": 86,
+        "displayName": "Avg",
+        "query": "histogram_avg(sum by (subgraph_name) (rate({otel_metric_name = \"http.client.request.duration\", otel_metric_type = \"histogram\", subgraph_name=~\".*\"}[2m])))"
+      }
+    ],
+    "http.client.response.body.size": [
+      {
+        "section": " Request Characteristics: Router → Backend",
+        "panel": "Response Body Size",
+        "panelIndex": 21,
+        "displayName": "By Subgraph name",
+        "query": "histogram_avg(sum by (subgraph_name) (rate({otel_metric_name = \"http.client.response.body.size\", otel_metric_type = \"histogram\", connector_source_name!~\".*\"}[2m])))"
+      },
+      {
+        "section": " Request Characteristics: Router → Backend",
+        "panel": "Response Body Size",
+        "panelIndex": 21,
+        "displayName": "By name, name",
+        "query": "histogram_avg(sum by (subgraph_name, connector_source_name) (rate({otel_metric_name = \"http.client.response.body.size\", otel_metric_type = \"histogram\", connector_source_name=~\".*\"}[2m])))"
+      },
+      {
+        "section": "Resource Estimator",
+        "panel": "Average Client Response Size",
+        "panelIndex": 88,
+        "displayName": "Avg",
+        "query": "histogram_avg(rate({otel_metric_name = \"http.client.response.body.size\", otel_metric_type = \"histogram\"}[2m]))"
+      }
+    ],
+    "apollo.router.compute_jobs.execution.duration": [
+      {
+        "section": "Query Planning",
+        "panel": "Duration and Wait Time",
+        "panelIndex": 32,
+        "displayName": "Avg",
+        "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m]))"
+      },
+      {
+        "section": "Query Planning",
+        "panel": "Duration and Wait Time",
+        "panelIndex": 32,
+        "displayName": "P95",
+        "query": "histogram_quantile(0.95, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m])))"
+      },
+      {
+        "section": "Query Planning",
+        "panel": "Duration and Wait Time",
+        "panelIndex": 32,
+        "displayName": "Max",
+        "query": "histogram_avg(sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m])))"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Planning Duration Percentiles and Wait Time",
+        "panelIndex": 48,
+        "displayName": "P50",
+        "query": "histogram_quantile(0.5, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m])))"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Planning Duration Percentiles and Wait Time",
+        "panelIndex": 48,
+        "displayName": "P95",
+        "query": "histogram_quantile(0.95, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m])))"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Planning Duration Percentiles and Wait Time",
+        "panelIndex": 48,
+        "displayName": "P99",
+        "query": "histogram_quantile(0.99, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m])))"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Parsing Duration Percentiles and Wait Time",
+        "panelIndex": 49,
+        "displayName": "P50",
+        "query": "histogram_quantile(0.5, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_parsing\"}[2m])))"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Parsing Duration Percentiles and Wait Time",
+        "panelIndex": 49,
+        "displayName": "P95",
+        "query": "histogram_quantile(0.95, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_parsing\"}[2m])))"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Parsing Duration Percentiles and Wait Time",
+        "panelIndex": 49,
+        "displayName": "P99",
+        "query": "histogram_quantile(0.99, sum(rate({otel_metric_name = \"apollo.router.compute_jobs.execution.duration\", otel_metric_type = \"histogram\", job_type=\"query_parsing\"}[2m])))"
+      }
+    ],
+    "apollo.router.compute_jobs.queue.wait.duration": [
+      {
+        "section": "Query Planning",
+        "panel": "Duration and Wait Time",
+        "panelIndex": 32,
+        "displayName": "Avg",
+        "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.compute_jobs.queue.wait.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m]))"
+      },
+      {
+        "section": "Query Planning",
+        "panel": "Duration and Wait Time",
+        "panelIndex": 32,
+        "displayName": "Max",
+        "query": "histogram_avg(sum(rate({otel_metric_name = \"apollo.router.compute_jobs.queue.wait.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m])))"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Planning Duration Percentiles and Wait Time",
+        "panelIndex": 48,
+        "displayName": "Avg",
+        "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.compute_jobs.queue.wait.duration\", otel_metric_type = \"histogram\", job_type=\"query_planning\"}[2m]))"
+      },
+      {
+        "section": "Compute Jobs",
+        "panel": "Query Parsing Duration Percentiles and Wait Time",
+        "panelIndex": 49,
+        "displayName": "Avg",
+        "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.compute_jobs.queue.wait.duration\", otel_metric_type = \"histogram\", job_type=\"query_parsing\"}[2m]))"
+      }
+    ],
+    "apollo.router.query_planning.plan.evaluated_plans": [
+      {
+        "section": "Query Planning",
+        "panel": "Evaluated Plans",
+        "panelIndex": 33,
+        "displayName": "Avg",
+        "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.query_planning.plan.evaluated_plans\", otel_metric_type = \"histogram\"}[2m]))"
+      },
+      {
+        "section": "Query Planning",
+        "panel": "Evaluated Plans",
+        "panelIndex": 33,
+        "displayName": "Max",
+        "query": "histogram_avg(sum(rate({otel_metric_name = \"apollo.router.query_planning.plan.evaluated_plans\", otel_metric_type = \"histogram\"}[2m])))"
+      }
+    ],
+    "apollo.router.cache.miss.time": [
+      {
+        "section": "Cache",
+        "panel": "Misses vs. Record Count",
+        "panelIndex": 37,
+        "displayName": "Total",
+        "query": "sum(rate({otel_metric_name = \"apollo.router.cache.miss.time\", otel_metric_type = \"histogram\"}[2m]))"
+      },
+      {
+        "section": "Cache",
+        "panel": "Misses by Type",
+        "panelIndex": 42,
+        "displayName": "By kind, version",
+        "query": "sum by (kind, version) (rate({otel_metric_name = \"apollo.router.cache.miss.time\", otel_metric_type = \"histogram\"}[2m]))"
+      },
+      {
+        "section": "Cache",
+        "panel": "Hit % by Instance",
+        "panelIndex": 45,
+        "displayName": "By host, pod_name, container_id",
+        "query": "sum by (dash0_resource_name, dash0_resource_name, dash0_resource_id) (rate({otel_metric_name = \"apollo.router.cache.miss.time\", otel_metric_type = \"histogram\"}[2m]))"
+      }
+    ],
+    "apollo.router.cache.size": [
+      {
+        "section": "Cache",
+        "panel": "Record Counts by Instance",
+        "panelIndex": 38,
+        "displayName": "By host, pod_name, container_id",
+        "query": "avg by (dash0_resource_name, dash0_resource_name, dash0_resource_id) ({otel_metric_name = \"apollo.router.cache.size\", otel_metric_type = \"gauge\"})"
+      },
+      {
+        "section": "Cache",
+        "panel": "Record Counts by Type",
+        "panelIndex": 41,
+        "displayName": "By kind, version",
+        "query": "sum by (kind, version) ({otel_metric_name = \"apollo.router.cache.size\", otel_metric_type = \"gauge\"})"
+      }
+    ],
+    "apollo.router.cache.hit.time": [
+      {
+        "section": "Cache",
+        "panel": "Hit % by Instance",
+        "panelIndex": 45,
+        "displayName": "By host, pod_name, container_id",
+        "query": "sum by (dash0_resource_name, dash0_resource_name, dash0_resource_id) (rate({otel_metric_name = \"apollo.router.cache.hit.time\", otel_metric_type = \"histogram\"}[2m]))"
+      }
+    ],
+    "apollo.router.compute_jobs.queued": [
+      {
+        "section": "Compute Jobs",
+        "panel": "Queued Jobs",
+        "panelIndex": 52,
+        "displayName": "Sum",
+        "query": "sum({otel_metric_name = \"apollo.router.compute_jobs.queued\", otel_metric_type = \"gauge\"})"
+      }
+    ],
+    "apollo.router.compute_jobs.duration": [
+      {
+        "section": "Compute Jobs",
+        "panel": "Job Counts by Outcome",
+        "panelIndex": 53,
+        "displayName": "By Job outcome",
+        "query": "histogram_sum(sum by (job_outcome) (increase({otel_metric_name = \"apollo.router.compute_jobs.duration\", otel_metric_type = \"histogram\"}[2m])))"
+      },
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Router Relative Overhead",
+        "panelIndex": 81,
+        "displayName": "Avg",
+        "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.compute_jobs.duration\", otel_metric_type = \"histogram\"}[2m]))"
+      }
+    ],
+    "kubernetes.cpu.usage.total": [
+      {
+        "section": "Container/Host",
+        "panel": "Kubernetes CPU Usage",
+        "panelIndex": 57,
+        "displayName": "Avg",
+        "query": "avg({otel_metric_name = \"kubernetes.cpu.usage.total\", otel_metric_type = \"sum\"})"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Kubernetes CPU Usage",
+        "panelIndex": 57,
+        "displayName": "Max",
+        "query": "max(rate({otel_metric_name = \"kubernetes.cpu.usage.total\", otel_metric_type = \"sum\"}[2m]))"
+      }
+    ],
+    "system.cpu.stolen": [
+      {
+        "section": "Container/Host",
+        "panel": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 58,
+        "displayName": "Avg",
+        "query": "avg({otel_metric_name = \"system.cpu.stolen\", otel_metric_type = \"gauge\"})"
+      }
+    ],
+    "system.cpu.iowait": [
+      {
+        "section": "Container/Host",
+        "panel": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 58,
+        "displayName": "Avg",
+        "query": "avg({otel_metric_name = \"system.cpu.iowait\", otel_metric_type = \"gauge\"})"
+      }
+    ],
+    "system.cpu.system": [
+      {
+        "section": "Container/Host",
+        "panel": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 58,
+        "displayName": "Avg",
+        "query": "avg({otel_metric_name = \"system.cpu.system\", otel_metric_type = \"gauge\"})"
+      }
+    ],
+    "system.cpu.user": [
+      {
+        "section": "Container/Host",
+        "panel": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 58,
+        "displayName": "Avg",
+        "query": "avg({otel_metric_name = \"system.cpu.user\", otel_metric_type = \"gauge\"})"
+      }
+    ],
+    "system.cpu.idle": [
+      {
+        "section": "Container/Host",
+        "panel": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 58,
+        "displayName": "Avg",
+        "query": "avg({otel_metric_name = \"system.cpu.idle\", otel_metric_type = \"gauge\"})"
+      }
+    ],
+    "docker.cpu.usage": [
+      {
+        "section": "Container/Host",
+        "panel": "Docker CPU Usage (Datadog Docker Agent)",
+        "panelIndex": 59,
+        "displayName": "Avg",
+        "query": "avg({otel_metric_name = \"docker.cpu.usage\", otel_metric_type = \"gauge\"})"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Docker CPU Usage (Datadog Docker Agent)",
+        "panelIndex": 59,
+        "displayName": "Max",
+        "query": "max({otel_metric_name = \"docker.cpu.usage\", otel_metric_type = \"gauge\"})"
+      }
+    ],
+    "container.cpu.usage.total": [
+      {
+        "section": "Container/Host",
+        "panel": "Docker CPU Usage (OTEL Collector  - Docker/stats)",
+        "panelIndex": 60,
+        "displayName": "Avg",
+        "query": "avg({otel_metric_name = \"container.cpu.usage.total\", otel_metric_type = \"sum\"})"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Docker CPU Usage (OTEL Collector  - Docker/stats)",
+        "panelIndex": 60,
+        "displayName": "Max",
+        "query": "max(rate({otel_metric_name = \"container.cpu.usage.total\", otel_metric_type = \"sum\"}[2m]))"
+      }
+    ],
+    "kubernetes.memory.usage": [
+      {
+        "section": "Container/Host",
+        "panel": "Kubernetes Memory Usage",
+        "panelIndex": 61,
+        "displayName": "Avg",
+        "query": "avg({otel_metric_name = \"kubernetes.memory.usage\", otel_metric_type = \"gauge\"})"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Kubernetes Memory Usage",
+        "panelIndex": 61,
+        "displayName": "Max",
+        "query": "max({otel_metric_name = \"kubernetes.memory.usage\", otel_metric_type = \"gauge\"})"
+      }
+    ],
+    "system.mem.used": [
+      {
+        "section": "Container/Host",
+        "panel": "Host Memory Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 62,
+        "displayName": "Avg",
+        "query": "avg({otel_metric_name = \"system.mem.used\", otel_metric_type = \"gauge\"})"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Host Memory Usage (OTEL Collector - Hostmetrics)",
+        "panelIndex": 62,
+        "displayName": "Max",
+        "query": "max({otel_metric_name = \"system.mem.used\", otel_metric_type = \"gauge\"})"
+      }
+    ],
+    "docker.mem.in_use": [
+      {
+        "section": "Container/Host",
+        "panel": "Docker Memory Usage (Datadog Docker Agent)",
+        "panelIndex": 63,
+        "displayName": "Avg",
+        "query": "avg({otel_metric_name = \"docker.mem.in_use\", otel_metric_type = \"gauge\"})"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Docker Memory Usage (Datadog Docker Agent)",
+        "panelIndex": 63,
+        "displayName": "Max",
+        "query": "max({otel_metric_name = \"docker.mem.in_use\", otel_metric_type = \"gauge\"})"
+      }
+    ],
+    "container.memory.usage.total": [
+      {
+        "section": "Container/Host",
+        "panel": "Docker Memory Usage (OTEL Collector  - Docker/stats)",
+        "panelIndex": 64,
+        "displayName": "Avg",
+        "query": "avg({otel_metric_name = \"container.memory.usage.total\", otel_metric_type = \"sum\"})"
+      },
+      {
+        "section": "Container/Host",
+        "panel": "Docker Memory Usage (OTEL Collector  - Docker/stats)",
+        "panelIndex": 64,
+        "displayName": "Max",
+        "query": "max(rate({otel_metric_name = \"container.memory.usage.total\", otel_metric_type = \"sum\"}[2m]))"
+      }
+    ],
+    "apollo.router.operations.coprocessor.duration": [
+      {
+        "section": "Coprocessors",
+        "panel": "Request Duration",
+        "panelIndex": 70,
+        "displayName": "By Coprocessor stage",
+        "query": "histogram_avg(sum by (coprocessor_stage) (rate({otel_metric_name = \"apollo.router.operations.coprocessor.duration\", otel_metric_type = \"histogram\"}[2m])))"
+      },
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Router Relative Overhead",
+        "panelIndex": 81,
+        "displayName": "Avg",
+        "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.operations.coprocessor.duration\", otel_metric_type = \"histogram\"}[2m]))"
+      }
+    ],
+    "apollo.router.operations.coprocessor": [
+      {
+        "section": "Coprocessors",
+        "panel": "Request Count",
+        "panelIndex": 71,
+        "displayName": "By Coprocessor stage",
+        "query": "sum by (coprocessor_stage) (rate({otel_metric_name = \"apollo.router.operations.coprocessor\", otel_metric_type = \"sum\"}[2m]))"
+      },
+      {
+        "section": "Coprocessors",
+        "panel": "Success Rate",
+        "panelIndex": 74,
+        "displayName": "By Coprocessor stage",
+        "query": "sum by (coprocessor_stage) (rate({otel_metric_name = \"apollo.router.operations.coprocessor\", otel_metric_type = \"sum\", coprocessor_succeeded=\"true\"}[2m]))"
+      },
+      {
+        "section": "Coprocessors",
+        "panel": "Success Rate",
+        "panelIndex": 74,
+        "displayName": "By Coprocessor stage",
+        "query": "sum by (coprocessor_stage) (rate({otel_metric_name = \"apollo.router.operations.coprocessor\", otel_metric_type = \"sum\"}[2m]))"
+      }
+    ],
+    "apollo.router.uplink.fetch.duration.seconds": [
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Uplink and Licensing",
+        "panelIndex": 77,
+        "displayName": "Avg",
+        "query": "histogram_avg(rate({otel_metric_name = \"apollo.router.uplink.fetch.duration.seconds\", otel_metric_type = \"histogram\"}[2m]))"
+      }
+    ],
+    "apollo.router.open_connections": [
+      {
+        "section": "Sentinel Metrics",
+        "panel": "Open Connections by Schema and Launch ID",
+        "panelIndex": 78,
+        "displayName": "By id, id",
+        "query": "avg by (schema_id, launch_id) ({otel_metric_name = \"apollo.router.open_connections\", otel_metric_type = \"gauge\"})"
+      }
+    ],
+    "http.client.request.body.size": [
+      {
+        "section": "Resource Estimator",
+        "panel": "Average Client Request Size",
+        "panelIndex": 87,
+        "displayName": "Avg",
+        "query": "histogram_avg(rate({otel_metric_name = \"http.client.request.body.size\", otel_metric_type = \"histogram\"}[2m]))"
+      }
+    ]
+  }
+}
