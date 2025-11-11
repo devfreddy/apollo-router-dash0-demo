@@ -1,0 +1,24 @@
+"""
+Apollo Federation v2.0 Accounts Subgraph
+
+This schema extends the Apollo Federation schema with:
+- @key directives for entity identification
+- Reference resolution via __resolveReference
+"""
+type Query {
+  me: User
+  user(id: ID!): User
+  users: [User!]!
+  recommendedProducts: [Product!]!
+}
+
+type User {
+  id: ID!
+  name: String!
+  username: String!
+  email: String!
+}
+
+type Product {
+  id: ID!
+}

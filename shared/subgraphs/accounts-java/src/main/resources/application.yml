@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: accounts-subgraph
+  graphql:
+    graphiql:
+      enabled: true
+      path: /graphiql
+
+server:
+  port: ${PORT:4001}
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: always
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+  otlp:
+    tracing:
+      endpoint: ${DASH0_TRACES_ENDPOINT:http://localhost:4317}
+  tracing:
+    sampling:
+      probability: 0.25  # 25% sampling like Node.js version
+    propagation:
+      type: w3c  # W3C Trace Context
+
+logging:
+  level:
+    root: INFO
+    com.apollo.accounts: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
