@@ -19,10 +19,14 @@ echo -e "${BLUE}╚════════════════════�
 echo ""
 
 # Check if we're in the right directory
-if [ ! -f "kubernetes/scripts/k3d-up.sh" ]; then
-    echo -e "${RED}Error: Please run this script from the project root directory${NC}"
+if [ ! -f "scripts/k3d-up.sh" ]; then
+    echo -e "${RED}Error: Please run this script from the kubernetes/ directory${NC}"
+    echo "Example: cd kubernetes && ./scripts/rebuild-and-reimport-images.sh"
     exit 1
 fi
+
+# Get the root directory (one level up from kubernetes/)
+ROOT_DIR="$(cd ".." && pwd)"
 
 # Check if docker is available
 if ! command -v docker &> /dev/null; then
@@ -60,34 +64,104 @@ fi
 echo -e "${YELLOW}Cluster: $CLUSTER_NAME${NC}"
 echo ""
 
-# Build and import each subgraph image
-SUBGRAPHS=("accounts" "products" "reviews" "inventory")
+# Function to build subgraph image
+build_subgraph() {
+    local subgraph=$1
+    local cluster_name=$2
 
-for subgraph in "${SUBGRAPHS[@]}"; do
-    IMAGE_NAME="apollo-dash0-demo-$subgraph:latest"
+    if [ "$subgraph" = "products" ]; then
+        IMAGE_NAME="apollo-dash0-demo-products:latest"
+        SUBGRAPH_DIR="products"
+        CONTEXT_DIR="$ROOT_DIR/shared/subgraphs/$SUBGRAPH_DIR"
+    else
+        IMAGE_NAME="apollo-dash0-demo-$subgraph:latest"
+        SUBGRAPH_DIR="$subgraph"
+        CONTEXT_DIR="$ROOT_DIR/shared/subgraphs"
+    fi
 
     echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "${GREEN}[$subgraph]${NC} Building Docker image..."
 
     # Build from subgraphs directory so Dockerfile can access shared directory
-    if docker build -t "$IMAGE_NAME" -f "./shared/subgraphs/$subgraph/Dockerfile" "./shared/subgraphs"; then
+    if docker build -t "$IMAGE_NAME" -f "$ROOT_DIR/shared/subgraphs/$SUBGRAPH_DIR/Dockerfile" "$CONTEXT_DIR"; then
         echo -e "${GREEN}[$subgraph]${NC} Image built successfully: $IMAGE_NAME"
     else
         echo -e "${RED}Error: Failed to build $subgraph image${NC}"
-        exit 1
+        return 1
     fi
 
     echo ""
     echo -e "${GREEN}[$subgraph]${NC} Importing image to k3d cluster..."
 
-    if k3d image import "$IMAGE_NAME" -c "$CLUSTER_NAME"; then
+    if k3d image import "$IMAGE_NAME" -c "$cluster_name"; then
         echo -e "${GREEN}[$subgraph]${NC} Image imported successfully"
     else
         echo -e "${RED}Error: Failed to import $subgraph image${NC}"
-        exit 1
+        return 1
     fi
 
     echo ""
+}
+
+# Function to build website service image
+build_website_service() {
+    local service=$1
+    local cluster_name=$2
+
+    if [ "$service" = "website" ]; then
+        IMAGE_NAME="apollo-dash0-demo-willful-waste-website:latest"
+        SERVICE_DIR="website"
+    else
+        IMAGE_NAME="apollo-dash0-demo-willful-waste-bot:latest"
+        SERVICE_DIR="website-bot"
+    fi
+
+    echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${GREEN}[$service]${NC} Building Docker image..."
+
+    if [ "$service" = "website" ]; then
+        # Pass Dash0 RUM token as build arg for the website (if available)
+        docker build \
+            --build-arg VITE_DASH0_API_TOKEN="${VITE_DASH0_API_TOKEN:-}" \
+            --build-arg VITE_ENVIRONMENT="${ENVIRONMENT:-demo}" \
+            --build-arg VITE_GRAPHQL_URL="http://apollo-router:4000/graphql" \
+            -t "$IMAGE_NAME" \
+            -f "$ROOT_DIR/shared/$SERVICE_DIR/Dockerfile" \
+            "$ROOT_DIR/shared/$SERVICE_DIR" || return 1
+    else
+        docker build -t "$IMAGE_NAME" -f "$ROOT_DIR/shared/$SERVICE_DIR/Dockerfile" "$ROOT_DIR/shared/$SERVICE_DIR" || return 1
+    fi
+    echo -e "${GREEN}[$service]${NC} Image built successfully: $IMAGE_NAME"
+
+    echo ""
+    echo -e "${GREEN}[$service]${NC} Importing image to k3d cluster..."
+
+    if k3d image import "$IMAGE_NAME" -c "$cluster_name"; then
+        echo -e "${GREEN}[$service]${NC} Image imported successfully"
+    else
+        echo -e "${RED}Error: Failed to import $service image${NC}"
+        return 1
+    fi
+
+    echo ""
+}
+
+# Build and import each subgraph image
+SUBGRAPHS=("accounts" "products" "reviews" "inventory")
+
+for subgraph in "${SUBGRAPHS[@]}"; do
+    if ! build_subgraph "$subgraph" "$CLUSTER_NAME"; then
+        exit 1
+    fi
+done
+
+# Build and import website services
+SERVICES=("website" "bot")
+
+for service in "${SERVICES[@]}"; do
+    if ! build_website_service "$service" "$CLUSTER_NAME"; then
+        exit 1
+    fi
 done
 
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -101,11 +175,24 @@ for subgraph in "${SUBGRAPHS[@]}"; do
     kubectl rollout restart deployment/"$subgraph" -n apollo-dash0-demo
 done
 
+# Restart website service deployments
+WEBSITE_DEPLOYMENTS=("willful-waste-website" "willful-waste-bot")
+for deployment in "${WEBSITE_DEPLOYMENTS[@]}"; do
+    echo -e "${GREEN}[$deployment]${NC} Restarting deployment..."
+    kubectl rollout restart deployment/"$deployment" -n apollo-dash0-demo || true
+done
+
 echo ""
 echo -e "${YELLOW}Waiting for rollout...${NC}"
 for subgraph in "${SUBGRAPHS[@]}"; do
     echo -e "${GREEN}[$subgraph]${NC} Waiting for deployment to be ready..."
     kubectl rollout status deployment/"$subgraph" -n apollo-dash0-demo --timeout=120s > /dev/null 2>&1 || true
+done
+
+# Wait for website services (they may not exist, so use || true)
+for deployment in "${WEBSITE_DEPLOYMENTS[@]}"; do
+    echo -e "${GREEN}[$deployment]${NC} Waiting for deployment to be ready..."
+    kubectl rollout status deployment/"$deployment" -n apollo-dash0-demo --timeout=120s > /dev/null 2>&1 || true
 done
 
 echo ""
@@ -116,14 +203,22 @@ echo ""
 
 echo -e "${GREEN}Rebuilt and reimported images:${NC}"
 for subgraph in "${SUBGRAPHS[@]}"; do
-    echo -e "  ✓ apollo-dash0-demo-$subgraph:latest"
+    if [ "$subgraph" = "products" ]; then
+        echo -e "  ✓ apollo-dash0-demo-products:latest"
+    else
+        echo -e "  ✓ apollo-dash0-demo-$subgraph:latest"
+    fi
 done
+echo -e "  ✓ apollo-dash0-demo-willful-waste-website:latest"
+echo -e "  ✓ apollo-dash0-demo-willful-waste-bot:latest"
 
 echo ""
 echo -e "${GREEN}Restarted deployments:${NC}"
 for subgraph in "${SUBGRAPHS[@]}"; do
     echo -e "  ✓ $subgraph"
 done
+echo -e "  ✓ willful-waste-website"
+echo -e "  ✓ willful-waste-bot"
 
 echo ""
 echo -e "${YELLOW}Quick commands:${NC}"
