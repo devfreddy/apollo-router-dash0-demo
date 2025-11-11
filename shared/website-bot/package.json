@@ -1,19 +1,10 @@
 {
   "name": "willful-waste-bot",
-  "version": "1.0.0",
-  "description": "Automated bot for generating traffic on Willful Waste retail store",
-  "main": "bot.js",
-  "type": "module",
+  "version": "2.0.0",
+  "description": "Locust-based load testing for Apollo Router GraphQL API with OpenTelemetry",
+  "main": "locustfile.py",
   "scripts": {
-    "start": "node bot.js",
-    "dev": "node --watch bot.js"
-  },
-  "dependencies": {
-    "puppeteer": "^21.0.0",
-    "axios": "^1.5.0",
-    "dotenv": "^16.3.1"
-  },
-  "devDependencies": {
-    "@types/node": "^20.8.0"
+    "start": "locust -f locustfile.py --host=http://apollo-router:4000",
+    "dev": "locust -f locustfile.py --host=http://localhost:4000"
   }
 }

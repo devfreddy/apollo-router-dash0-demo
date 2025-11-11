@@ -9,7 +9,7 @@ const CONFIG = {
   graphqlUrl: process.env.GRAPHQL_URL || 'http://localhost:4000/graphql',
   botInterval: parseInt(process.env.BOT_INTERVAL || '10000'), // milliseconds
   sessionDuration: parseInt(process.env.SESSION_DURATION || '60000'), // milliseconds
-  concurrentBots: parseInt(process.env.CONCURRENT_BOTS || '3'),
+  concurrentBots: parseInt(process.env.BOT_CONCURRENT_BOTS || '1'), // Reduced from 3 to 1 for stability
   headless: process.env.HEADLESS !== 'false',
 }
 
@@ -44,14 +44,32 @@ async function makeGraphQLQuery(query) {
  */
 async function createBotSession(botId) {
   console.log(`[Bot ${botId}] Starting browser session...`)
+  const startTime = Date.now()
 
   try {
     const browser = await puppeteer.launch({
-      headless: CONFIG.headless,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      headless: CONFIG.headless ? 'new' : false,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-gpu', // Disable GPU to reduce memory usage
+        '--single-process', // Reduce memory overhead
+        '--no-first-run',
+        '--no-default-browser-check',
+        '--disable-default-apps',
+        '--disable-extensions',
+      ],
+      protocolTimeout: 180000, // 180 seconds for protocol communication
+      timeout: 180000, // 180 seconds for browser launch
     })
 
+    const launchTime = Date.now() - startTime
+    console.log(`[Bot ${botId}] Browser launched in ${launchTime}ms`)
+
+    let pageCreateStart = Date.now()
     const page = await browser.newPage()
+    const pageCreateTime = Date.now() - pageCreateStart
+    console.log(`[Bot ${botId}] Page created in ${pageCreateTime}ms`)
 
     // Set viewport to simulate different devices
     const viewports = [
@@ -311,15 +329,20 @@ async function main() {
   // Start concurrent bot sessions
   const botPromises = []
 
-  // Start browser-based bots
+  // Start browser-based bots with staggered delays to prevent resource contention
   for (let i = 1; i <= CONFIG.concurrentBots; i++) {
-    botPromises.push(runBotSession(i))
+    botPromises.push(
+      new Promise(resolve => {
+        // Stagger bot startup by 2 seconds each
+        setTimeout(() => runBotSession(i).then(resolve), (i - 1) * 2000)
+      })
+    )
   }
 
-  // Start GraphQL-based bots (lighter weight)
-  for (let i = 1; i <= Math.ceil(CONFIG.concurrentBots / 2); i++) {
-    botPromises.push(runGraphQLBot(CONFIG.concurrentBots + i))
-  }
+  // Start GraphQL-based bots (lighter weight) - start immediately since they use less resources
+  // for (let i = 1; i <= Math.ceil(CONFIG.concurrentBots / 2); i++) {
+  //   botPromises.push(runGraphQLBot(CONFIG.concurrentBots + i))
+  // }
 
   console.log(`⏱️  Bots started. Waiting for sessions to complete...`)
   console.log(`⏹️  Press Ctrl+C to stop.`)

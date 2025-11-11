@@ -1,40 +1,39 @@
-# Build stage - Install dependencies
-FROM node:18-alpine AS builder
+# Locust-based load test container for Apollo Router
+# Lightweight Python-based load testing with full OpenTelemetry support
+
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies (including devDependencies for build tools if any)
-RUN npm ci
+# Copy requirements
+COPY requirements.txt .
 
-# Runtime stage - Lightweight final image
-FROM node:18-alpine
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-WORKDIR /app
+# Copy application
+COPY locustfile.py .
+COPY entrypoint.sh .
 
-# Install Chrome dependencies for Puppeteer
-# Using --no-cache to keep image size small
-RUN apk add --no-cache \
-    chromium \
-    ttf-dejavu \
-    fontconfig
-
-# Set Puppeteer to use system Chrome
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-
-# Copy node_modules from builder stage (pre-installed and optimized)
-COPY --from=builder /app/node_modules ./node_modules
-
-# Copy application files
-COPY bot.js .
-COPY package*.json ./
+# Make entrypoint executable
+RUN chmod +x entrypoint.sh
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD node -e "console.log('Bot is running')" || exit 1
+  CMD python -c "import requests; requests.get('http://localhost:8089', timeout=5)" || exit 1
 
-# Run the bot
-CMD ["npm", "start"]
+# Locust runs in headless mode by default
+# Web UI available on port 8089
+ENV LOCUST_HEADLESS=true
+ENV LOCUST_LOGLEVEL=info
+ENV LOCUST_HOST=http://apollo-router:4000
+ENV LOCUST_USERS=5
+ENV LOCUST_SPAWN_RATE=1
+
+# Run Locust with entrypoint script to use environment variables
+ENTRYPOINT ["./entrypoint.sh"]
