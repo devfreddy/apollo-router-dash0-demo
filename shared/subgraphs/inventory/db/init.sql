@@ -2,7 +2,11 @@
 CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
 
 -- Create monitoring user for OpenTelemetry Collector
-CREATE USER IF NOT EXISTS dash0_monitor WITH PASSWORD 'dash0_secure_monitor_password';
+DO $$BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'dash0_monitor') THEN
+    CREATE USER dash0_monitor WITH PASSWORD 'dash0_secure_monitor_password';
+  END IF;
+END$$;
 
 -- Grant necessary permissions to monitoring user
 GRANT pg_monitor TO dash0_monitor;
