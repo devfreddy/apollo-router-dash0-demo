@@ -62,7 +62,7 @@ services:
       - /dist/schema/supergraph.graphql
     depends_on:
       - accounts
-      - products-py
+      - products
       - reviews
       - inventory
     healthcheck:
@@ -102,10 +102,10 @@ services:
     labels:
       - "com.dash0.demo=accounts-subgraph"
 
-  # Products Subgraph (Python)
-  products-py:
+  # Products Subgraph
+  products:
     build:
-      context: ../shared/subgraphs/products-py
+      context: ../shared/subgraphs/products
       dockerfile: Dockerfile
     ports:
       - "4003:4003"
@@ -121,7 +121,7 @@ services:
       - PRODUCTS_SUBGRAPH_PY_ERROR_RATE=${PRODUCTS_SUBGRAPH_PY_ERROR_RATE:-0}
     restart: unless-stopped
     labels:
-      - "com.dash0.demo=products-subgraph-python"
+      - "com.dash0.demo=products-subgraph"
 
   # Reviews Subgraph
   reviews:
@@ -191,7 +191,7 @@ services:
   # Metrics are scraped by Dash0 operator (via prometheus.io annotations)
   # Includes custom queries for pg_stat_statements query-level analytics
   postgres-exporter:
-    image: prometheuscommunity/postgres-exporter:v0.15.0
+    image: prometheuscommunity/postgres-exporter:v0.18.1
     ports:
       - "9187:9187"
     environment:

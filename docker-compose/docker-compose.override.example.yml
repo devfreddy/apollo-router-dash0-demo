@@ -44,7 +44,7 @@ services:
       # - ACCOUNTS_SUBGRAPH_ERROR_RATE=10
       pass
 
-  products-py:
+  products:
     environment:
       # Increase error rate for chaos testing
       # - PRODUCTS_SUBGRAPH_PY_ERROR_RATE=10

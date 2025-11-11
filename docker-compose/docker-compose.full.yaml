@@ -69,7 +69,7 @@ services:
       - /dist/schema/supergraph.graphql
     depends_on:
       - accounts
-      - products-py
+      - products
       - reviews
       - inventory
     healthcheck:
@@ -109,9 +109,8 @@ services:
     labels:
       - "com.dash0.demo=accounts-subgraph"
 
-  # Products Subgraph (Node.js) - DISABLED
-  # Using Python version (products-py) instead
-  # To switch back to Node.js: uncomment this service and change router's depends_on to 'products'
+  # Products Subgraph (Node.js) - REMOVED
+  # The Python version is now the only products subgraph
   # products:
   #   build:
   #     context: ./subgraphs/products
@@ -137,12 +136,11 @@ services:
   #   labels:
   #     - "com.dash0.demo=products-subgraph-nodejs"
 
-  # Products Subgraph (Python) - NOW ACTIVE
+  # Products Subgraph
   # This is the primary products subgraph with enhanced schema and OTel instrumentation
-  # To switch back to Node.js: uncomment the 'products' service above and change router's depends_on
-  products-py:
+  products:
     build:
-      context: ./shared/subgraphs/products-py
+      context: ./shared/subgraphs/products
       dockerfile: Dockerfile
     ports:
       - "4003:4003"
