@@ -25,42 +25,43 @@ spec:
         image: apollo-dash0-demo-willful-waste-bot:latest
         imagePullPolicy: IfNotPresent
         env:
-        - name: WEBSITE_URL
-          value: "http://willful-waste-website/index.html"
-        - name: GRAPHQL_URL
-          value: "http://apollo-router:4000/graphql"
-        - name: BOT_INTERVAL
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://otel-collector:4317"
+        - name: LOCUST_HOST
+          value: "http://apollo-router:4000"
+        - name: LOCUST_USERS
           valueFrom:
             configMapKeyRef:
               name: apollo-config
-              key: BOT_INTERVAL
-        - name: SESSION_DURATION
+              key: LOCUST_USERS
+        - name: LOCUST_SPAWN_RATE
           valueFrom:
             configMapKeyRef:
               name: apollo-config
-              key: BOT_SESSION_DURATION
-        - name: CONCURRENT_BOTS
+              key: LOCUST_SPAWN_RATE
+        - name: LOCUST_RUN_TIME
           valueFrom:
             configMapKeyRef:
               name: apollo-config
-              key: BOT_CONCURRENT_BOTS
-        - name: HEADLESS
-          valueFrom:
-            configMapKeyRef:
-              name: apollo-config
-              key: BOT_HEADLESS
-        - name: NODE_ENV
-          value: "production"
+              key: LOCUST_RUN_TIME
+              optional: true
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: LOCUST_LOGLEVEL
+          value: "info"
+        - name: LOCUST_HEADLESS
+          value: "true"
+        ports:
+        - containerPort: 8089
+          name: web
+          protocol: TCP
         resources:
           requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
             memory: "512Mi"
             cpu: "500m"
-          limits:
-            memory: "1Gi"
-            cpu: "1000m"
         securityContext:
           runAsNonRoot: false
-          capabilities:
-            add:
-              - NET_BIND_SERVICE
       restartPolicy: Always
