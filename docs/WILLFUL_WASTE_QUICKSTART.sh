@@ -62,7 +62,7 @@ cd "$PROJECT_ROOT"
 echo -e "\n${YELLOW}Starting Willful Waste services...${NC}"
 echo -e "${BLUE}Building and starting backend services (router, subgraphs)${NC}"
 
-docker-compose up -d router accounts products-py reviews inventory
+docker-compose up -d router accounts products reviews inventory
 
 echo -e "${YELLOW}Waiting for backend services to be healthy...${NC}"
 sleep 30
