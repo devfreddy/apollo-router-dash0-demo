@@ -20,6 +20,11 @@ initDash0({
     authToken: import.meta.env.VITE_DASH0_AUTH_TOKEN || '',
     ...(import.meta.env.VITE_DASH0_DATASET && { dataset: import.meta.env.VITE_DASH0_DATASET }),
   },
+  // Include synthetic/bot traffic in RUM metrics
+  // This allows load testing and monitoring tools to send data
+  instrumentPageLoadTiming: true,
+  instrumentResourceTiming: true,
+  instrumentUserTiming: true,
 })
 
 // Initialize Apollo Client
