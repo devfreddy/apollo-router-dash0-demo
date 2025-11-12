@@ -203,10 +203,10 @@ class ApolloRouterBrowserUser(PlaywrightUser):
     - Captures page load performance metrics
     - Generates user interaction telemetry
     - Much lighter than Puppeteer
-    - Runs with headless=False to ensure full browser APIs work (required for RUM telemetry)
+    - Headless mode with xvfb virtual display to enable full browser APIs for RUM telemetry
     """
 
-    headless = False
+    headless = True
     wait_time_between_tasks = 5  # Wait 5 seconds between tasks
 
     def __init__(self, *args, **kwargs):
