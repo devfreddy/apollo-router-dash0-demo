@@ -8,7 +8,7 @@ resources:
   - postgres-exporter.yaml
   - dash0-monitoring.yaml
   - website.yaml
-  - website-bot.yaml
+  # - website-bot.yaml  # Website bot is kept in the codebase but not deployed
   - ingress.yaml
   - subgraphs/accounts.yaml
   - subgraphs/inventory.yaml
