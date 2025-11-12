@@ -200,9 +200,7 @@ for subgraph in accounts products reviews inventory; do
     build_subgraph "$subgraph" "$ROOT_DIR" &
 done
 
-for service in website bot; do
-    build_website_service "$service" "$ROOT_DIR" &
-done
+build_website_service "website" "$ROOT_DIR" &
 
 # Store background job PIDs for later
 BUILD_PIDS=$!
@@ -335,20 +333,14 @@ for subgraph in accounts products reviews inventory; do
     fi
 done
 
-# Import all website service images to k3d (sequential to ensure completion)
-echo -e "${YELLOW}Importing website service images to k3d...${NC}"
-for service in website bot; do
-    if [ "$service" = "website" ]; then
-        IMAGE_NAME="apollo-dash0-demo-willful-waste-website:latest"
-    else
-        IMAGE_NAME="apollo-dash0-demo-willful-waste-bot:latest"
-    fi
-    echo -e "${YELLOW}Importing $IMAGE_NAME...${NC}"
-    if ! k3d image import "$IMAGE_NAME" -c "$CLUSTER_NAME"; then
-        echo -e "${RED}Error: Failed to import $IMAGE_NAME${NC}"
-        exit 1
-    fi
-done
+# Import website service image to k3d
+echo -e "${YELLOW}Importing website service image to k3d...${NC}"
+IMAGE_NAME="apollo-dash0-demo-willful-waste-website:latest"
+echo -e "${YELLOW}Importing $IMAGE_NAME...${NC}"
+if ! k3d image import "$IMAGE_NAME" -c "$CLUSTER_NAME"; then
+    echo -e "${RED}Error: Failed to import $IMAGE_NAME${NC}"
+    exit 1
+fi
 
 # Deploy all resources via kustomize
 echo -e "${YELLOW}Deploying all resources with kustomize...${NC}"
