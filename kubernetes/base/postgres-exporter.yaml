@@ -11,10 +11,10 @@ metadata:
   labels:
     app: postgres-exporter
 data:
-  # Custom queries to expose pg_stat_statements data
-  # These provide detailed per-query metrics similar to OTel PostgreSQL receiver
+  # Custom queries to expose PostgreSQL statistics data
+  # These provide detailed metrics for observability
   queries.yaml: |
-    pg_stat_statements:
+    pg_stat_user_functions:
       query: |
         SELECT
           current_database() as datname,
@@ -22,10 +22,7 @@ data:
           funcname,
           calls,
           total_time,
-          mean_time,
-          min_time,
-          max_time,
-          rows
+          self_time
         FROM pg_stat_user_functions
       metrics:
         - datname:
@@ -43,59 +40,10 @@ data:
         - total_time:
             usage: "GAUGE"
             description: "Total time spent in this function (milliseconds)"
-        - mean_time:
+        - self_time:
             usage: "GAUGE"
-            description: "Average time spent in this function (milliseconds)"
-        - min_time:
-            usage: "GAUGE"
-            description: "Minimum time spent in this function (milliseconds)"
-        - max_time:
-            usage: "GAUGE"
-            description: "Maximum time spent in this function (milliseconds)"
-        - rows:
-            usage: "GAUGE"
-            description: "Total number of rows returned by this function"
+            description: "Time spent in this function, not counting subcalls (milliseconds)"
 
-    # Query execution statistics from pg_stat_statements
-    pg_stat_statements_timing:
-      query: |
-        SELECT
-          current_database() as datname,
-          calls,
-          total_time,
-          mean_time,
-          min_time,
-          max_time,
-          stddev_time,
-          rows
-        FROM pg_stat_statements
-        WHERE query NOT LIKE '%pg_stat_statements%'
-        ORDER BY total_time DESC
-      metrics:
-        - datname:
-            usage: "LABEL"
-            description: "Database name"
-        - calls:
-            usage: "COUNTER"
-            description: "Total times query has been executed"
-        - total_time:
-            usage: "GAUGE"
-            description: "Total time spent in query (milliseconds)"
-        - mean_time:
-            usage: "GAUGE"
-            description: "Mean time per query execution (milliseconds)"
-        - min_time:
-            usage: "GAUGE"
-            description: "Minimum query execution time (milliseconds)"
-        - max_time:
-            usage: "GAUGE"
-            description: "Maximum query execution time (milliseconds)"
-        - stddev_time:
-            usage: "GAUGE"
-            description: "Standard deviation of query execution time"
-        - rows:
-            usage: "GAUGE"
-            description: "Total rows returned by query"
 
 ---
 # Secret for PostgreSQL monitoring user credentials
@@ -165,6 +113,10 @@ spec:
         # Exporter configuration
         - name: PG_EXPORTER_EXCLUDE_DATABASES
           value: "postgres,template0,template1"
+
+        # Custom queries configuration file
+        - name: PG_EXPORTER_EXTEND_QUERY_PATH
+          value: "/etc/postgres_exporter/queries.yaml"
 
         volumeMounts:
         - name: queries
