@@ -28,9 +28,13 @@ initDash0({
 })
 
 // Initialize Apollo Client
+// Use relative URL or environment variable for GraphQL endpoint
+// This allows flexibility: relative path for same-origin requests,
+// or explicit URL from environment for Kubernetes deployments
+const graphqlUri = import.meta.env.VITE_GRAPHQL_URL || '/graphql'
 const apolloClient = new ApolloClient({
   link: new HttpLink({
-    uri: import.meta.env.VITE_GRAPHQL_URL || 'http://router.localhost/graphql',
+    uri: graphqlUri,
     credentials: 'same-origin',
   }),
   cache: new InMemoryCache(),

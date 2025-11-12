@@ -132,7 +132,7 @@ build_website_service() {
             --build-arg VITE_DASH0_AUTH_TOKEN="${VITE_DASH0_AUTH_TOKEN:-}" \
             --build-arg VITE_DASH0_DATASET="${VITE_DASH0_DATASET:-}" \
             --build-arg VITE_ENVIRONMENT="${ENVIRONMENT:-demo}" \
-            --build-arg VITE_GRAPHQL_URL="http://apollo-router:4000/graphql" \
+            --build-arg VITE_GRAPHQL_URL="http://router.localhost/graphql" \
             -t "$IMAGE_NAME" \
             -f "$ROOT_DIR/shared/$SERVICE_DIR/Dockerfile" \
             "$ROOT_DIR/shared/$SERVICE_DIR" || return 1
