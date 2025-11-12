@@ -216,7 +216,9 @@ services:
       context: ../shared/website
       dockerfile: Dockerfile
       args:
-        - VITE_DASH0_API_TOKEN=${VITE_DASH0_API_TOKEN}
+        - VITE_DASH0_ENDPOINT=${VITE_DASH0_ENDPOINT}
+        - VITE_DASH0_AUTH_TOKEN=${VITE_DASH0_AUTH_TOKEN}
+        - VITE_DASH0_DATASET=${VITE_DASH0_DATASET}
         - VITE_ENVIRONMENT=${VITE_ENVIRONMENT}
         - VITE_GRAPHQL_URL=http://localhost:4000/graphql
     ports:

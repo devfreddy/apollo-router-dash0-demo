@@ -53,13 +53,22 @@ echo ""
 IMAGE_NAME="apollo-dash0-demo-willful-waste-website:latest"
 SERVICE_DIR="website"
 
+# Debug: Show what we're building with
+echo -e "${YELLOW}Build Configuration:${NC}"
+echo "  VITE_DASH0_ENDPOINT=${VITE_DASH0_ENDPOINT}"
+echo "  VITE_DASH0_AUTH_TOKEN=${VITE_DASH0_AUTH_TOKEN:0:10}..."
+echo "  VITE_DASH0_DATASET=${VITE_DASH0_DATASET}"
+echo "  VITE_ENVIRONMENT=${ENVIRONMENT:-demo}"
+echo ""
+
 echo -e "${GREEN}Building Docker image...${NC}"
 docker build \
-    --build-arg VITE_DASH0_ENDPOINT="${VITE_DASH0_ENDPOINT:-http://localhost:4318}" \
-    --build-arg VITE_DASH0_AUTH_TOKEN="${VITE_DASH0_AUTH_TOKEN:-}" \
-    --build-arg VITE_DASH0_DATASET="${VITE_DASH0_DATASET:-}" \
+    --no-cache \
+    --build-arg VITE_DASH0_ENDPOINT="${VITE_DASH0_ENDPOINT}" \
+    --build-arg VITE_DASH0_AUTH_TOKEN="${VITE_DASH0_AUTH_TOKEN}" \
+    --build-arg VITE_DASH0_DATASET="${VITE_DASH0_DATASET}" \
     --build-arg VITE_ENVIRONMENT="${ENVIRONMENT:-demo}" \
-    --build-arg VITE_GRAPHQL_URL="http://router.localhost/graphql" \
+    --build-arg VITE_GRAPHQL_URL="http://localhost:4000/graphql" \
     -t "$IMAGE_NAME" \
     -f "$ROOT_DIR/shared/$SERVICE_DIR/Dockerfile" \
     "$ROOT_DIR/shared/$SERVICE_DIR" || {

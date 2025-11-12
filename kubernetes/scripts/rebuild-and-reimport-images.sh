@@ -64,6 +64,12 @@ fi
 echo -e "${YELLOW}Cluster: $CLUSTER_NAME${NC}"
 echo ""
 
+# Load environment variables from .env file if it exists
+if [ -f "$ROOT_DIR/.env" ]; then
+    # Load .env but only VITE_* and DASH0_* variables
+    export $(grep -E '^VITE_|^DASH0_|^ENVIRONMENT=' "$ROOT_DIR/.env" | xargs)
+fi
+
 # Function to build subgraph image
 build_subgraph() {
     local subgraph=$1
@@ -120,9 +126,11 @@ build_website_service() {
     echo -e "${GREEN}[$service]${NC} Building Docker image..."
 
     if [ "$service" = "website" ]; then
-        # Pass Dash0 RUM token as build arg for the website (if available)
+        # Pass Dash0 RUM configuration as build args for the website (if available)
         docker build \
-            --build-arg VITE_DASH0_API_TOKEN="${VITE_DASH0_API_TOKEN:-}" \
+            --build-arg VITE_DASH0_ENDPOINT="${VITE_DASH0_ENDPOINT}" \
+            --build-arg VITE_DASH0_AUTH_TOKEN="${VITE_DASH0_AUTH_TOKEN:-}" \
+            --build-arg VITE_DASH0_DATASET="${VITE_DASH0_DATASET:-}" \
             --build-arg VITE_ENVIRONMENT="${ENVIRONMENT:-demo}" \
             --build-arg VITE_GRAPHQL_URL="http://apollo-router:4000/graphql" \
             -t "$IMAGE_NAME" \

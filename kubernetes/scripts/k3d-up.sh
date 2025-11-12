@@ -179,11 +179,13 @@ build_website_service() {
 
     echo -e "${YELLOW}[BG] Building willful-waste-$service...${NC}"
     if [ "$service" = "website" ]; then
-        # Pass Dash0 RUM token as build arg for the website
+        # Pass Dash0 RUM configuration as build args for the website
         docker build \
-            --build-arg VITE_DASH0_API_TOKEN="$VITE_DASH0_API_TOKEN" \
+            --build-arg VITE_DASH0_ENDPOINT="$VITE_DASH0_ENDPOINT" \
+            --build-arg VITE_DASH0_AUTH_TOKEN="$VITE_DASH0_AUTH_TOKEN" \
+            --build-arg VITE_DASH0_DATASET="$VITE_DASH0_DATASET" \
             --build-arg VITE_ENVIRONMENT="$ENVIRONMENT" \
-            --build-arg VITE_GRAPHQL_URL="http://apollo-router:4000/" \
+            --build-arg VITE_GRAPHQL_URL="http://apollo-router:4000/graphql" \
             -t "$IMAGE_NAME" \
             -f "$root_dir/shared/$SERVICE_DIR/Dockerfile" \
             "$root_dir/shared/$SERVICE_DIR" || return 1

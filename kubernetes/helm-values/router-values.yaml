@@ -155,8 +155,7 @@ router:
               capacity: 1
               interval: 10s
             format:
-              # Switch from JSON to unstructured text format to see Dash0 parsing
-              text:
+              json:
                 display_filename: true
                 display_level: true
                 display_line_number: true

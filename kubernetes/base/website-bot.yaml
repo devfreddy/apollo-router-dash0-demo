@@ -25,10 +25,8 @@ spec:
         image: apollo-dash0-demo-willful-waste-bot:latest
         imagePullPolicy: IfNotPresent
         env:
-        - name: OTEL_EXPORTER_OTLP_ENDPOINT
-          value: "http://otel-collector:4317"
         - name: LOCUST_HOST
-          value: "http://apollo-router:4000"
+          value: "http://willful-waste-website:8080"
         - name: LOCUST_USERS
           valueFrom:
             configMapKeyRef:
@@ -48,7 +46,7 @@ spec:
         - name: PYTHONUNBUFFERED
           value: "1"
         - name: LOCUST_LOGLEVEL
-          value: "info"
+          value: "debug"
         - name: LOCUST_HEADLESS
           value: "true"
         ports:

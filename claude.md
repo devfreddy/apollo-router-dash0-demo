@@ -77,6 +77,19 @@
 
 ## AI Assistant Guidelines
 
+### Deployment & Redeployment
+- **ALWAYS use existing scripts** for redeployment - Never run one-off kubectl commands for rebuilding or redeploying
+- Avoid tearing down the entire cluster unnecessarily - Use targeted restart/rebuild scripts instead
+- Available rebuild scripts (located in `kubernetes/scripts/`):
+  - `rebuild-router.sh` - For router configuration changes
+  - `rebuild-website.sh` - For website code/Dockerfile changes (automatically passes Dash0 credentials from .env)
+  - `rebuild-and-reimport-images.sh` - For subgraph code changes
+  - `rebuild-apps.sh` - Rebuild all subgraphs and redeploy them
+  - `rebuild-locust.sh` - For website bot changes
+  - `rebuild-bot.sh` - Alternative bot rebuild
+- When making changes to files that require redeployment, **always check if a script exists first** before executing manual kubectl commands
+- Scripts handle environment variable configuration, image building, importing, and rollout verification automatically
+
 ### Documentation
 - **Only create docs in `/docs/` folder** - Never at project root
 - **Keep docs concise** - Max 1-2 pages per doc
